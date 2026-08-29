@@ -1,0 +1,38 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://splio.com/en/ (full navigation), https://splio.com/page-sitemap1.xml (28 pages, none
+  pricing-related), https://splio.com/llms.txt, https://splio.com/en/book-a-demo/,
+  https://dev-scp.splio.com/llms.txt
+plan_count: 0
+public_pricing: false
+currency: null
+plans: []
+note: >-
+  Splio publishes no pricing at all. There is no /pricing page in any of its ten language variants;
+  the WordPress page sitemap lists 28 pages and none of them is a pricing, tarifs or plans page, and
+  the site-wide llms.txt returns zero hits for pricing, tarif, prix or plan. Every commercial path on
+  splio.com terminates in "Book a demo" or "Contact us". Licensing is real and tiered — the developer
+  docs gate individual connectors on a "Required license or add-on" (for example the Webhook
+  connector requires the Marketing Automation licence) and the Help Center maintains a
+  "Understanding Splio's products and features" article — but the tiers, their contents and their
+  prices are only disclosed inside a sales conversation.
+licensing_signals:
+- signal: per-connector licence gating
+  evidence: >-
+    Connector docs carry a "Required license or add-on" callout, e.g.
+    https://dev-scp.splio.com/docs/splio-webhook requires "Marketing Automation".
+  docs: https://helpcenter.splio.com/kb/guide/en/understanding-splios-products-and-features-ztG64qYGnS/
+- signal: modular product lines
+  evidence: >-
+    CDP, Marketing Automation, Loyalty, Mobile Wallets and Predictive AI are sold as separable
+    modules; the API surface a universe exposes depends on which are licensed.
+- signal: metered consumption
+  evidence: >-
+    GET /universes/consumption returns "the current universe email and sms consumption statistics for
+    the last year", so contracts are volume-based on email and SMS — but no rate card is published.
+  operation: GET /universes/consumption
+  spec: openapi/splio-customer-platform-openapi.json
+sales_contact:
+  demo: https://splio.com/en/book-a-demo/
+  contact: https://splio.com/en/contact-us/

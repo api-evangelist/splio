@@ -1,0 +1,81 @@
+generated: '2026-08-29'
+method: searched
+source: https://dev-scp.splio.com/reference/authentication-2
+docs:
+- https://dev-scp.splio.com/reference/authentication-2
+- https://dev-scp.splio.com/docs/authentication-1
+- https://dev-scp.splio.com/reference/post_authenticate
+- https://dev-scp.splio.com/docs/authentication
+summary:
+  model: api-key-exchanged-for-jwt-bearer
+  types:
+  - http
+  note: >-
+    Every Splio Customer Platform API call carries `Authorization: Bearer <JWT>`. The JWT is not
+    long-lived credential material of its own: it is minted by POSTing an API key to
+    /authenticate and is valid for 24 hours. The API key itself is created and revoked in the
+    universe admin section of the Splio application (www.sp-ring.com).
+schemes:
+- name: Bearer
+  type: http
+  scheme: bearer
+  bearer_format: JWT
+  in: header
+  header: Authorization
+  value_format: 'Bearer xxxxxx.yyyyyyy.zzzzz'
+  token_lifetime: 24h
+  minted_by:
+    operation: POST /authenticate
+    spec: openapi/splio-customer-platform-openapi.json
+    reference: https://dev-scp.splio.com/reference/post_authenticate
+    request_fields:
+    - api_key
+    - password
+  sources:
+  - openapi/splio-customer-platform-openapi.json
+  - openapi/splio-campaign-api-openapi.json
+  - openapi/splio-campaign-api-v1-openapi.json
+  - openapi/splio-content-api-openapi.json
+  - openapi/splio-interactions-api-openapi.json
+  - openapi/splio-messaging-api-openapi.json
+  spec_scheme_names:
+  - Bearer      # splio-customer-platform, splio-interactions-api
+  - Token       # splio-campaign-api
+  - Authorization  # splio-campaign-api-v1
+  - bearerAuth  # splio-messaging-api
+  - BearerAuth  # splio-content-api
+  note: >-
+    The same bearer-JWT model is declared under six different securityScheme names across Splio's
+    six published specs. That is a naming inconsistency in the contracts, not six auth models.
+credentials:
+- name: API key
+  where: Splio universe admin -> API users list
+  docs: https://dev-scp.splio.com/docs/authentication-1
+  provisioning: administrator-issued (no self-serve developer signup)
+  rotation: managed in the universe admin section
+  guidance_from_provider:
+  - Use one API key per connecting system (e-commerce, PoS, ...) so a system can be identified during
+    an investigation.
+  - Do not re-authenticate on every call; the JWT is valid for 24 hours.
+  - Never share the API key, including with Splio Customer Care — the last 3 characters plus the
+    universe name are sufficient for support.
+- name: Referral API token
+  scheme: sha256-hmac-like digest
+  docs: https://documenter.getpostman.com/view/10206569/TzRX9kyT
+  note: >-
+    The separately published Splio Referral API does NOT use the JWT model. It authenticates by
+    SHA-256 hashing the concatenation of the coupon code and a key issued by the Splio project
+    manager, passed as form-data in the request body.
+sso:
+  supported: true
+  scope: application users (not API callers)
+  docs: https://dev-scp.splio.com/docs/authentication
+  note: SAML/SSO is available for logging human users into the Splio application, separate from API auth.
+oauth2:
+  supported: false
+  note: >-
+    No oauth2 or openIdConnect securityScheme appears in any published Splio spec, and no
+    /.well-known/oauth-authorization-server or /.well-known/openid-configuration document is served
+    on splio.com, api.splio.com or dev-scp.splio.com. scopes/ is therefore not applicable.
+mutual_tls:
+  supported: false

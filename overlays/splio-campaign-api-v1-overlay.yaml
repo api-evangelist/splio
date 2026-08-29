@@ -1,0 +1,49 @@
+# OpenAPI Overlay 1.0.0 — API Evangelist enrichment of Splio's published contract.
+# This overlay NEVER mutates openapi/splio-campaign-api-v1-openapi.json; it records the enhancements we would apply.
+generated: '2026-08-29'
+method: generated
+source: openapi/splio-campaign-api-v1-openapi.json
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for Campaign API (v1)
+  version: '1.0.0'
+extends: openapi/splio-campaign-api-v1-openapi.json
+x-observations:
+  operations: 3
+  operations_without_operationId: 0
+  operations_without_tags: 3
+actions:
+- target: $.info
+  description: Attach provider contact and licensing metadata that the published contract omits.
+  update:
+    contact:
+      name: Splio
+      url: https://dev-scp.splio.com/reference/post_campaign_api_create
+      email: contact@splio.com
+    x-provider: Splio
+    x-provider-url: https://splio.com/en/
+    x-api-evangelist-profile: https://apis.io/providers/splio
+- target: $.info
+  description: Record the runtime semantics documented outside the contract.
+  update:
+    x-rate-limits: rate-limits/splio-rate-limits.yml
+    x-error-catalog: errors/splio-problem-types.yml
+    x-conventions: conventions/splio-conventions.yml
+    x-authentication: authentication/splio-authentication.yml
+    x-lifecycle: lifecycle/splio-lifecycle.yml
+- target: $.paths.*.*
+  description: >-
+    3 of 3 operations carry no tags, so this document cannot be split or grouped by resource.
+  update:
+    x-tags-missing: true
+- target: $.paths.*.*.responses
+  description: >-
+    429 Too Many Requests is documented at https://dev-scp.splio.com/reference/rate-limiting but
+    declared on zero operations in this document. Recorded as an observation; the response object is
+    not fabricated into the contract.
+  update:
+    x-undeclared-responses:
+    - 429
+    - 405
+    - 502
+    - 503

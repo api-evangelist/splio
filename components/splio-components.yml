@@ -1,0 +1,101 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://dev-scp.splio.com/docs/getting-started-loyalty-sdk,
+  https://dev-scp.splio.com/recipes/loyalty-web-kit-initialization-of-the-sdk,
+  https://dev-scp.splio.com/docs/customizing-the-loyalty-web-kit-with-css,
+  https://dev-scp.splio.com/docs/integrating-splio-forms,
+  https://dev-scp.splio.com/docs/shopify-checkout-extension-for-splio-rewards,
+  https://dev-scp.splio.com/docs/mobile-wallet
+docs: https://dev-scp.splio.com/docs/getting-started-loyalty-sdk
+families:
+- name: Loyalty Web Kit
+  kind: embeddable JavaScript widget
+  description: >-
+    Splio's packaged loyalty front end. Drops a fully responsive points-balance, tier-progress and
+    reward earn/redeem interface into an e-commerce site without the integrator building UI or
+    wiring API calls. Splio's own framing: "ship the fully responsive Loyalty front at a glance
+    without having to build it yourself from scratch."
+  loader:
+    js: https://static.splio.pro/sdk/web-sdk/v1/splio-web.js
+    css: https://static.splio.pro/sdk/web-sdk/v1/splio-web.css
+    global: splioSDK
+    ready_event: 'splioSDK:loaded'
+  init: |
+    window.addEventListener('splioSDK:loaded', function(event) {
+      splioSDK.init({
+        authType: 'jwt',
+        authToken: '{{appAuthToken}}',
+        display: { mode: 'inline', container: '#splio-sdk' }
+      });
+    });
+  auth:
+    type: jwt
+    note: >-
+      The JWT must be minted SERVER-SIDE by the integrator, not obtained from the browser — Splio
+      publishes a dedicated recipe for it. This keeps the universe API key off the client.
+    recipe: https://dev-scp.splio.com/recipes/loyalty-web-kit-build-your-jwt-server-side
+  display_modes:
+  - mode: inline
+    note: renders full-width into a container element you nominate
+  - mode: popup
+    note: bottom-right badge that opens the loyalty panel
+  - mode: widget
+    note: positioned container — documented as coming soon
+  customisation:
+    css_hook: .splio-display
+    docs: https://dev-scp.splio.com/docs/customizing-the-loyalty-web-kit-with-css
+  integrations:
+  - platform: Vanilla JavaScript
+    docs: https://dev-scp.splio.com/docs/generic-e-commerce-1
+  - platform: Shopify
+    docs: https://dev-scp.splio.com/docs/integrate-to-your-shopify
+  - platform: PrestaShop
+    docs: https://dev-scp.splio.com/docs/integrate-to-your-prestashop
+  packages_entry: packages/splio-packages.yml
+- name: Splio Forms
+  kind: hosted / embeddable form
+  description: >-
+    Data-capture and subscription-preference forms built inside Splio and embedded on the brand's
+    own site — signup, unsubscription and preference-centre surfaces that write straight into the
+    contact database.
+  docs: https://dev-scp.splio.com/docs/integrating-splio-forms
+  history:
+  - '2024-02: new unsubscription forms in early access'
+  - '2024-04: create your form directly in Splio'
+  - '2025-04: contact subscription preference centre'
+  - '2025-09: manage your default forms'
+- name: Shopify Checkout Extension for Splio Rewards
+  kind: platform checkout extension
+  description: >-
+    A Shopify checkout UI extension that surfaces and applies Splio loyalty rewards inside the
+    Shopify checkout flow.
+  docs: https://dev-scp.splio.com/docs/shopify-checkout-extension-for-splio-rewards
+  distribution: Shopify App Store (public marketplace since December 2023)
+- name: Mobile Wallet passes
+  kind: platform-native rendered surface
+  description: >-
+    Loyalty and membership cards rendered as passes in Apple Wallet, Google Wallet and Samsung
+    Wallet, with push notifications to the pass.
+  docs: https://dev-scp.splio.com/docs/mobile-wallet
+  platforms: [Apple Wallet, Google Wallet, Samsung Wallet]
+  note: >-
+    Real client-side surfaces, but produced by the Splio application — they are not modelled in any
+    published API contract, so nothing in openapi/ describes them.
+- name: Web tracking tags
+  kind: tag-manager snippets
+  description: >-
+    Google Tag Manager tag definitions Splio publishes for capturing page-view, cart, purchase,
+    refund and custom events from the brand's site into the CDP.
+  docs: https://dev-scp.splio.com/docs/gtm-tags-page-view-events
+  tags:
+  - https://dev-scp.splio.com/docs/gtm-tags-page-view-events
+  - https://dev-scp.splio.com/docs/gtm-tags-cart-events
+  - https://dev-scp.splio.com/docs/purchase-event-mandatory
+  - https://dev-scp.splio.com/docs/refund-event-optional
+  - https://dev-scp.splio.com/docs/cart-event-optional
+  - https://dev-scp.splio.com/docs/custom-event-optional
+note: >-
+  Distinct from packages/ — nothing here is a server-side SDK. The Loyalty Web Kit is the only one
+  that is also a distributable artifact, and it is listed in packages/splio-packages.yml as the
+  provider's single first-party client library.

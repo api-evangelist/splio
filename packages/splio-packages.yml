@@ -1,0 +1,87 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  npm registry search, PyPI, Packagist, proxy.golang.org, RubyGems, crates.io, GitHub org
+  https://github.com/Splio, and the Splio developer docs at https://dev-scp.splio.com/llms.txt
+summary:
+  official_count: 1
+  third_party_count: 3
+  registries_searched:
+  - npm
+  - PyPI
+  - Packagist
+  - pkg.go.dev / proxy.golang.org
+  - RubyGems
+  - crates.io
+  - Maven Central
+  - NuGet
+  note: >-
+    Splio publishes no first-party SDK to any package registry. The only first-party client
+    distribution is the Loyalty Web Kit, a browser JavaScript bundle served from Splio's own CDN at
+    static.splio.pro. The GitHub organisation https://github.com/Splio exists (Paris, France,
+    contact@splio.com) but holds exactly one public repo, a PHP user-agent parser last pushed in
+    2016 — it is not an SDK org. Everything else that carries the Splio name on a registry is
+    community-authored and unmaintained.
+packages:
+- name: Splio Loyalty Web Kit (splio-web.js)
+  official: true
+  language: javascript
+  registry: cdn
+  url: https://static.splio.pro/sdk/web-sdk/v1/splio-web.js
+  assets:
+  - https://static.splio.pro/sdk/web-sdk/v1/splio-web.js
+  - https://static.splio.pro/sdk/web-sdk/v1/splio-web.css
+  docs: https://dev-scp.splio.com/docs/getting-started-loyalty-sdk
+  version: null
+  published: null
+  note: >-
+    CDN-distributed, no registry metadata endpoint and no pinned version in the URL — the path
+    segment `v1` is a floating major channel, so a consumer cannot tell which build they are
+    loading and neither can we. The only currency signal the CDN exposes is the HTTP
+    Last-Modified header on the bundle, observed 2026-08-17 (probed 2026-08-29, HTTP 200,
+    774,542 bytes). Not on npm, unpkg or jsDelivr.
+  capabilities:
+  - JWT (authType jwt) initialisation via splioSDK.init()
+  - display modes inline, popup and widget
+  - loyalty points balance, tier progress and reward earn/redeem UI
+  - CSS customisation through the .splio-display class
+- name: kepinsu/go-splio
+  official: false
+  language: go
+  registry: proxy.golang.org
+  url: https://github.com/kepinsu/go-splio
+  version: v0.0.0-20241106220759-9d60d4da6c9a
+  published: '2024-11-06'
+  note: >-
+    Community Go SDK for the Splio API. Pseudo-version only — the author has never cut a tagged
+    release. Not endorsed or referenced by Splio's documentation.
+- name: silici0/splio
+  official: false
+  language: php
+  registry: packagist
+  url: https://packagist.org/packages/silici0/splio
+  version: null
+  published: null
+  note: >-
+    Community PHP wrapper, ~3,156 total Packagist downloads. Packagist's p2 metadata endpoint
+    returns an empty version array — the package has no tagged releases at all, only branch
+    references; source repo last pushed 2017-12-20. Checked, nothing to record.
+- name: dooplan/spliopy
+  official: false
+  language: python
+  registry: null
+  url: https://github.com/dooplan/spliopy
+  version: null
+  published: null
+  note: >-
+    Community Python wrapper around the Splio EmailForge REST API 1.0, GitHub-only (PyPI returns
+    404 for `splio`), last pushed 2016-02-10. Targets an API generation that predates the current
+    Splio Customer Platform.
+abandonment_signal:
+  assessment: >-
+    No first-party SDK exists to decay, so the usual "SDK older than the API" signal does not
+    apply. The relevant finding is the inverse: Splio shipped Splio Edition 2025 with four new
+    REST APIs (Messaging, Campaign, Content, Interactions) and no client library for any of them
+    in any language. Integrators either hand-roll HTTP or use one of the packaged connectors
+    (Shopify, Magento, PrestaShop, Make) instead. The one first-party client, the Loyalty Web Kit,
+    is current — its CDN bundle was rebuilt 2026-08-17.

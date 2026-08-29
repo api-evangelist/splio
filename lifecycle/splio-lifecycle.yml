@@ -1,0 +1,129 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025,
+  https://dev-scp.splio.com/docs/using-trigger-api-on-se2025,
+  https://dev-scp.splio.com/reference/loyalty-cursors-lists,
+  https://helpcenter.splio.com/kb/en/splio-product-updates-405810,
+  https://helpcenter.splio.com/kb/en/splio-roadmap-446541,
+  https://status.splio.com/ — plus versions derived from the six specs in openapi/
+versioning:
+  scheme: path-segment, per-resource
+  note: >-
+    Splio versions individual resources, not the API. /data/v1/orders, /data/v2/orders and
+    /data/v3/orders/{id} are all live simultaneously and do different things (v2 adds order status,
+    v3 is the current PATCH). /loyalty/v1/rewards and /loyalty/v2/rewards coexist. Contacts,
+    programs, members and targeting groups carry no version segment at all. There is no global API
+    version, no version header and no dated version scheme.
+  current:
+  - resource: orders (read)
+    versions: [v1, v2]
+    current: v2
+  - resource: orders (edit)
+    versions: [v3]
+    current: v3
+  - resource: stores (edit)
+    versions: [v2]
+    current: v2
+  - resource: rewards (list)
+    versions: [v1, v2]
+    current: v2
+  - resource: contact rewards / points
+    versions: [v2]
+    current: v2
+  - resource: contacts, lists, blacklists, fields, programs, members, tiers, groups, filters
+    versions: []
+    current: unversioned
+platform_editions:
+  current: Splio Edition 2025 (SE2025)
+  docs: https://helpcenter.splio.com/kb/guide/en/discover-splio-edition-2025-1ixLOi7XHN/Steps/3425098
+  note: >-
+    Splio ships named annual platform editions rather than API versions. SE2025 introduced the
+    Messaging, Campaign and Content APIs and is the boundary that deprecated the Launch API.
+deprecation_policy:
+  published_policy: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  note: >-
+    Splio publishes no formal deprecation policy document, no notice period, and emits neither the
+    RFC 8594 `Sunset` nor the `Deprecation` header. What it does publish, and publishes well, is a
+    per-API MIGRATION GUIDE at the point of replacement — which is why this file still carries a
+    Deprecation pointer: the substance is documented even though the policy is not.
+  deprecated:
+  - api: Launch API
+    status: legacy
+    replaced_by:
+    - Splio Content API (POST /v1/create-email-design)
+    - Splio Campaign API (POST /v1/one-shot)
+    boundary: Splio Edition 2025
+    migration_guide: https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+    sunset_date: not published
+    note: >-
+      The legacy Launch API combined content fetching by URL and campaign execution into one call.
+      SE2025 decouples them. Splio states content "must be created via the Content API to generate a
+      new email_design_id" — but gives no date on which Launch API stops answering.
+  - api: Trigger API
+    status: legacy-but-supported
+    docs: https://dev-scp.splio.com/docs/using-trigger-api-on-se2025
+    note: >-
+      Explicitly kept working after a universe migrates to SE2025; Splio publishes a guide for
+      continuing to use it rather than a sunset notice.
+  - api: Trigger API SMS
+    status: legacy-but-supported
+    docs: https://dev-scp.splio.com/docs/trigger-api-sms
+  - api: Splio Legacy Communication API (legacy email API)
+    status: legacy
+    docs: https://dev-scp.splio.com/docs/splio-legacy-email-api-documentation
+  - api: Campaign API (unversioned, https://api.splio.com/campaign)
+    status: superseded
+    replaced_by: Campaign API v1 (https://api.splio.com/campaign-api)
+    evidence: >-
+      Both specs are still served from the developer hub's api-catalog. The unversioned one declares
+      a single POST /v1/one-shot on host api.splio.com/campaign; the v1 one adds GET /v1/one-shot/{id}
+      and POST /v1/one-shot/stop/{id} on api.splio.com/campaign-api. Only the v1 endpoints appear in
+      llms.txt. Splio does not say the older document is retired.
+  in_migration:
+  - surface: Loyalty list endpoints
+    from: page_number / per_page pagination
+    to: before / after / limit cursors
+    docs: https://dev-scp.splio.com/reference/loyalty-cursors-lists
+    quote: 'Loyalty APIs are moving from pagination towards cursors.'
+    completion_date: not published
+status_page:
+  url: https://status.splio.com/
+  status: 200
+  provider: Pingdom (public report at https://secure-stats.pingdom.com/z2n6yd2niy5b)
+  method: probed
+  note: >-
+    status.splio.com resolves and 200s, redirecting to a hosted Pingdom public status report. A
+    splio.statuspage.io tenant also exists but serves /inactive and is dead — the Pingdom page is
+    the live one.
+  history: true
+  subscribe: not offered
+  incident_rss: not published
+sla:
+  published: false
+  note: No public SLA, uptime commitment or support-response target is published on splio.com or
+    the developer hub. Commercial terms are handled through sales.
+changelog:
+  url: https://helpcenter.splio.com/kb/en/splio-product-updates-405810
+  status: 200
+  scope: product updates, published in the Help Center rather than the developer hub
+  developer_changelog: false
+  note: >-
+    The ReadMe developer hub at dev-scp.splio.com has NO changelog — /changelog returns 404 even
+    though ReadMe ships that feature. API-affecting changes surface in Help Center product-update
+    articles written for marketers, so a developer watching for breaking changes has no
+    developer-facing feed to watch.
+  see: changelog/splio-changelog.yml
+roadmap:
+  url: https://helpcenter.splio.com/kb/en/splio-roadmap-446541
+  status: 200
+  note: Splio publishes a customer-facing product roadmap section in the Help Center.
+deprecated_operations_in_spec:
+  count: 0
+  note: >-
+    No operation in any of the six specs carries `deprecated: true`, including the superseded
+    /data/v1/orders read path and the unversioned Campaign API. The deprecation story is told in
+    prose guides only; it is invisible to a generated client.

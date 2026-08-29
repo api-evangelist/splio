@@ -1,0 +1,51 @@
+# OpenAPI Overlay 1.0.0 — API Evangelist enrichment of Splio's published contract.
+# This overlay NEVER mutates openapi/splio-messaging-api-openapi.json; it records the enhancements we would apply.
+generated: '2026-08-29'
+method: generated
+source: openapi/splio-messaging-api-openapi.json
+overlay: 1.0.0
+info:
+  title: API Evangelist overlay for messaging api
+  version: '1.0.0'
+extends: openapi/splio-messaging-api-openapi.json
+x-observations:
+  operations: 1
+  operations_without_operationId: 1
+  operations_without_tags: 0
+actions:
+- target: $.info
+  description: Attach provider contact and licensing metadata that the published contract omits.
+  update:
+    contact:
+      name: Splio
+      url: https://dev-scp.splio.com/reference/post_messages
+      email: contact@splio.com
+    x-provider: Splio
+    x-provider-url: https://splio.com/en/
+    x-api-evangelist-profile: https://apis.io/providers/splio
+- target: $.info
+  description: Record the runtime semantics documented outside the contract.
+  update:
+    x-rate-limits: rate-limits/splio-rate-limits.yml
+    x-error-catalog: errors/splio-problem-types.yml
+    x-conventions: conventions/splio-conventions.yml
+    x-authentication: authentication/splio-authentication.yml
+    x-lifecycle: lifecycle/splio-lifecycle.yml
+- target: $.paths.*.*
+  description: >-
+    1 of 1 operations in this document carry no operationId. Client generators fall back to
+    method+path names. No operationId is invented here — the gap is recorded so it can be raised
+    with the provider rather than silently patched.
+  update:
+    x-operationid-missing: true
+- target: $.paths.*.*.responses
+  description: >-
+    429 Too Many Requests is documented at https://dev-scp.splio.com/reference/rate-limiting but
+    declared on zero operations in this document. Recorded as an observation; the response object is
+    not fabricated into the contract.
+  update:
+    x-undeclared-responses:
+    - 429
+    - 405
+    - 502
+    - 503

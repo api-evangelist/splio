@@ -64,5 +64,15 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Splio is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/splio_stock/
+Splio is a Paris-headquartered customer marketing platform for retail, e-commerce, restaurant and
+travel brands, combining a Customer Data Platform, omnichannel marketing automation (email, SMS,
+WhatsApp, push), loyalty and rewards programs, mobile wallet cards and Tinyclues-derived predictive
+AI targeting into one "Splio Customer Platform".
+
+- Website: https://splio.com/en/
+- Developer hub: https://dev-scp.splio.com/
+- API reference: https://dev-scp.splio.com/reference
+- Status: https://status.splio.com/
+
+Six machine-readable contracts are published on `api.splio.com` and enumerated in an RFC 9727
+API catalog at `https://dev-scp.splio.com/.well-known/api-catalog`, harvested into `openapi/`.

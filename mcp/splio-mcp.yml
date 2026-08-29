@@ -1,0 +1,132 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  openapi/splio-customer-platform-openapi.json (searched for a published server first: web search,
+  https://dev-scp.splio.com/llms.txt, https://github.com/Splio, https://splio.com/llms.txt, and
+  /.well-known/* probes on splio.com, api.splio.com, dev-scp.splio.com and developer.splio.com)
+status: candidate
+deployment:
+  mode: none
+  auth: unknown
+  verified: searched
+  note: >-
+    Splio publishes no MCP server — neither a hosted remote endpoint nor an installable stdio
+    package. The developer hub's own llms.txt (253 entries covering every guide, reference page and
+    recipe) never mentions MCP; the GitHub organisation holds one unrelated 2016 PHP repo; there is
+    no @splio scope on npm and no splio package on PyPI. No endpoint was guessed or probed
+    speculatively. The tools below are a DERIVED candidate mapping of what a server would expose if
+    Splio built one, not a description of anything Splio ships.
+server:
+  endpoint: null
+  install: null
+  package: null
+upstream:
+  rest_base: https://api.splio.com
+  auth: >-
+    Bearer JWT minted by POST /authenticate from a universe API key, valid 24 hours — an MCP server
+    would need to hold the API key and refresh the JWT on a 24-hour cycle rather than pass a
+    long-lived token through.
+  specs:
+  - openapi/splio-customer-platform-openapi.json
+  - openapi/splio-messaging-api-openapi.json
+  - openapi/splio-campaign-api-v1-openapi.json
+  - openapi/splio-content-api-openapi.json
+  - openapi/splio-interactions-api-openapi.json
+candidate_tools:
+- name: search_contacts
+  description: List and search contacts in a Splio universe.
+  rest: GET /data/contacts
+  consequence: read
+- name: get_contact
+  description: Fetch a single contact by its unique key.
+  rest: GET /data/contacts/{individual_id}
+  consequence: read
+- name: get_contact_activities
+  description: Retrieve a contact's activity history.
+  rest: GET /data/contacts/{id}/activities
+  consequence: read
+- name: create_contact
+  description: Create a contact.
+  rest: POST /data/contacts
+  consequence: write
+- name: update_contact
+  description: Edit a contact's fields.
+  rest: PATCH /data/contacts/{individual_id}
+  consequence: write
+- name: subscribe_contact_to_lists
+  description: Subscribe a contact to one or more membership lists.
+  rest: POST /data/contacts/{id}/lists/subscribe
+  consequence: write
+- name: optout_contacts
+  description: Opt contacts out of every list (max 1000).
+  rest: POST /data/contacts/optout
+  consequence: destructive
+- name: delete_contact
+  description: Delete a contact.
+  rest: DELETE /data/contacts/{id}
+  consequence: destructive
+- name: list_orders
+  description: List orders with their status.
+  rest: GET /data/v2/orders
+  consequence: read
+- name: create_order
+  description: Create an order or an abandoned cart.
+  rest: POST /data/v1/orders
+  consequence: write
+- name: list_products
+  description: List products in the catalogue.
+  rest: GET /data/v1/products
+  consequence: read
+- name: list_stores
+  description: List physical stores.
+  rest: GET /data/v1/stores
+  consequence: read
+- name: get_loyalty_member
+  description: Get a loyalty membership by card code.
+  rest: GET /loyalty/members/{id}
+  consequence: read
+- name: get_point_balance
+  description: Get a member's loyalty point balance.
+  rest: GET /loyalty/members/{id}/balance
+  consequence: read
+- name: credit_points
+  description: Credit loyalty points to a member.
+  rest: POST /loyalty/v1/members/{card_code}/credit
+  consequence: write
+- name: list_eligible_rewards
+  description: List the rewards a member is currently eligible for.
+  rest: POST /loyalty/rewards/eligibility/{card_code}
+  consequence: read
+- name: grant_reward
+  description: Grant a reward to a loyalty member.
+  rest: POST /loyalty/v1/rewards/{id}/grant
+  consequence: write
+- name: burn_reward
+  description: Consume a reward previously granted to a member.
+  rest: POST /loyalty/v1/reward-attributions/{id}/burn
+  consequence: destructive
+- name: create_group
+  description: Create a targeting group from a contact list.
+  rest: POST /target/groups
+  consequence: write
+- name: send_message
+  description: Send a transactional email to recipients.
+  rest: POST /messages (Messaging API, https://api.splio.com/messaging/v1/{universe_id})
+  consequence: destructive
+  note: Sends real email to real people; would require explicit escalation in any agent surface.
+- name: create_email_design
+  description: Upload HTML or a ZIP bundle and get back an email_design UUID.
+  rest: POST /v1/create-email-design (Content API, https://api.splio.com/content)
+  consequence: write
+- name: create_campaign
+  description: Create a one-shot campaign from an existing design.
+  rest: POST /v1/one-shot (Campaign API, https://api.splio.com/campaign-api)
+  consequence: destructive
+- name: stop_campaign
+  description: Stop a running one-shot campaign.
+  rest: POST /v1/one-shot/stop/{id} (Campaign API)
+  consequence: write
+- name: post_interaction
+  description: Push a behavioural interaction event into the CDP.
+  rest: POST /events/ (Interactions API)
+  consequence: write

@@ -1,0 +1,235 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://dev-scp.splio.com/reference/response-conventions-1,
+  https://dev-scp.splio.com/reference/rate-limiting,
+  https://dev-scp.splio.com/reference/loyalty-cursors-lists,
+  https://dev-scp.splio.com/reference/authentication-2,
+  and derived from openapi/splio-customer-platform-openapi.json + the five sibling specs
+docs:
+- https://dev-scp.splio.com/reference/response-conventions-1
+- https://dev-scp.splio.com/reference/rate-limiting
+- https://dev-scp.splio.com/reference/loyalty-cursors-lists
+- https://dev-scp.splio.com/reference/authentication-2
+
+auth_style:
+  scheme: Bearer JWT in the Authorization header
+  header: 'Authorization: Bearer xxxxxx.yyyyyyy.zzzzz'
+  token_source: POST /authenticate, exchanging a universe API key for a 24-hour JWT
+  see: authentication/splio-authentication.yml
+
+idempotency:
+  supported: true
+  mechanism: request-body field
+  field: idempotency_key
+  location: JSON request body (NOT an HTTP header)
+  format: UUID (documented examples are v4 UUIDs, e.g. 733d3ebf-36fe-41f4-8468-c463202225c1)
+  behaviour: >-
+    "When receiving 2 calls with the same idempotency key, we refuse the second call. Can also be
+    used by the sender to identify a specific message." — verbatim from the Messaging API spec.
+    The second call is REFUSED, it is not replayed: Splio does not return the original response the
+    way a Stripe-style replayed idempotent request does. Treat it as duplicate suppression, not
+    safe retry-with-same-result.
+  retention: not documented
+  operations:
+  - spec: openapi/splio-customer-platform-openapi.json
+    operation: POST /loyalty/v1/members/{card_code}/credit
+    summary: Credit points
+  - spec: openapi/splio-customer-platform-openapi.json
+    operation: POST /loyalty/v1/rewards/{id}/grant
+    summary: Grant a reward
+  - spec: openapi/splio-messaging-api-openapi.json
+    operation: POST /messages
+    summary: Send a message
+  coverage_gap: >-
+    Idempotency is offered on exactly three of Splio's ~86 published operations — the three where a
+    duplicate costs real money or real customer trust (crediting loyalty points, granting a reward,
+    sending an email). Every other write, including POST /data/contacts, POST /data/contacts/bulk,
+    POST /data/v1/orders, POST /target/groups and POST /v1/one-shot (launch a campaign), has no
+    idempotency mechanism at all. There is no Idempotency-Key header anywhere in the estate.
+
+pagination:
+  styles:
+  - style: page-number
+    params:
+    - page_number
+    - per_page
+    scope: contacts, orders, products, stores, lists, groups
+  - style: cursor
+    params:
+    - before
+    - after
+    - limit
+    scope: Loyalty API list endpoints
+    docs: https://dev-scp.splio.com/reference/loyalty-cursors-lists
+    note: >-
+      Splio documents an explicit migration: "Loyalty APIs are moving from pagination towards
+      cursors." The two styles coexist across the estate today, so a client must know which module
+      it is calling.
+  sorting:
+    params:
+    - sort
+    - order
+  filtering:
+    params:
+    - term
+    - fields
+    - status
+    - with_custom_fields
+    - with_stats
+    - with_redeemed
+
+field_selection:
+  supported: true
+  param: fields
+  note: A comma-separated `fields` query parameter narrows the returned attribute set on list endpoints.
+  expansion:
+    supported: false
+    note: No sub-resource expansion parameter; related data is fetched from dedicated sub-paths
+      (e.g. GET /data/contacts/{id}/orders).
+
+metadata:
+  custom_fields: true
+  note: >-
+    Splio's extensibility model is first-class custom fields rather than an opaque metadata bag.
+    POST /data/fields creates one; GET /data/fields/{scope} lists them per scope (contacts, orders,
+    order-lines, products, rewards, members, stores). Custom fields are typed and the API rejects a
+    type mismatch with a 400 wrong_type error.
+
+request_id_tracing:
+  supported: false
+  note: >-
+    No request-id or correlation-id response header is documented anywhere in the reference, and
+    none appears in any spec. An integrator has no per-call identifier to quote to support. The
+    provider's stated substitute is operational, not technical: use one API key per connecting
+    system so a system can be identified during an investigation.
+
+versioning:
+  style: path-segment, per-resource
+  note: >-
+    Version segments are attached to individual resources rather than the API as a whole, and
+    different versions of the same resource are live at once. Examples in the current spec:
+    GET /data/v1/orders and GET /data/v2/orders (v2 adds order status), GET /data/v1/orders/{id} and
+    GET /data/v2/orders/{id}, PATCH /data/v3/orders/{id}, PATCH /data/v2/stores/{id},
+    GET /loyalty/v2/rewards alongside GET /loyalty/v1/rewards/{id}. Several endpoints
+    (/data/contacts, /loyalty/members, /loyalty/programs, /target/groups) carry no version segment
+    at all.
+  see: lifecycle/splio-lifecycle.yml
+
+error_envelope:
+  format: custom-json
+  rfc9457: false
+  content_type: application/json
+  shape:
+    status: HTTP status code, repeated in the body
+    errors: array of error objects
+    error_object:
+      error_key: the field or payload element at fault (e.g. payload, custom_fields, email)
+      error: a machine-readable slug (e.g. invalid_json, wrong_type, wrong_email)
+      error_description: human-readable explanation
+  exceptions:
+  - status: 401
+    body: '"Authentication failed."'
+    note: bare string, not the envelope
+  - status: 405
+    body: '"Method Not Allowed."'
+    note: bare string, not the envelope
+  - status: 429
+    body: '{"message": "API rate limit exceeded"}'
+    note: uses `message`, not `errors[]` — a third envelope shape
+  see: errors/splio-problem-types.yml
+
+rate_limit_signalling:
+  status_on_exhaustion: 429
+  headers:
+  - rateLimit-limit
+  - rateLimit-remaining
+  - rateLimit-reset
+  - x-rateLimit-limit-minute
+  - x-rateLimit-remaining-minute
+  scope: per client IP address
+  see: rate-limits/splio-rate-limits.yml
+
+bulk_semantics:
+  status: 207
+  note: >-
+    Bulk endpoints (POST /data/contacts/bulk, DELETE /data/contacts/bulk, POST /loyalty/v1/rewards/grant,
+    POST /loyalty/v1/rewards/burn) can return 207 Multi-Status, so a 2xx does NOT mean every item in
+    the batch succeeded. Callers must read the per-item results. Batch ceilings are 1,000 contacts per
+    bulk call and 10,000 keys per POST /target/groups.
+
+async_semantics:
+  note: >-
+    Several writes are accepted asynchronously and return 202 rather than a completed result —
+    DELETE /data/contacts/bulk is documented as an "asynchronous delete", and
+    POST /loyalty/v1/members/{card_code}/credit returns 202 "Credit event creation is successful".
+    There is no job-status endpoint to poll, so an agent cannot confirm completion through the API.
+
+dry_run_mode:
+  supported: false
+  note: No preview, simulate, validate-only or test-mode flag exists on any write operation.
+
+reversibility:
+  grade: documented
+  rationale: >-
+    Real reversal paths exist for most of the write surface and Splio names them explicitly, but the
+    documentation never states a WINDOW for any of them — no "within N days", no "before capture",
+    no restore period after a delete. Under the 0.12.0 rule a reversal path without a stated window
+    grades `documented` (0.4), not `verified`. No window is asserted here that Splio does not
+    publish.
+  surfaces:
+  - action: Subscribe a contact to lists
+    operation: POST /data/contacts/{id}/lists/subscribe
+    reversal: POST /data/contacts/{id}/lists/unsubscribe
+    window: not stated
+    docs: https://dev-scp.splio.com/reference/post_data-contacts-id-lists-unsubscribe
+  - action: Add touchpoints to a blacklist
+    operation: POST /data/blacklists/{channel}
+    reversal: DELETE /data/blacklists/{channel}/{source}
+    window: not stated
+    docs: https://dev-scp.splio.com/reference/delete_data-blacklists-channel-source
+  - action: Add contacts to a targeting group
+    operation: POST /target/groups/{id}/add
+    reversal: POST /target/groups/{id}/remove (or POST /target/groups/{id}/clear for all)
+    window: not stated
+    docs: https://dev-scp.splio.com/reference/post_target-groups-id-remove
+  - action: Launch a one-shot campaign
+    operation: POST /v1/one-shot (Campaign API)
+    reversal: POST /v1/one-shot/stop/{id}
+    window: >-
+      not stated — the stop endpoint exists but Splio does not document how long after launch it
+      remains effective, nor what happens to messages already handed to the MTA.
+    docs: https://dev-scp.splio.com/reference/post_campaign_api_stop
+  - action: Record an order
+    operation: POST /data/v1/orders
+    reversal: >-
+      no reversal operation. Splio's documented pattern is compensating data, not deletion or
+      reversal: "Refunds are registered like orders, they are not a distinct data entity" — you
+      create a NEW order with negative price and zero quantity. DELETE /data/orders/{id} exists but
+      is a data-hygiene delete, not a business reversal.
+    window: not stated
+    docs: https://dev-scp.splio.com/docs/how-to-manage-refunds
+  irreversible:
+  - operation: POST /messages (Messaging API)
+    note: Email is sent. There is no recall, cancel or unsend operation.
+  - operation: POST /loyalty/v1/reward-attributions/{id}/burn
+    note: >-
+      Burning a granted reward consumes it. No un-burn, void or restore operation is published;
+      re-granting is a new grant, not a reversal.
+  - operation: POST /loyalty/v1/members/{card_code}/credit
+    note: >-
+      No debit or clawback endpoint exists. Points can be credited through the API but only removed
+      through the application or through program rules.
+  - operation: POST /data/contacts/optout
+    note: Opting contacts out of all lists has no bulk re-optin counterpart; each list must be re-subscribed individually.
+  - operation: DELETE /data/contacts/{id} and DELETE /data/contacts/bulk
+    note: >-
+      No restore, undelete or soft-delete retention period is documented. The bulk form is
+      asynchronous, so the caller cannot even observe the point of no return.
+
+cross_references:
+  errors: errors/splio-problem-types.yml
+  lifecycle: lifecycle/splio-lifecycle.yml
+  authentication: authentication/splio-authentication.yml
+  rate_limits: rate-limits/splio-rate-limits.yml
+  data_model: data-model/splio-data-model.yml

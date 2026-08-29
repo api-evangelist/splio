@@ -1,0 +1,94 @@
+generated: '2026-08-29'
+method: searched
+source: https://dev-scp.splio.com/reference/rate-limiting
+docs: https://dev-scp.splio.com/reference/rate-limiting
+limit_count: 4
+scope_basis: client IP address
+scope_note: >-
+  Splio rate-limits on the API client's IP address, NOT on the API key or the universe. Two
+  integrations behind one NAT egress share a bucket; conversely, spreading calls across egress IPs
+  multiplies the effective allowance. This is stated verbatim in the reference:
+  "The Splio's API Rate Limiting is based on the API Client's IP Address".
+status_on_exhaustion: 429
+body_on_exhaustion: '{ "message": "API rate limit exceeded" }'
+provider_warning: >-
+  "It''s important your API client takes into account the 429 status code and the rate limit headers
+  to implement a retry mechanism depending on the values returned. Otherwise you may experience data
+  loss." — verbatim from the reference.
+headers:
+- name: rateLimit-limit
+  meaning: allowed limit for the window
+  example: '6'
+- name: rateLimit-remaining
+  meaning: number of requests still available
+  example: '4'
+- name: rateLimit-reset
+  meaning: seconds remaining until the quota resets
+  example: '47'
+- name: x-rateLimit-limit-minute
+  meaning: per-minute limit
+  example: '10'
+- name: x-rateLimit-remaining-minute
+  meaning: per-minute allowance still available
+  example: '9'
+header_note: >-
+  The names are non-standard in casing (`rateLimit-limit` rather than the RFC-draft `RateLimit-Limit`
+  or the conventional `X-RateLimit-Limit`). HTTP header names are case-insensitive so this is
+  cosmetic, but a client matching literally will miss them. There is no Retry-After header — a
+  client must compute the wait from rateLimit-reset.
+rate_limits:
+- scope: per-endpoint
+  category: Contact
+  endpoint: data/contacts
+  limit: 20
+  unit: requests
+  window: 1s
+  burst: null
+- scope: per-endpoint
+  category: Sales Data
+  endpoint: data/v{x}/orders, data/v{x}/products, data/v{x}/stores
+  limit: 20
+  unit: requests
+  window: 1s
+  burst: null
+- scope: per-endpoint
+  category: Messaging API
+  endpoint: messaging/v1/{universe_id}/messages
+  limit: 8
+  unit: requests
+  window: 1s
+  burst: null
+- scope: default
+  category: All other endpoints
+  endpoint: '*'
+  limit: 10
+  unit: requests
+  window: 1s
+  burst: null
+quotas:
+  batch_ceilings:
+  - operation: POST /data/contacts/bulk
+    max: 1000
+    unit: contacts per call
+  - operation: DELETE /data/contacts/bulk
+    max: 1000
+    unit: contacts per call
+  - operation: POST /data/contacts/optout
+    max: 1000
+    unit: contacts per call
+  - operation: POST /target/groups
+    max: 10000
+    unit: keys per call
+    note: 'Splio''s guidance: "To add more contacts, you should use endpoint group/{id}/add as many
+      times as necessary."'
+  consumption_metering:
+    operation: GET /universes/consumption
+    note: >-
+      Returns email and SMS consumption for the trailing year. This is contractual volume, separate
+      from HTTP rate limiting — exceeding it is a commercial event, not a 429.
+gaps:
+- No Retry-After header on 429.
+- >-
+  429 is not declared as a response on a single operation in any of the six specs, so a generated
+  client will not model it.
+- Per-minute limits are signalled by headers but the minute allowance per endpoint is not published.

@@ -1,0 +1,253 @@
+# Splio Customer Platform Documentation
+
+> Documentation for Splio Customer Platform
+
+Append .md to any documentation page URL to get its markdown version.
+
+## Guides
+- [How Splio Customer Platform works?](https://dev-scp.splio.com/docs/how-splio-customer-platform-works.md)
+- [Splio Customer Platform - Main Concepts](https://dev-scp.splio.com/docs/main-concepts.md)
+- [Activation steps](https://dev-scp.splio.com/docs/activation-steps.md)
+- [Tenant management](https://dev-scp.splio.com/docs/domain-and-business-unit-management.md): How are handled projects with several countries, languages, and currencies in Splio CDP.
+- [Single Sign-On (SSO)](https://dev-scp.splio.com/docs/authentication.md): Enable your users to authenticate quickly and easily.
+- [Integration Guidelines](https://dev-scp.splio.com/docs/integration-guidelines.md)
+- [Executive Summary - Integration patterns for multi-source setup](https://dev-scp.splio.com/docs/executive-summary-architectural-integration-patterns.md)
+- [How to choose your contact unique key?](https://dev-scp.splio.com/docs/how-to-choose-your-contact-unique-key.md)
+- [Managing order refunds](https://dev-scp.splio.com/docs/how-to-manage-refunds.md): In the context of data management, this article details how to properly integrate and identify order refunds.
+- [Multi-currency setup](https://dev-scp.splio.com/docs/multi-currency-setup.md)
+- [Internationalisation - Product catalog](https://dev-scp.splio.com/docs/internationalisation-product-catalog.md)
+- [Authentication](https://dev-scp.splio.com/docs/authentication-1.md)
+- [Storage value for lists subscriptions](https://dev-scp.splio.com/docs/storage-value-for-lists-subscriptions.md)
+- [Datahub - Automatic imports](https://dev-scp.splio.com/docs/datahub.md)
+- [Tutorial](https://dev-scp.splio.com/docs/datahub-tutorial.md)
+- [Configuration file](https://dev-scp.splio.com/docs/datahub-configuration-file.md)
+- [Contacts](https://dev-scp.splio.com/docs/datahub-contacts.md)
+- [Products](https://dev-scp.splio.com/docs/datahub-products.md)
+- [Stores](https://dev-scp.splio.com/docs/datahub-stores.md)
+- [Orders](https://dev-scp.splio.com/docs/datahub-orders.md)
+- [Order items](https://dev-scp.splio.com/docs/datahub-order-items.md)
+- [Abandoned carts](https://dev-scp.splio.com/docs/datahub-abandoned-carts.md)
+- [Events](https://dev-scp.splio.com/docs/datahub-events.md)
+- [Deletion](https://dev-scp.splio.com/docs/datahub-deletion.md)
+- [Splio Connectors](https://dev-scp.splio.com/docs/connectors.md)
+- [Splio Shopify Connector](https://dev-scp.splio.com/docs/shopify.md)
+- [Shopify - Standard vs Advanced setup](https://dev-scp.splio.com/docs/shopify-standard-vs-advanced-setup.md)
+- [Shopify - Integration Checklist For Developers](https://dev-scp.splio.com/docs/integration-checklist.md)
+- [Shopify - Default Data Mapping](https://dev-scp.splio.com/docs/shopify-data-mapping.md)
+- [Shopify - Connector Setup](https://dev-scp.splio.com/docs/shopify-setup.md)
+- [Shopify - Multi Stores Setup](https://dev-scp.splio.com/docs/multi-shopify-stores-setup.md)
+- [Shopify - Advanced Data Mapping](https://dev-scp.splio.com/docs/shopify-advanced-data-mapping.md)
+- [Shopify - Data initialization](https://dev-scp.splio.com/docs/shopify-data-initialization.md)
+- [Shopify Integration - FAQ](https://dev-scp.splio.com/docs/shopify-integration-faq.md)
+- [Shopify Checkout Extension for Splio Rewards](https://dev-scp.splio.com/docs/shopify-checkout-extension-for-splio-rewards.md)
+- [Splio Magento 2 connector by Home-made.io](https://dev-scp.splio.com/docs/magento.md)
+- [Splio Prestashop module by Ether Creation](https://dev-scp.splio.com/docs/prestashop.md)
+- [Splio Meta Ads connector](https://dev-scp.splio.com/docs/meta.md)
+- [Splio Meta Ads connector](https://dev-scp.splio.com/docs/meta-ads.md)
+- [Meta Ads - CDP & Predictive AI](https://dev-scp.splio.com/docs/meta-ads-cdp-predictive-ai.md): For Marketing Automation without CDP, see [this page](meta-ads-marketing-automation) instead
+- [Meta Ads - Marketing Automation](https://dev-scp.splio.com/docs/meta-ads-marketing-automation.md): With CDP or Predictive AI Licence, see [this page](meta-ads-cdp-predictive-ai) instead
+- [Splio Google Ads connector](https://dev-scp.splio.com/docs/google-ads.md)
+- [Splio Snapchat Ads connector](https://dev-scp.splio.com/docs/splio-snapchat-ads-connectors.md)
+- [Splio TikTok Ads connector](https://dev-scp.splio.com/docs/splio-tik-tok-connector.md)
+- [Splio Criteo connector](https://dev-scp.splio.com/docs/criteo.md)
+- [Splio Zendesk Support connector](https://dev-scp.splio.com/docs/zendesk.md)
+- [Google Cloud Storage](https://dev-scp.splio.com/docs/google-cloud-storage.md)
+- [Splio BI Connector](https://dev-scp.splio.com/docs/business-intelligence.md)
+- [Splio Batch Connector](https://dev-scp.splio.com/docs/batch.md)
+- [Splio Wisepops Connector](https://dev-scp.splio.com/docs/splio-wisepop-connectors.md)
+- [Make (Integromat) integration with Splio](https://dev-scp.splio.com/docs/make-integration-with-splio.md)
+- [Splio WAX Connector](https://dev-scp.splio.com/docs/splio-wax-connector.md): Trigger personalized WhatsApp messages from your Splio Automations through our integration with WAX.
+- [Splio Simio Connector](https://dev-scp.splio.com/docs/splio-simio-connector.md): Trigger personalized WhatsApp messages from your Splio Automations through our integration with Simio.
+- [Splio Webhook Connector - Web Push & Push App](https://dev-scp.splio.com/docs/splio-webhook.md)
+- [Splio OneSignal Connector](https://dev-scp.splio.com/docs/splio-onesignal-connector.md): Trigger personalized Push notification messages from your Splio Campaigns through our integration with OneSignal.
+- [Splio Limpidius Connector](https://dev-scp.splio.com/docs/limpidius.md): Bidirectional connector between e-receipts of your customers and their Loyalty Cards in the Mobile Wallets apps.
+- [Splio VTAP Connector](https://dev-scp.splio.com/docs/splio-vtap-nfc-connector.md): Connect your VTAP NFC readers to Splio to capture customers interactions and enhance their in-store / in-venue experiences via Mobile Wallets NFC Passes.
+- [Splio Airship Connector](https://dev-scp.splio.com/docs/splio-airship-connector.md)
+- [Salesforce Marketing Cloud - Email data logs](https://dev-scp.splio.com/docs/salesforce-marketing-cloud-email-data-logs.md)
+- [Salesforce Marketing Cloud - Audiences](https://dev-scp.splio.com/docs/salesforce-marketing-cloud-audiences.md)
+- [Web Tracking](https://dev-scp.splio.com/docs/web-tracking.md)
+- [Supported data model](https://dev-scp.splio.com/docs/supported-data-model.md)
+- [Google Tag Manager (GTM) Integration Guide](https://dev-scp.splio.com/docs/google-tag-manager-gtm-integration-guide.md)
+- [Tracker settings](https://dev-scp.splio.com/docs/gtm-tracker-settings.md)
+- [Data Layer & Variables](https://dev-scp.splio.com/docs/gtm-datalayer-and-variables.md)
+- [Tags - Page View Events](https://dev-scp.splio.com/docs/gtm-tags-page-view-events.md)
+- [Tags - Cart Events](https://dev-scp.splio.com/docs/gtm-tags-cart-events.md)
+- [Triggers](https://dev-scp.splio.com/docs/gtm-tags-triggers.md)
+- [Alternatives to GTM](https://dev-scp.splio.com/docs/custom-integration.md)
+- [Javascript Snowplow Libraries](https://dev-scp.splio.com/docs/custom-integration-guide.md)
+- [Direct HTTP Integration](https://dev-scp.splio.com/docs/custom-integration-other.md)
+- [Consent and cookie management](https://dev-scp.splio.com/docs/consent-and-cookie-management.md)
+- [Shopify - Custom Web Pixel Example](https://dev-scp.splio.com/docs/shopify-custom-web-pixel-example.md)
+- [Abandoned Cart Detection and Recovery](https://dev-scp.splio.com/docs/abandoned-cart-detection-and-recovery.md)
+- [Anonymous Navigation Reconciliation](https://dev-scp.splio.com/docs/anonymous-navigation-reconciliation.md)
+- [Sales tracker](https://dev-scp.splio.com/docs/sales-tracker.md)
+- [Importing data with IR add-on or Predictive AI](https://dev-scp.splio.com/docs/importing-data-into-splio-cdp-with-ir.md): This documentation only applies if you are using Predictive AI in standalone mode (previously Tinyclues) or if you have subscribed to the IR add-on (Identity Resolution).
+- [Data import methods](https://dev-scp.splio.com/docs/data-import-methods.md): This documentation only applies if you are using Predictive AI in standalone mode (previously Tinyclues) or if you have subscribed to the IR add-on (Identity Resolution).
+- [Data Architecture](https://dev-scp.splio.com/docs/data-architecture.md): This documentation only applies if you are using Predictive AI in standalone mode (previously Tinyclues) or if you have subscribed to the IR add-on (Identity Resolution).
+- [Deleting inactive users data](https://dev-scp.splio.com/docs/deleting-inactive-users-data.md): This documentation only applies if you are using Predictive AI in standalone mode (previously Tinyclues) or if you have subscribed to the IR add-on (Identity Resolution).
+- [Deleting users](https://dev-scp.splio.com/docs/deleting-users.md): This documentation only applies if you are using Predictive AI in standalone mode (previously Tinyclues) or if you have subscribed to the IR add-on (Identity Resolution).
+- [Data requirements for Commerce](https://dev-scp.splio.com/docs/data-requirements-for-commerce.md)
+- [User dimension (mandatory)](https://dev-scp.splio.com/docs/user-dimension-mandatory.md)
+- [Store dimension (mandatory)](https://dev-scp.splio.com/docs/store-dimension-mandatory.md)
+- [Purchase event (mandatory)](https://dev-scp.splio.com/docs/purchase-event-mandatory.md)
+- [Refund event (optional)](https://dev-scp.splio.com/docs/refund-event-optional.md)
+- [Cart event (optional)](https://dev-scp.splio.com/docs/cart-event-optional.md)
+- [Custom dimension (optional)](https://dev-scp.splio.com/docs/custom-dimension-optional.md)
+- [Custom event (optional)](https://dev-scp.splio.com/docs/custom-event-optional.md)
+- [Splio Edition 2025](https://dev-scp.splio.com/docs/splio-edition-2025.md)
+- [Messaging-API Payload and Design for Complex Transactional Use](https://dev-scp.splio.com/docs/documentation-splio-messaging-api-payload-and-design-for-complex-transactional-use.md): This documentation provides a comprehensive guide to designing and structuring payloads for the Messaging API in complex transactional scenarios. It emphasizes the key differences between using internal contacts and external recipients, demonstrates how to add data for internal recipients, explains the use of loops (arrays) in both payload and design, and details how the syntax changes depending on whether data is sourced from the database or directly from the payload.
+- [Migrate from Trigger API to Messaging-API](https://dev-scp.splio.com/docs/migrate-from-trigger-api-to-the-new-messaging-api.md): This guide helps you transition from the legacy Trigger API to the modern Messaging-API (Splio Edition 2025).
+- [Migrate from Launch-API to  Content & Campaign APIs on SE2025](https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025.md): This guide will help you migrate from the legacy **Launch API** to the modern **Content & Campaign APIs** (Splio Edition 2025).
+- [Use Trigger API on SE2025](https://dev-scp.splio.com/docs/using-trigger-api-on-se2025.md): This guide explains how to continue using the legacy Trigger API after your universe has been migrated to Splio Edition 2025 (SE 2025).
+- [Variables mapping: legacy to new Liquid syntax](https://dev-scp.splio.com/docs/variables-mapping-legacy-to-new-liquid-syntax.md)
+- [Using Liquid filters](https://dev-scp.splio.com/docs/using-filters-in-liquid.md): :information_source: In the context of the Liquid templating language, filters are functions that transform the presentation of data—they don’t help you filter it.
+- [Mirror and unsubscription links](https://dev-scp.splio.com/docs/mirror-and-unsubscription-links.md)
+- [List products](https://dev-scp.splio.com/docs/list-products.md): All the different possibilites to display a list of products in your email designs with the Liquid syntax !
+- [List stores](https://dev-scp.splio.com/docs/list-stores.md): All the different possibilites to display a list of stores in your email designs with the Liquid syntax !
+- [Post-purchase or abandonned cart loop](https://dev-scp.splio.com/docs/post-purchase-abandonned-cart-loop.md)
+- [Use product recommandation variables](https://dev-scp.splio.com/docs/use-product-recommandation-variables.md)
+- [Modify the display of a personalisation loop](https://dev-scp.splio.com/docs/modify-the-display-of-a-personalisation-loop.md)
+- [Recommended products loop from a custom field in products table](https://dev-scp.splio.com/docs/loop-of-recommended-products-from-a-custom-field-in-products-table.md)
+- [Add store personalisation](https://dev-scp.splio.com/docs/add-store-personalisation.md)
+- [Mobile Wallets](https://dev-scp.splio.com/docs/mobile-wallet.md)
+- [Include automatically calculated variables](https://dev-scp.splio.com/docs/intégrer-des-variables-calculées-automatiquement.md)
+- [List rewards](https://dev-scp.splio.com/docs/list-rewards.md): List of all the variables available in Liquid to display information about the loyalty rewards.
+- [Display member information](https://dev-scp.splio.com/docs/display-member-information.md): List of all the variables available in Liquid to display information about the loyalty member associated to a contact.
+- [Display member's points](https://dev-scp.splio.com/docs/display-members-points.md): List of all the variables available in Liquid to display information about the points owned by a loyalty member.
+- [Customise your UTM variables](https://dev-scp.splio.com/docs/automatically-customise-your-utm-variables.md)
+- [Display dates](https://dev-scp.splio.com/docs/afficher-des-dates.md)
+- [Use conditional block and format content](https://dev-scp.splio.com/docs/use-conditions-and-reformat-content.md)
+- [Adapt the message according to contact's gender](https://dev-scp.splio.com/docs/adapter-le-message-en-fonction-du-genre-du-contact.md)
+- [Adapt the message according to the contact's language](https://dev-scp.splio.com/docs/adapter-le-message-en-fonction-de-la-langue-du-contact.md)
+- [Splio Legacy Communication API](https://dev-scp.splio.com/docs/splio-legacy-email-api-documentation.md)
+- [Messaging features summary](https://dev-scp.splio.com/docs/messaging-features-summary.md)
+- [Trigger API](https://dev-scp.splio.com/docs/trigger-api.md)
+- [Launch API](https://dev-scp.splio.com/docs/launch-api.md)
+- [Trigger API SMS](https://dev-scp.splio.com/docs/trigger-api-sms.md)
+- [SMTP Relay setup](https://dev-scp.splio.com/docs/smtp-relay-set-up.md)
+- [SMS Relay](https://dev-scp.splio.com/docs/sms-relay.md)
+- [Extracting SMTP replies](https://dev-scp.splio.com/docs/extracting-smtp-replies.md)
+- [Understanding Splio Loyalty](https://dev-scp.splio.com/docs/generic-concepts.md)
+- [Integration concepts](https://dev-scp.splio.com/docs/integration-concepts.md)
+- [How to get Loyalty data from Splio?](https://dev-scp.splio.com/docs/how-to-get-loyalty-data-from-splio.md)
+- [Loyalty Integration Guidelines](https://dev-scp.splio.com/docs/loyalty-integration-guidelines.md)
+- [Shopify integration guidelines](https://dev-scp.splio.com/docs/shopify-integration-guidelines.md)
+- [Loyalty API endpoints specifics](https://dev-scp.splio.com/docs/loyalty-api-endpoints-specifics.md)
+- [FAQ](https://dev-scp.splio.com/docs/faq-2.md)
+- [Orders for Loyalty](https://dev-scp.splio.com/docs/orders-for-loyalty.md)
+- [Loyalty subscriptions and tier change](https://dev-scp.splio.com/docs/datahub-loyalty-subscriptions-and-tier-change.md)
+- [Credit loyalty points](https://dev-scp.splio.com/docs/datahub-credit-loyalty-points.md)
+- [Loyalty rewards](https://dev-scp.splio.com/docs/datahub-loyalty-rewards.md)
+- [Get Started with the Loyalty Web Kit](https://dev-scp.splio.com/docs/getting-started-loyalty-sdk.md)
+- [User flow recommendation](https://dev-scp.splio.com/docs/user-flow-recommandations.md)
+- [Using Vanilla JavaScript](https://dev-scp.splio.com/docs/generic-e-commerce-1.md)
+- [init](https://dev-scp.splio.com/docs/init.md): The first step to initialize the Loyalty SDK
+- [Integrate to your Shopify](https://dev-scp.splio.com/docs/integrate-to-your-shopify.md)
+- [Shopify extension Splio: Marketing Automation](https://dev-scp.splio.com/docs/splio-loyalty-web-kit-shopify-integration-guide.md)
+- [Migrating to new Shopify customer accounts](https://dev-scp.splio.com/docs/migrating-to-new-shopify-customer-accounts.md)
+- [Integrate to your Prestashop](https://dev-scp.splio.com/docs/integrate-to-your-prestashop.md)
+- [Customizing Loyalty Web Kit with CSS](https://dev-scp.splio.com/docs/customizing-the-loyalty-web-kit-with-css.md)
+- [Integrating Splio Forms](https://dev-scp.splio.com/docs/integrating-splio-forms.md)
+
+## API Reference
+- [Authentication](https://dev-scp.splio.com/reference/post_authenticate.md): Get a valid JSON Web Token. This token, prefixed by 'Bearer ', can be used to call other endpoints for 24 hours.
+- [Ping](https://dev-scp.splio.com/reference/get_ping.md): Test that the API is responding to your requests.
+- [Get the universe's consumption](https://dev-scp.splio.com/reference/get_universes-consumption.md): Get the current universe email and sms consumption statistics for the last year.
+- [Get the universe's unique key](https://dev-scp.splio.com/reference/get_universes-unique-key.md): Get the current universe unique key for contacts. It can be either the email, the cellphone or a custom field.
+- [Create a custom field](https://dev-scp.splio.com/reference/post_data-fields.md): Create a custom field.
+- [Delete a custom field](https://dev-scp.splio.com/reference/delete_data-fields-scope-id.md): Delete a custom field.
+- [Get contact's fields](https://dev-scp.splio.com/reference/get_data-fields-contacts.md): Get contact's fields.
+- [List order's fields](https://dev-scp.splio.com/reference/get_data-fields-orders.md): Get the list of order's fields.
+- [List ordered product's fields](https://dev-scp.splio.com/reference/get_data-fields-order-lines.md): Get the list of ordered product's fields.
+- [List product's fields](https://dev-scp.splio.com/reference/get_data-fields-products.md): Get the list of product's fields.
+- [List reward's fields](https://dev-scp.splio.com/reference/get_data-fields-rewards.md): Get the list of reward's fields.
+- [List loyalty member's fields](https://dev-scp.splio.com/reference/get_data-fields-members.md): Get the list of loyalty member's fields.
+- [List store's fields](https://dev-scp.splio.com/reference/get_data-fields-stores.md): Get the list of store's fields.
+- [List recipients of a forward campaign](https://dev-scp.splio.com/reference/get_reports-smtprelay-action-id-recipients.md): List recipients of a campaign.
+- [Get blacklisted cellphones](https://dev-scp.splio.com/reference/get_data-blacklists-cellphones.md): Get blacklisted cellphones.
+- [Add touchpoint(s) in a custom blacklist](https://dev-scp.splio.com/reference/post_data-blacklists-channel.md): Add touchpoint(s) in a custom blacklist.
+- [Delete touchpoint(s) from blacklist](https://dev-scp.splio.com/reference/delete_data-blacklists-channel-source.md): Delete touchpoint(s) from blacklist.
+- [Get blacklisted emails](https://dev-scp.splio.com/reference/get_data-blacklists-emails.md): Get blacklisted emails.
+- [List & search contacts](https://dev-scp.splio.com/reference/get_data-contacts.md): Get the list of contacts and search for contacts
+- [Create a contact](https://dev-scp.splio.com/reference/post_data-contacts.md): Create a contact.
+- [Create bulk of contacts](https://dev-scp.splio.com/reference/post_data-contacts-bulk.md): Create bulk of contacts (max 1000).
+- [Delete bulk of contacts](https://dev-scp.splio.com/reference/delete_data-contacts-bulk.md): Asynchronous delete bulk of contacts (max 1000).
+- [Get a contact's activities](https://dev-scp.splio.com/reference/get_data-contacts-id-activities.md): Get a contact activities based on its unique_key.
+- [Optout contacts](https://dev-scp.splio.com/reference/post_data-contacts-optout.md): Optout contacts from all the lists (max 1000).
+- [List membership lists](https://dev-scp.splio.com/reference/get_data-v1-lists.md): Get the list of lists.
+- [Subscribe a contact to list(s)](https://dev-scp.splio.com/reference/post_data-contacts-id-lists-subscribe.md): Subscribe a contact to one or more lists.
+- [Unsubscribe a contact to list(s)](https://dev-scp.splio.com/reference/post_data-contacts-id-lists-unsubscribe.md): Unsubscribe a contact from one or more lists.
+- [Get a contact's abandoned carts](https://dev-scp.splio.com/reference/get_data-contacts-id-orders-abandoned.md): Get a contact's abandoned carts formatted as a list.
+- [Get a contact's orders](https://dev-scp.splio.com/reference/get_data-contacts-id-orders.md): Get a contact's orders formatted as a list.
+- [Get a contact's products](https://dev-scp.splio.com/reference/get_data-contacts-id-products.md): Get a contact's products formatted as a list.
+- [Get a contact's stores](https://dev-scp.splio.com/reference/get_data-contacts-id-stores.md): Get a contact's stores formatted as a list.
+- [Get a contact](https://dev-scp.splio.com/reference/get_data-contacts-individual-id.md): Get a contact.
+- [Edit a contact](https://dev-scp.splio.com/reference/patch_data-contacts-individual-id.md): Edit a contact.
+- [Delete a contact](https://dev-scp.splio.com/reference/delete_data-contacts-id.md): Delete a contact.
+- [Get coupon categories with stats](https://dev-scp.splio.com/reference/get_data-coupons-categories.md): Get coupon categories with stats.
+- [List orders](https://dev-scp.splio.com/reference/get_data-v1-orders.md): Get the list of orders.
+- [Create an order/cart](https://dev-scp.splio.com/reference/post_data-v1-orders.md): Create an order or an abandoned cart.
+- [Delete an order/cart](https://dev-scp.splio.com/reference/delete_data-orders-id.md): Delete an order or an abandoned cart.
+- [Get an order/cart](https://dev-scp.splio.com/reference/get_data-v1-orders-id.md): Get a order or an abandoned cart data based on its external_id.
+- [Get an order/cart with its status](https://dev-scp.splio.com/reference/get_data-v2-orders-id.md): Get a order or an abandoned cart based on its external_id, and get the status associated to the order as well.
+- [Edit an order/cart](https://dev-scp.splio.com/reference/patch_data-v3-orders-id.md): Edit an entire order or an abandoned cart with its custom fields.
+- [List abandoned carts](https://dev-scp.splio.com/reference/get_data-v1-orders-abandoned.md): Get the list of abandoned carts.
+- [List orders with their status](https://dev-scp.splio.com/reference/get_data-v2-orders.md): Get the list of orders with their status.
+- [List products](https://dev-scp.splio.com/reference/get_data-v1-products.md): Get the list of products.
+- [Create a product](https://dev-scp.splio.com/reference/post_data-v1-products.md): Create a product.
+- [Delete a product](https://dev-scp.splio.com/reference/delete_data-products-id.md): Delete product.
+- [Get a product](https://dev-scp.splio.com/reference/get_data-v1-products-id.md): Get a product data.
+- [Edit a product](https://dev-scp.splio.com/reference/patch_data-v1-products-id.md): Edit a product.
+- [List stores](https://dev-scp.splio.com/reference/get_data-v1-stores.md): Get the list of stores.
+- [Create a store](https://dev-scp.splio.com/reference/post_data-v1-stores.md): Create a store.
+- [Delete a store](https://dev-scp.splio.com/reference/delete_data-stores-id.md): Delete store data.
+- [Get a store](https://dev-scp.splio.com/reference/get_data-v1-stores-id.md): Get a store data based on its ext_id.
+- [Edit a store](https://dev-scp.splio.com/reference/patch_data-v2-stores-id.md): Edit a store.
+- [Get filters](https://dev-scp.splio.com/reference/get_target-filters-scope.md): Get filters based on scope.
+- [Create a group](https://dev-scp.splio.com/reference/post_target-groups.md): Create a group with first 10 000 contacts, the payload can't get more than 10000 keys. To add more contacts, you should use endpoint group/{id}/add as many times as necessary.
+- [Add contacts to a group](https://dev-scp.splio.com/reference/post_target-groups-id-add.md): Add contacts to an existant group.
+- [Remove all contacts from a group](https://dev-scp.splio.com/reference/post_target-groups-id-clear.md): Remove all contacts from an existant group.
+- [Get groups](https://dev-scp.splio.com/reference/get_target-groups-list.md): Get groups
+- [Remove contacts from a group](https://dev-scp.splio.com/reference/post_target-groups-id-remove.md): Remove contacts from an existant group.
+- [Authentication](https://dev-scp.splio.com/reference/authentication-2.md)
+- [Rate Limiting](https://dev-scp.splio.com/reference/rate-limiting.md): Rate limiting is how many HTTP requests can be made in a given period of seconds or minutes to an API endpoint before being blocked.
+- [Response Conventions](https://dev-scp.splio.com/reference/response-conventions-1.md)
+- [How to use cursors lists parameters ?](https://dev-scp.splio.com/reference/loyalty-cursors-lists.md): Loyalty APIs are moving from pagination towards cursors. Here how it works.
+- [Create a member](https://dev-scp.splio.com/reference/post_loyalty-members.md): Add a new member to a loyalty program.
+- [List a member's rules completion](https://dev-scp.splio.com/reference/get_loyalty-members-card-code-rules.md): Get a contact rule completion status informations based on its card code.
+- [Get a member's point balance](https://dev-scp.splio.com/reference/get_loyalty-members-id-balance.md): Get a contact membership balance informations based on its card code.
+- [Expire a member](https://dev-scp.splio.com/reference/post_loyalty-members-card-code-optout.md): Expire a member from a program based on its card code.
+- [Get a member](https://dev-scp.splio.com/reference/get_loyalty-members-id.md): Get a contact membership informations based on its card code.
+- [Update a member](https://dev-scp.splio.com/reference/patch_loyalty-members-id.md): Update a membership.
+- [Update a member’s tier](https://dev-scp.splio.com/reference/post_loyalty-members-card-code-tier-change.md): Change the a loyalty member's tier based on its card code.
+- [Credit points](https://dev-scp.splio.com/reference/post_loyalty-v1-members-card-code-credit.md): Credit points to a loyalty member based on its card code.
+- [Point list by universe endpoint](https://dev-scp.splio.com/reference/get_loyalty-points.md): Point list by universe endpoint
+- [List a contact’s rewards (granted & used)](https://dev-scp.splio.com/reference/get_loyalty-v2-contacts-id-rewards.md): Get the list of a contact's reward (granted & used)
+- [Create a reward](https://dev-scp.splio.com/reference/post_loyalty-v1-rewards.md): Create a new reward that can be given to members.
+- [Get a reward](https://dev-scp.splio.com/reference/get_loyalty-v1-rewards-id.md): Get the data of a created reward.
+- [Update a reward](https://dev-scp.splio.com/reference/patch_loyalty-v1-rewards-id.md): Edit the data of an existing reward. All new granted rewards will inherit of the updated data.
+- [List granted rewards by reward ID](https://dev-scp.splio.com/reference/get_loyalty-v1-rewards-id-attributions.md): Get the list of all granted reward for a specific reward (using it's ID).
+- [List rewards](https://dev-scp.splio.com/reference/get_loyalty-v2-rewards.md): Get the list of created rewards.
+- [Get a member’s eligible rewards](https://dev-scp.splio.com/reference/post_loyalty-rewards-eligibility-card-code.md): Get the list of the available rewards depending on various parameters.
+- [Grant a reward](https://dev-scp.splio.com/reference/post_loyalty-v1-rewards-id-grant.md): Grant a reward to a member that he can use.
+- [Grant a list of reward](https://dev-scp.splio.com/reference/post_loyalty-v1-rewards-grant.md): Grant a list of reward
+- [Use a reward granted to a loyalty member.](https://dev-scp.splio.com/reference/post_loyalty-v1-reward-attributions-id-burn.md): Use a reward granted to a loyalty member.
+- [Use a list of granted rewards](https://dev-scp.splio.com/reference/post_loyalty-v1-rewards-burn.md): Use a list of granted rewards
+- [Get a granted reward](https://dev-scp.splio.com/reference/get_loyalty-reward-attributions-id.md): Get more information on a specific grant, can also be used to check if the granted reward exists
+- [List programs](https://dev-scp.splio.com/reference/get_loyalty-programs.md): Get programs formatted as a list.
+- [List a program’s members](https://dev-scp.splio.com/reference/get_loyalty-v1-programs-id-members.md): Get loyalty memberships of a program.
+- [Get a program](https://dev-scp.splio.com/reference/get_loyalty-programs-id.md): Get a loyalty program data.
+- [List program's tiers](https://dev-scp.splio.com/reference/get_loyalty-programs-id-tiers.md): Get program's tiers formatted as a list.
+- [Upload a reward’s codes](https://dev-scp.splio.com/reference/post_loyalty-rewards-id-instances-send.md): Add personalized codes to generate new instances of a reward. This is suitable for rewards that are not autogenerated and are limited.
+- [General](https://dev-scp.splio.com/reference/general-1.md)
+- [Send a message](https://dev-scp.splio.com/reference/post_messages.md): Send emails to recipients
+- [General](https://dev-scp.splio.com/reference/general-2.md)
+- [Get a campaign](https://dev-scp.splio.com/reference/get_campaign_api_campaign.md)
+- [Create a campaign](https://dev-scp.splio.com/reference/post_campaign_api_create.md)
+- [Stop a campaign](https://dev-scp.splio.com/reference/post_campaign_api_stop.md)
+- [Create email_design content from HTML or ZIP file](https://dev-scp.splio.com/reference/post_v1-create-email-design.md): Create email_design content from HTML or ZIP file and return the UUID of the created content.  **ZIP File Structure:** When uploading a ZIP file, it must follow this structure: ``` design.zip ├── index.html or mail.html         (required - main HTML file) └── images/             (optional - image assets folder)     ├── logo.png     ├── banner.jpg     └── icon.gif ```  **Supported image formats:** PNG, JPG, JPEG, AVIF, GIF, JFIF, WEBP, WOFF  **Requirements:** - ZIP file must contain `index.html` at the root level - All images should be placed in the `images/` folder or directly on the root level `./` - Image references in HTML should use relative paths: `images/filename.ext`
+
+## Recipes
+- [Loyalty Web Kit - Build your JWT server side](https://dev-scp.splio.com/recipes/loyalty-web-kit-build-your-jwt-server-side.md)
+- [Loyalty Web Kit - Initialization of the SDK](https://dev-scp.splio.com/recipes/loyalty-web-kit-initialization-of-the-sdk.md)
+- [Use Loyalty Web Kit methods to build UI component](https://dev-scp.splio.com/recipes/use-loyalty-web-kit-methods-to-build-ui-component.md)

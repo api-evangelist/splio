@@ -1,0 +1,133 @@
+generated: '2026-08-29'
+method: searched
+source: https://helpcenter.splio.com/kb/en/splio-product-updates-405810
+docs:
+- https://helpcenter.splio.com/kb/en/splio-product-updates-405810
+- https://helpcenter.splio.com/kb/en/splio-roadmap-446541
+scheme: dated product-update articles, month granularity, no version numbers
+current_version: Splio Edition 2025 (SE2025)
+cadence: roughly 2-5 articles per month, continuous since 2022
+feed: null
+developer_changelog: false
+placement_note: >-
+  The changelog lives in the marketing-facing Help Center, not in the developer hub. The ReadMe
+  docs site at dev-scp.splio.com returns 404 on /changelog even though ReadMe ships that feature.
+  There is no RSS/Atom feed and no per-API release notes, so an integrator has to read a
+  marketer's product-update stream to find out that an API changed. Entries are dated by month
+  only; none carries a version number, a semver tag or a breaking/non-breaking label.
+entries:
+- date: '2026-07'
+  title: Deploy your campaigns in all languages with one click
+  type: addition
+  api_affecting: false
+- date: '2026-07'
+  title: 'Email open-tracking pixels: consent strategy and actions to take'
+  type: change
+  api_affecting: false
+  note: Published in French only.
+- date: '2026-05'
+  title: Take full control of your loyalty rules with the discount amount condition
+  type: addition
+  api_affecting: true
+  note: Loyalty rule conditions surface through /loyalty/members/{card_code}/rules.
+- date: '2026-04'
+  title: 'Advanced Analytics & Dashboard Purchase patterns: Understand your customers'
+  type: addition
+  api_affecting: false
+- date: '2026-03'
+  title: 'Release of Productivity Boost: 5 improvements to produce and analyze faster'
+  type: addition
+  api_affecting: false
+- date: '2026-03'
+  title: 'Ask my CRM: Early access'
+  type: addition
+  api_affecting: false
+  note: Natural-language querying of the CRM; no public API surface published for it.
+- date: '2026-03'
+  title: 'Performance packs: General availability'
+  type: addition
+  api_affecting: false
+- date: '2026-03'
+  title: 'Control group: prove the real impact of your campaigns'
+  type: addition
+  api_affecting: false
+- date: '2026-02'
+  title: Manage multiple holding periods in your program
+  type: addition
+  api_affecting: true
+  note: Relates to the holding_days parameter on loyalty reward operations.
+- date: '2026-02'
+  title: 'One-shot with follow-ups: create follow-ups in just a few clicks'
+  type: addition
+  api_affecting: true
+  note: One-shot campaigns are the Campaign API's subject (POST /v1/one-shot).
+- date: '2026-01'
+  title: Leverage clicks on your SMS in Target and Automations
+  type: addition
+  api_affecting: true
+- date: '2025-12'
+  title: Create your loyalty Happy Hours and boost your traffic when you need it most
+  type: addition
+  api_affecting: false
+- date: '2025-10'
+  title: Customize your scenarios with the webhook condition
+  type: addition
+  api_affecting: false
+  note: Outbound webhook step inside campaign automations, not a subscribable event surface.
+- date: '2025-10'
+  title: Points attribution in campaigns
+  type: addition
+  api_affecting: true
+- date: '2025-10'
+  title: Confirm your contacts with Double Opt-in
+  type: addition
+  api_affecting: true
+- date: '2025-09'
+  title: 'Boost your strategy with SMS & RCS: 3 new products to discover!'
+  type: addition
+  api_affecting: false
+- date: '2025-08'
+  title: Keep your designs up to date easily and efficiently
+  type: addition
+  api_affecting: true
+  note: >-
+    Introduced design archive/unarchive, delete, JSON export/import and one-shot creation from a
+    design — the UI counterpart of the Content API's email_design object.
+- date: '2025-03'
+  title: Cancel specific campaigns currently being sent
+  type: addition
+  api_affecting: true
+  note: The UI counterpart of POST /v1/one-shot/stop/{id} in the Campaign API.
+- date: '2025-03'
+  title: Towards Omnichannel with webhooks
+  type: addition
+  api_affecting: false
+- date: '2024-10'
+  title: The new Messaging API
+  type: addition
+  breaking: true
+  api_affecting: true
+  docs: https://helpcenter.splio.com/kb/guide/en/changes-to-expect-with-the-messaging-api-J8dH3f5fbO/Steps/4289302
+  note: >-
+    The most consequential API entry in the stream. Introduced POST /messages
+    (api.splio.com/messaging/v1/{universe_id}) and DEPRECATED the Trigger API — Splio states
+    customers "must set up new feeds to the new messaging API" for personalisation, while the old
+    Trigger API stays reachable for design changes only. SMTP Relay is explicitly unaffected. No
+    sunset date was given.
+- date: '2024-01'
+  title: Data Retention Policy at Splio
+  type: change
+  api_affecting: true
+- date: '2024-01'
+  title: A new homepage for our developer portal!
+  type: change
+  api_affecting: false
+- date: '2023-11'
+  title: Discover the new version of the Loyalty Web Kit!
+  type: addition
+  api_affecting: true
+  note: The first-party JavaScript SDK served from static.splio.pro.
+breaking_changes_recent:
+- '2024-10: Trigger API deprecated in favour of the new Messaging API (no sunset date published).'
+- 'Splio Edition 2025: Launch API superseded by the decoupled Content API + Campaign API (no sunset
+  date published).'

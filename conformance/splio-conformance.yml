@@ -1,0 +1,183 @@
+generated: '2026-08-29'
+method: searched
+source: >-
+  https://splio.com/en/personal-data-protection-policy/, https://splio.com/en/legal-notices/,
+  https://splio.com/en/subprocessors-list/, https://splio.com/en/anti-spam-policy/,
+  https://splio.com/en/cookies-policy/,
+  https://helpcenter.splio.com/kb/guide/en/data-retention-policy-at-splio,
+  https://dev-scp.splio.com/reference/response-conventions-1,
+  https://dev-scp.splio.com/reference/rate-limiting — plus derived from the six specs in openapi/
+conformance:
+- id: openapi
+  conforms: true
+  evidence: >-
+    Six machine-readable definitions published and enumerated in an RFC 9727 api-catalog. Five are
+    OpenAPI 3.0.0 as served (openapi/*.json); the core Customer Platform document is additionally
+    served from the API host itself as Swagger 2.0 at https://api.splio.com/doc.json, archived as
+    openapi/_original/splio-doc-swagger2.json.
+- id: swagger-2.0
+  conforms: true
+  evidence: >-
+    openapi/_original/splio-doc-swagger2.json declares `"swagger": "2.0"`, host api.splio.com, 77 paths.
+- id: rfc9727-api-catalog
+  conforms: true
+  evidence: >-
+    https://dev-scp.splio.com/.well-known/api-catalog returns HTTP 200 with
+    Content-Type application/linkset+json and a linkset[] enumerating all six API definitions with
+    service-desc and service-doc links. Saved as well-known/splio-api-catalog.json.
+- id: rfc9457
+  conforms: false
+  evidence: >-
+    No operation in any spec declares application/problem+json. The published error contract at
+    https://dev-scp.splio.com/reference/response-conventions-1 is a bespoke
+    {status, errors[{error_key, error, error_description}]} envelope, with two further shapes for
+    401/405 (bare string) and 429 ({"message": ...}).
+- id: rfc6750-bearer
+  conforms: true
+  evidence: >-
+    'Authorization: Bearer <JWT>' on every operation across all six specs; token minted by
+    POST /authenticate and valid 24 hours.
+- id: rfc7519-jwt
+  conforms: true
+  evidence: >-
+    https://dev-scp.splio.com/reference/authentication-2 — 'Bearer xxxxxx.yyyyyyy.zzzzz', a
+    three-segment JWT. The Loyalty Web Kit additionally requires the integrator to mint a JWT
+    server-side (https://dev-scp.splio.com/recipes/loyalty-web-kit-build-your-jwt-server-side).
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No oauth2 securityScheme in any spec; /.well-known/oauth-authorization-server and
+    /.well-known/oauth-protected-resource return 404 on api.splio.com and dev-scp.splio.com.
+- id: oidc
+  conforms: false
+  evidence: >-
+    /.well-known/openid-configuration 404s on api.splio.com and dev-scp.splio.com (and 403s on
+    splio.com). SAML/SSO exists for human application logins
+    (https://dev-scp.splio.com/docs/authentication) but no OIDC discovery document is served.
+- id: idempotency
+  conforms: partial
+  evidence: >-
+    An `idempotency_key` request-BODY field on three operations only — POST /messages,
+    POST /loyalty/v1/members/{card_code}/credit, POST /loyalty/v1/rewards/{id}/grant. No
+    Idempotency-Key header anywhere; duplicates are refused rather than replayed. See
+    conventions/splio-conventions.yml.
+- id: pagination
+  conforms: true
+  evidence: >-
+    page_number/per_page across data endpoints; before/after/limit cursors on the Loyalty module,
+    with a documented migration from the former to the latter
+    (https://dev-scp.splio.com/reference/loyalty-cursors-lists).
+- id: rate-limit-headers
+  conforms: partial
+  evidence: >-
+    429 plus rateLimit-limit / rateLimit-remaining / rateLimit-reset and
+    x-rateLimit-limit-minute / x-rateLimit-remaining-minute
+    (https://dev-scp.splio.com/reference/rate-limiting). Not the IETF draft header casing, and no
+    Retry-After. Limited to `partial` because 429 is declared on zero operations in any spec.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: >-
+    /.well-known/security.txt returns 404 on api.splio.com and dev-scp.splio.com and 403 on
+    splio.com. No security.txt is served anywhere on the estate.
+- id: json:api
+  conforms: false
+  evidence: Bespoke JSON payloads; no application/vnd.api+json media type in any spec.
+- id: scim
+  conforms: false
+  evidence: No SCIM schema URN in any spec (grep for urn:ietf:params:scim returns zero hits).
+- id: odata
+  conforms: false
+  evidence: No $metadata surface and no OData query options in any spec.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No AsyncAPI document and no subscribable event surface. Splio's event traffic is inbound only
+    (Interactions API POST /events/, Datahub imports); its "webhook" feature is an outbound campaign
+    step that calls a third-party API you configure, not an event notification you can subscribe to.
+domain_standard:
+  applicable: false
+  market: customer marketing / CDP / loyalty (martech)
+  evidence: >-
+    No interoperability standard governs this market's contracts, and Splio declares none. The specs
+    were checked for every signature the 0.12.0 domain_standard_conformance check looks for — SCIM
+    URNs, OData $metadata, OpenRTB bid objects, Sparkplug topics, ActivityPub actors,
+    LTI/OneRoster/Ed-Fi/Caliper/QTI shapes, OAI-PMH verbs, ORCID/DataCite/Crossref identifiers,
+    HL7v2/X12/EDIFACT/ISO 20022 message types — and none is present. Splio's Mobile Wallets module
+    does emit Apple PassKit, Google Wallet and Samsung Wallet passes, which ARE domain formats, but
+    they are produced by the application and are not modelled anywhere in the published API
+    contracts, so there is nothing in the spec to point at. Reward-only check: recorded as not
+    applicable rather than failed.
+regulatory:
+  regimes:
+  - id: gdpr
+    conforms: true
+    evidence: >-
+      https://splio.com/en/personal-data-protection-policy/ — "in accordance with the Data
+      Protection Law and with the GDPR", citing Regulation (EU) 2016/679 and French Law no. 78-17
+      of 6 January 1978 as amended.
+  - id: eu-data-residency
+    conforms: true
+    evidence: >-
+      "The servers on which Splio processes and stores the Data are located exclusively in the
+      European Union. However, some Data may transit and be stored outside the European Union
+      through the use of certain Sub-Processors."
+  - id: dpo-appointed
+    conforms: true
+    evidence: >-
+      "Splio has nominated a Data Protection Officer which can be reached at: dpo@splio.com". Other
+      data requests go to privacy@splio.com.
+  - id: subprocessor-transparency
+    conforms: true
+    evidence: >-
+      A maintained, dated subprocessors list published in both English and French at
+      https://splio.com/en/subprocessors-list/.
+  - id: data-retention-policy
+    conforms: true
+    evidence: >-
+      Help Center product update, January 2024, titled "Data Retention Policy at Splio".
+  - id: anti-spam
+    conforms: true
+    evidence: >-
+      https://splio.com/en/anti-spam-policy/ plus an abuse-reporting route at
+      https://splio.com/en/report-an-abus/ — expected of an ESP, and separate from a security
+      vulnerability disclosure channel, which Splio does not publish.
+  - id: consent-management
+    conforms: true
+    evidence: >-
+      Double opt-in shipped October 2025; a contact preference centre shipped April 2025; the API
+      exposes list subscribe/unsubscribe, bulk optout and email/SMS blacklist management.
+certifications:
+  published: false
+  note: >-
+    Splio publishes NO third-party security certification of its own — no SOC 2, ISO 27001,
+    ISO 27701, HDS or PCI attestation appears on splio.com, in the privacy policy, in the legal
+    notices or in the Help Center, and there is no trust centre at trust.splio.com (NXDOMAIN). The
+    ISO 27001 / SOC 1 Type II / SOC 2 Type II certifications that surface in web searches for
+    "Splio" belong to the INFRASTRUCTURE SUBPROCESSORS named in Splio's own subprocessors PDF, not
+    to Splio. That distinction is recorded here deliberately so a reader does not inherit a
+    certification Splio has not claimed.
+compliance_program:
+  published: true
+  character: regulatory (GDPR/CNIL), not certification-based
+  documents:
+  - https://splio.com/en/personal-data-protection-policy/
+  - https://splio.com/en/subprocessors-list/
+  - https://splio.com/en/anti-spam-policy/
+  - https://splio.com/en/cookies-policy/
+  - https://splio.com/en/legal-notices/
+contract_quality_gaps:
+- >-
+  operationId is absent on every operation of the core Customer Platform spec (77 paths, ~86
+  operations). A generator has nothing to name methods from. The Campaign API v1 spec is worse: it
+  carries three operationIds and two of them are wrong — `get_new-endpoint` on a GET that is
+  actually "Get a campaign", and `get_v1one-shot` on a POST.
+- >-
+  tags are absent from every operation in the Messaging, Campaign, Campaign v1 and Content specs;
+  only the Customer Platform and Interactions specs tag their operations.
+- >-
+  429, 405, 502 and 503 are documented in the error reference but declared on zero operations in
+  any spec.
+- >-
+  Five sibling specs each declare the same bearer-JWT scheme under a different name (Bearer, Token,
+  Authorization, bearerAuth, BearerAuth), so a merged client sees five auth models where there is one.
+- No operation anywhere carries `deprecated: true`, including paths Splio's own guides call legacy.

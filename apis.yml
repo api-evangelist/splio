@@ -1,23 +1,269 @@
 aid: splio
 name: Splio
-description: 'Splio is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Splio is a Paris-headquartered customer marketing platform for retail, e-commerce, restaurant and
+  travel brands, combining a Customer Data Platform, omnichannel marketing automation (email, SMS,
+  WhatsApp, push), loyalty and rewards programs, mobile wallet cards and Tinyclues-derived predictive
+  AI targeting into one "Splio Customer Platform". Brands integrate it through a JWT-authenticated
+  REST API on api.splio.com covering contacts, custom fields, blacklists, orders, abandoned carts,
+  products, stores, targeting groups and filters, loyalty members, points, tiers, programs and reward
+  grant/burn, plus separate Messaging, Campaign, Content and Interactions APIs, a Datahub SFTP/CSV
+  import path, and packaged connectors for Shopify, Magento, PrestaShop, Meta/Google/TikTok/Snapchat
+  Ads, Criteo, Zendesk, OneSignal and Make.
 url: https://raw.githubusercontent.com/api-evangelist/splio/refs/heads/main/apis.yml
+image: https://splio.com/wp-content/uploads/2022/05/3250_Splio_Logo_RGB-2.png
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-29'
 modified: '2026-08-29'
 tags:
-- Company
-apis: []
+- Marketing Automation
+- Customer Data Platform
+- Loyalty
+- CRM
+- Email Marketing
+- SMS
+- Mobile Wallet
+- Retail
+- E-commerce
+- Predictive AI
+- Customer Engagement
+- France
+tags_raw:
+- marketing-automation
+- customer-data-platform
+- loyalty
+- crm
+- email-marketing
+- sms
+- mobile-wallet
+- retail
+- ecommerce
+- predictive-ai
+- customer-engagement
+- france
+apis:
+- name: Splio Customer Platform API
+  description: >-
+    The core JWT-authenticated REST API for the Splio Customer Platform: authenticate for a 24-hour
+    token, then manage contacts and their custom fields, membership lists, email/SMS blacklists,
+    orders, abandoned carts, products and stores, build targeting groups and filters, and drive the
+    loyalty engine — members, point balances, tiers, programs, and reward creation, grant and burn.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Marketing Automation
+  - Customer Data Platform
+  - Loyalty
+  - CRM
+  - Retail
+  tags_raw:
+  - marketing-automation
+  - customer-data-platform
+  - loyalty
+  - crm
+  - retail
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-customer-platform-openapi.json
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Overlay
+    url: overlays/splio-customer-platform-overlay.yaml
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+- name: Splio Messaging API
+  description: >-
+    Transactional and triggered messaging endpoint introduced with Splio Edition 2025. A single
+    POST /messages call sends email to one or more recipients from a universe-scoped base URL,
+    accepting an existing design or inline content plus Liquid personalisation variables.
+  humanURL: https://dev-scp.splio.com/reference/post_messages
+  baseURL: https://api.splio.com/messaging/v1/{universe_id}
+  tags:
+  - Email Marketing
+  - Marketing Automation
+  tags_raw:
+  - email-marketing
+  - marketing-automation
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-messaging-api-openapi.json
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Overlay
+    url: overlays/splio-messaging-api-overlay.yaml
+- name: Splio Campaign API
+  description: >-
+    Campaign execution API for Splio Edition 2025. Creates, reads and stops one-shot campaigns that
+    deliver a design previously produced with the Content API — the half of the decoupled workflow
+    that replaced the legacy Launch API.
+  humanURL: https://dev-scp.splio.com/reference/post_campaign_api_create
+  baseURL: https://api.splio.com/campaign-api
+  tags:
+  - Email Marketing
+  - Marketing Automation
+  tags_raw:
+  - email-marketing
+  - marketing-automation
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-campaign-api-v1-openapi.json
+  - type: OpenAPI
+    url: openapi/splio-campaign-api-openapi.json
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Overlay
+    url: overlays/splio-campaign-api-v1-overlay.yaml
+  - type: Overlay
+    url: overlays/splio-campaign-api-overlay.yaml
+- name: Splio Content API
+  description: >-
+    Content creation API for Splio Edition 2025. POST /v1/create-email-design uploads an HTML file or
+    a structured ZIP (index.html plus an images/ folder) and returns the email_design UUID that the
+    Campaign and Messaging APIs then reference.
+  humanURL: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  baseURL: https://api.splio.com/content
+  tags:
+  - Email Marketing
+  - Marketing Automation
+  tags_raw:
+  - email-marketing
+  - marketing-automation
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-content-api-openapi.json
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Overlay
+    url: overlays/splio-content-api-overlay.yaml
+- name: Splio Interactions API
+  description: >-
+    Event ingestion API for behavioural interactions. POST /events/ and POST /events/bulk push custom
+    customer events into the Splio Customer Platform so they can trigger automations and feed the CDP.
+  humanURL: https://dev-scp.splio.com/docs/datahub-events
+  baseURL: https://api.splio.com
+  tags:
+  - Customer Data Platform
+  - Customer Engagement
+  tags_raw:
+  - customer-data-platform
+  - customer-engagement
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-interactions-api-openapi.json
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+  - type: Overlay
+    url: overlays/splio-interactions-api-overlay.yaml
+- name: Splio Referral API
+  description: >-
+    Referral coupon API published as a public Postman collection. Checks and burns coupons for a
+    referrer or a newly referred prospect, authenticated by a SHA-256 hash of the coupon code
+    concatenated with a key issued by the Splio project manager.
+  humanURL: https://documenter.getpostman.com/view/10206569/TzRX9kyT
+  baseURL: https://api.splio.com
+  tags:
+  - Loyalty
+  - Customer Engagement
+  tags_raw:
+  - loyalty
+  - customer-engagement
+  properties:
+  - type: Postman
+    url: https://documenter.getpostman.com/view/10206569/TzRX9kyT
+  - type: Documentation
+    url: https://documenter.getpostman.com/view/10206569/TzRX9kyT
+common:
+- type: DomainSecurity
+  url: security/splio-domain-security.yml
+- type: Website
+  url: https://splio.com/en/
+- type: DeveloperPortal
+  url: https://dev-scp.splio.com/
+- type: Documentation
+  url: https://dev-scp.splio.com/docs
+- type: APIReference
+  url: https://dev-scp.splio.com/reference
+- type: GettingStarted
+  url: https://dev-scp.splio.com/docs/how-splio-customer-platform-works
+- type: Support
+  url: https://helpcenter.splio.com/kb/en
+- type: HelpCenter
+  url: https://helpcenter.splio.com/kb/en
+- type: Blog
+  url: https://splio.com/en/blog/
+- type: GitHubOrganization
+  url: https://github.com/Splio
+- type: Roadmap
+  url: https://helpcenter.splio.com/kb/en/splio-roadmap-446541
+- type: SignUp
+  url: https://splio.com/en/book-a-demo/
+- type: Login
+  url: https://www.sp-ring.com/
+- type: TermsOfService
+  url: https://splio.com/en/legal-notices/
+- type: PrivacyPolicy
+  url: https://splio.com/en/personal-data-protection-policy/
+- type: Postman
+  url: https://documenter.getpostman.com/view/10206569/TzRX9kyT
+- type: StatusPage
+  url: https://status.splio.com/
+- type: ChangeLog
+  url: https://helpcenter.splio.com/kb/en/splio-product-updates-405810
+- type: LLMsTxt
+  url: llms/splio-llms.txt
+- type: WellKnown
+  url: well-known/splio-well-known.yml
+- type: APICatalog
+  url: well-known/splio-api-catalog.json
+- type: Authentication
+  url: authentication/splio-authentication.yml
+- type: Conventions
+  url: conventions/splio-conventions.yml
+- type: Idempotency
+  url: conventions/splio-conventions.yml
+- type: Lifecycle
+  url: lifecycle/splio-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/splio-lifecycle.yml
+- type: Conformance
+  url: conformance/splio-conformance.yml
+- type: ErrorCatalog
+  url: errors/splio-problem-types.yml
+- type: DataModel
+  url: data-model/splio-data-model.yml
+- type: Packages
+  url: packages/splio-packages.yml
+- type: SDKs
+  url: packages/splio-packages.yml
+- type: Compliance
+  url: conformance/splio-conformance.yml
+- type: Components
+  url: components/splio-components.yml
+- type: RateLimits
+  url: rate-limits/splio-rate-limits.yml
+- type: Plans
+  url: plans/splio-plans-pricing.yml
+- type: ChangeLog
+  url: changelog/splio-changelog.yml
+- type: AgentSkill
+  url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
-common:
-- type: Website
-  url: https://forgeglobal.com/splio_stock/
+x-enrichment:
+  date: '2026-08-29'
+  status: enriched
+  artifacts_added: 34
+  pass: local-v1

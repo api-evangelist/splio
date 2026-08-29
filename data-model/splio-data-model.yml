@@ -1,0 +1,308 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  openapi/splio-customer-platform-openapi.json (77 paths), plus
+  openapi/splio-interactions-api-openapi.json and openapi/splio-messaging-api-openapi.json —
+  enriched from https://dev-scp.splio.com/docs/main-concepts,
+  https://dev-scp.splio.com/docs/how-to-choose-your-contact-unique-key and the Datahub entity guides
+docs:
+- https://dev-scp.splio.com/docs/main-concepts
+- https://dev-scp.splio.com/docs/how-to-choose-your-contact-unique-key
+- https://dev-scp.splio.com/docs/datahub
+derivation_note: >-
+  The core spec declares exactly ONE reusable component schema (CustomField). Every other request
+  and response body is inlined, so this graph could not be derived from $ref edges. It was derived
+  instead from the resource path hierarchy, the sub-resource paths hanging off /data/contacts/{id},
+  and the id-reference fields that appear in inlined bodies (card_code, external_id, contact_id,
+  store_id, product_id, program_id, reward_id, attribution_ids, list_ids, store_external_id). The
+  absence of shared schemas is itself the finding: nothing in the contract is reusable, so a
+  generated client gets 86 bespoke anonymous types.
+tenancy:
+  root: universe
+  note: >-
+    A universe is Splio's tenant boundary. Credentials, custom fields, blacklists, consumption
+    metering and every entity below are scoped to one universe. Multi-country/multi-language/
+    multi-currency projects are modelled as business units inside a tenant
+    (https://dev-scp.splio.com/docs/domain-and-business-unit-management).
+  operations:
+  - GET /universes/consumption
+  - GET /universes/unique-key
+identifier_strategy:
+  contact_unique_key:
+    configurable: true
+    options: [email, cellphone, custom field]
+    discovery: GET /universes/unique-key
+    note: >-
+      Splio does not impose a contact primary key. Each universe elects one — email, cellphone, or a
+      custom field — and an integrator MUST read GET /universes/unique-key before writing contacts,
+      because the same payload means different things under different keys. This is unusual and it
+      is the single most consequential fact in Splio's data model.
+    docs: https://dev-scp.splio.com/docs/how-to-choose-your-contact-unique-key
+  external_id:
+    scope: [order, product, store, abandoned cart]
+    note: Sales-data entities are addressed by the integrator's own external_id, not a Splio id.
+  card_code:
+    scope: [loyalty member]
+    note: Loyalty members are addressed by card code, not by contact id.
+entities:
+- name: Universe
+  description: The tenant. Owns credentials, custom-field definitions, blacklists and consumption.
+  operations: [GET /universes/consumption, GET /universes/unique-key]
+- name: Contact
+  description: The person. Root of the CDP graph.
+  identified_by: unique_key (email | cellphone | custom field, per universe)
+  operations:
+  - GET /data/contacts
+  - POST /data/contacts
+  - GET /data/contacts/{individual_id}
+  - PATCH /data/contacts/{individual_id}
+  - DELETE /data/contacts/{id}
+  - POST /data/contacts/bulk
+  - DELETE /data/contacts/bulk
+  - POST /data/contacts/optout
+  - GET /data/contacts/{id}/activities
+- name: List
+  description: A membership list a contact can be subscribed to or unsubscribed from.
+  operations:
+  - 'GET /data/v1/lists'
+  - 'POST /data/contacts/{id}/lists/subscribe'
+  - 'POST /data/contacts/{id}/lists/unsubscribe'
+- name: Blacklist
+  description: Per-channel suppression of an email address or cellphone.
+  operations:
+  - GET /data/blacklists/emails
+  - GET /data/blacklists/cellphones
+  - POST /data/blacklists/{channel}
+  - DELETE /data/blacklists/{channel}/{source}
+- name: CustomField
+  description: The only named component schema in the spec. Typed, scoped extension attribute.
+  scopes: [contacts, orders, order-lines, products, rewards, members, stores]
+  operations:
+  - 'POST /data/fields'
+  - 'DELETE /data/fields/{scope}/{id}'
+  - 'GET /data/fields/{scope}'
+- name: Order
+  description: A purchase, or — with status = abandoned — a cart. Refunds are negative orders, not a separate entity.
+  identified_by: external_id
+  operations:
+  - GET /data/v2/orders
+  - POST /data/v1/orders
+  - GET /data/v2/orders/{id}
+  - PATCH /data/v3/orders/{id}
+  - DELETE /data/orders/{id}
+  - GET /data/v1/orders/abandoned
+- name: OrderLine
+  description: A line item within an order. Has its own custom-field scope but no endpoints of its own.
+  operations: [GET /data/fields/order-lines]
+- name: Product
+  identified_by: external_id
+  operations:
+  - 'GET /data/v1/products'
+  - 'POST /data/v1/products'
+  - 'GET /data/v1/products/{id}'
+  - 'PATCH /data/v1/products/{id}'
+  - 'DELETE /data/products/{id}'
+- name: Store
+  description: A physical point of sale.
+  identified_by: ext_id
+  operations:
+  - 'GET /data/v1/stores'
+  - 'POST /data/v1/stores'
+  - 'GET /data/v1/stores/{id}'
+  - 'PATCH /data/v2/stores/{id}'
+  - 'DELETE /data/stores/{id}'
+- name: Group
+  description: A materialised set of contacts used as a campaign target.
+  operations:
+  - 'POST /target/groups'
+  - 'GET /target/groups/list'
+  - 'POST /target/groups/{id}/add'
+  - 'POST /target/groups/{id}/remove'
+  - 'POST /target/groups/{id}/clear'
+- name: Filter
+  description: A saved segmentation rule, scoped to contacts or orders.
+  operations:
+  - 'GET /target/filters/{scope}'
+- name: Program
+  description: A loyalty program. Owns tiers and members.
+  operations:
+  - 'GET /loyalty/programs'
+  - 'GET /loyalty/programs/{id}'
+  - 'GET /loyalty/programs/{id}/tiers'
+  - 'GET /loyalty/v1/programs/{id}/members'
+- name: Tier
+  description: A level within a program.
+  operations:
+  - 'GET /loyalty/programs/{id}/tiers'
+  - 'POST /loyalty/members/{card_code}/tier_change'
+- name: Member
+  description: A contact's membership of a program. The loyalty-side identity of a Contact.
+  identified_by: card_code
+  operations:
+  - POST /loyalty/members
+  - GET /loyalty/members/{id}
+  - PATCH /loyalty/members/{id}
+  - GET /loyalty/members/{id}/balance
+  - GET /loyalty/members/{card_code}/rules
+  - POST /loyalty/members/{card_code}/optout
+  - POST /loyalty/members/{card_code}/tier_change
+- name: Point
+  description: A loyalty point transaction (qualifying and non-qualifying).
+  operations:
+  - 'GET /loyalty/points'
+  - 'GET /loyalty/v2/contacts/{id}/points'
+  - 'POST /loyalty/v1/members/{card_code}/credit'
+- name: Reward
+  description: A reward definition that can be granted to members.
+  operations:
+  - 'POST /loyalty/v1/rewards'
+  - 'GET /loyalty/v2/rewards'
+  - 'GET /loyalty/v1/rewards/{id}'
+  - 'PATCH /loyalty/v1/rewards/{id}'
+  - 'POST /loyalty/rewards/{id}/instances/send'
+- name: RewardAttribution
+  description: An instance of a Reward granted to one Member. The thing that is actually burned.
+  operations:
+  - POST /loyalty/v1/rewards/{id}/grant
+  - POST /loyalty/v1/rewards/grant
+  - GET /loyalty/v1/rewards/{id}/attributions
+  - GET /loyalty/reward-attributions/{id}
+  - POST /loyalty/v1/reward-attributions/{id}/burn
+  - POST /loyalty/v1/rewards/burn
+  - GET /loyalty/v2/contacts/{id}/rewards
+- name: Coupon
+  description: Coupon categories with usage statistics. Also the subject of the separate Referral API.
+  operations: [GET /data/coupons/categories]
+- name: Interaction
+  description: A behavioural event pushed into the CDP.
+  spec: openapi/splio-interactions-api-openapi.json
+  operations: ['POST /events/', POST /events/bulk]
+- name: EmailDesign
+  description: A rendered email design, addressed by UUID, produced by the Content API and consumed by the Campaign and Messaging APIs.
+  spec: openapi/splio-content-api-openapi.json
+  operations: [POST /v1/create-email-design]
+- name: Campaign
+  description: A one-shot send of an EmailDesign to a target.
+  spec: openapi/splio-campaign-api-v1-openapi.json
+  operations:
+  - 'POST /v1/one-shot'
+  - 'GET /v1/one-shot/{id}'
+  - 'POST /v1/one-shot/stop/{id}'
+- name: Message
+  description: A transactional email send to explicit recipients.
+  spec: openapi/splio-messaging-api-openapi.json
+  operations: [POST /messages]
+relationships:
+- from: Universe
+  to: Contact
+  type: has_many
+  via: tenant scope
+- from: Universe
+  to: CustomField
+  type: has_many
+  via: scope
+- from: Contact
+  to: Order
+  type: has_many
+  via: contact_id
+  evidence: GET /data/contacts/{id}/orders
+- from: Contact
+  to: Order
+  type: has_many
+  via: contact_id (status = abandoned)
+  evidence: GET /data/contacts/{id}/orders/abandoned
+- from: Contact
+  to: Product
+  type: has_many
+  via: purchased-through Order
+  evidence: GET /data/contacts/{id}/products
+- from: Contact
+  to: Store
+  type: has_many
+  via: store_id
+  evidence: GET /data/contacts/{id}/stores
+- from: Contact
+  to: List
+  type: has_many
+  via: list_ids
+  evidence: POST /data/contacts/{id}/lists/subscribe
+- from: Contact
+  to: Member
+  type: has_one
+  via: card_code
+  evidence: POST /loyalty/members creates a membership for a contact
+- from: Contact
+  to: RewardAttribution
+  type: has_many
+  via: contact_id
+  evidence: GET /loyalty/v2/contacts/{id}/rewards
+- from: Contact
+  to: Point
+  type: has_many
+  via: contact_id
+  evidence: GET /loyalty/v2/contacts/{id}/points
+- from: Order
+  to: OrderLine
+  type: has_many
+  via: inline items array
+- from: Order
+  to: Product
+  type: has_many
+  via: product_id
+- from: Order
+  to: Store
+  type: belongs_to
+  via: store_external_id
+- from: Program
+  to: Tier
+  type: has_many
+  via: program_id
+  evidence: GET /loyalty/programs/{id}/tiers
+- from: Program
+  to: Member
+  type: has_many
+  via: id_program
+  evidence: GET /loyalty/v1/programs/{id}/members
+- from: Member
+  to: Tier
+  type: belongs_to
+  via: tier_name
+  evidence: POST /loyalty/members/{card_code}/tier_change
+- from: Member
+  to: Point
+  type: has_many
+  via: card_code
+  evidence: GET /loyalty/members/{id}/balance
+- from: Reward
+  to: RewardAttribution
+  type: has_many
+  via: reward_id
+  evidence: GET /loyalty/v1/rewards/{id}/attributions
+- from: Member
+  to: RewardAttribution
+  type: has_many
+  via: card_code
+  evidence: POST /loyalty/rewards/eligibility/{card_code}
+- from: Group
+  to: Contact
+  type: has_many
+  via: unique keys
+  evidence: POST /loyalty/../target/groups/{id}/add
+- from: EmailDesign
+  to: Campaign
+  type: has_many
+  via: email_design_id
+  evidence: https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+- from: EmailDesign
+  to: Message
+  type: has_many
+  via: email_design_id
+gaps:
+- >-
+  One reusable component schema in 77 paths. Contact, Order, Product, Store, Member and Reward — the
+  six entities the whole platform turns on — have no named schema, so every operation redefines
+  them inline and no client can share a type across calls.
+- >-
+  Identity is split three ways with no cross-reference operation: contacts by a per-universe
+  unique_key, sales data by the integrator's external_id, loyalty by card_code. Nothing in the API
+  resolves one to another; the integrator must maintain the mapping.

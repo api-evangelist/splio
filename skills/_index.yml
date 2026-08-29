@@ -1,0 +1,37 @@
+generated: '2026-08-29'
+method: generated
+source: >-
+  openapi/splio-customer-platform-openapi.json, openapi/splio-messaging-api-openapi.json,
+  openapi/splio-content-api-openapi.json, openapi/splio-campaign-api-v1-openapi.json,
+  openapi/splio-interactions-api-openapi.json, plus the Splio developer hub at
+  https://dev-scp.splio.com/docs
+note: >-
+  Splio publishes no AGENTS.md and no provider-authored Agent Skills; these are generated from the
+  six harvested contracts and the published runtime documentation. Every operation named in a skill
+  exists in a spec in openapi/ — but Splio declares no operationId on any operation, so each step is
+  addressed by method + path, which is the only handle the contract offers.
+skills:
+- name: splio-enroll-loyalty-member
+  file: splio-enroll-loyalty-member.md
+  api: Splio Customer Platform API
+  operations: 11
+  summary: Contact -> membership -> points -> eligibility -> grant -> burn, with the idempotency and
+    irreversibility rules that matter at each step.
+- name: splio-sync-ecommerce-data
+  file: splio-sync-ecommerce-data.md
+  api: Splio Customer Platform API
+  operations: 12
+  summary: Load stores, products, contacts and orders in dependency order; handle 207 partial
+    success, the per-IP rate limit, and Splio's negative-order refund model.
+- name: splio-send-transactional-email
+  file: splio-send-transactional-email.md
+  api: Splio Messaging API + Content API + Campaign API
+  operations: 6
+  summary: Design upload to email_design UUID, then transactional send or one-shot campaign, plus
+    the Launch/Trigger API migration paths.
+- name: splio-manage-consent-and-suppression
+  file: splio-manage-consent-and-suppression.md
+  api: Splio Customer Platform API
+  operations: 11
+  summary: Subscribe/unsubscribe, global opt-out, blacklists and GDPR erasure — which are reversible
+    and which are not.

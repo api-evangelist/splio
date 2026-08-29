@@ -1,0 +1,138 @@
+generated: '2026-08-29'
+method: derived
+source: >-
+  openapi/splio-customer-platform-openapi.json, openapi/splio-messaging-api-openapi.json,
+  openapi/splio-campaign-api-v1-openapi.json, openapi/splio-campaign-api-openapi.json,
+  openapi/splio-content-api-openapi.json, openapi/splio-interactions-api-openapi.json — enriched
+  from https://dev-scp.splio.com/reference/response-conventions-1 and
+  https://dev-scp.splio.com/reference/rate-limiting
+docs:
+- https://dev-scp.splio.com/reference/response-conventions-1
+- https://dev-scp.splio.com/reference/rate-limiting
+format: custom-json
+rfc9457: false
+rfc9457_note: >-
+  Splio does not use application/problem+json. No spec in the estate declares that media type and
+  the published error reference describes a bespoke envelope instead.
+envelopes:
+- name: standard
+  applies_to: 400 and most 4xx validation failures
+  content_type: application/json
+  example: |
+    {
+        "status": 400,
+        "errors": [
+            {
+                "error_key": "payload",
+                "error": "invalid_json",
+                "error_description": "Json payload is invalid, verify its syntax."
+            }
+        ]
+    }
+  fields:
+    status: HTTP status code, duplicated inside the body
+    errors: array — an operation can report several field-level failures at once
+    errors[].error_key: the payload element at fault
+    errors[].error: machine-readable slug, the field a client should switch on
+    errors[].error_description: human-readable explanation
+- name: bare-string
+  applies_to:
+  - 401
+  - 405
+  content_type: application/json
+  note: >-
+    Authentication and method failures return a bare JSON string rather than the envelope —
+    "Authentication failed." and "Method Not Allowed." A client that unconditionally reads
+    body.errors[0] will crash on exactly the two failures it is most likely to hit first.
+- name: rate-limit
+  applies_to:
+  - 429
+  content_type: application/json
+  example: '{ "message": "API rate limit exceeded" }'
+  note: A third shape, keyed on `message`, used only for rate limiting.
+status_codes:
+- status: 400
+  title: Bad Request
+  occurrences_in_spec: 91
+  meaning: Payload validation failed — malformed JSON, wrong custom-field type, bad email format,
+    missing required field, or a batch where every item failed.
+  known_slugs:
+  - error: invalid_json
+    error_key: payload
+    error_description: Json payload is invalid, verify its syntax.
+  - error: wrong_type
+    error_key: custom_fields
+    error_description: 'Custom field with id 5 and name Date_de_test must be of type date.'
+  - error: wrong_email
+    error_key: email
+    error_description: The email given should have the right format
+  remediation: Fix the payload. Retrying an identical request will fail identically.
+- status: 401
+  title: Not Authenticated
+  occurrences_in_spec: 87
+  meaning: Missing, malformed or expired JWT in the Authorization header.
+  remediation: >-
+    Re-authenticate with POST /authenticate using the universe API key. JWTs expire after 24 hours,
+    so a long-running integration must refresh on a schedule; Splio explicitly warns against
+    re-authenticating on every call.
+- status: 403
+  title: Forbidden
+  occurrences_in_spec: 85
+  meaning: Authenticated but not permitted for this universe or resource.
+  remediation: Check the API user's rights in the universe admin section.
+- status: 404
+  title: Not Found
+  occurrences_in_spec: 40
+  meaning: The addressed contact, store, product, order, custom field, reward, reward attribution
+    or campaign action does not exist in this universe.
+  remediation: Verify the external_id / card_code / individual_id and the universe you authenticated against.
+- status: 405
+  title: Method Not Allowed
+  occurrences_in_spec: 0
+  documented_in: https://dev-scp.splio.com/reference/response-conventions-1
+  meaning: An unsupported method on a valid endpoint (e.g. PUT where POST is expected).
+  note: Documented in the error reference but never declared in any spec — a contract gap.
+- status: 409
+  title: Conflict
+  occurrences_in_spec: 1
+  meaning: 'Failed to generate a card code (loyalty member creation).'
+  remediation: Retry, or supply an explicit card code.
+- status: 429
+  title: Too Many Requests
+  occurrences_in_spec: 0
+  documented_in: https://dev-scp.splio.com/reference/rate-limiting
+  meaning: Per-IP rate limit exceeded.
+  remediation: >-
+    Read rateLimit-reset (seconds) and retry after it elapses. Splio warns that a client which does
+    not handle 429 plus the rate-limit headers "may experience data loss".
+  note: Documented in the reference but declared on zero operations in any spec.
+- status: 500
+  title: Internal Server Error
+  occurrences_in_spec: 2
+  meaning: Unhandled server error.
+  remediation: Retry with backoff; escalate to Splio support with the universe name and the last 3
+    characters of the API key.
+- status: 502
+  title: Bad Gateway
+  occurrences_in_spec: 0
+  documented_in: https://dev-scp.splio.com/reference/response-conventions-1
+- status: 503
+  title: Unavailable
+  occurrences_in_spec: 0
+  documented_in: https://dev-scp.splio.com/reference/response-conventions-1
+partial_success:
+  status: 207
+  occurrences_in_spec: 7
+  note: >-
+    Bulk contact create/delete/optout, blacklist add/delete and bulk reward grant/burn return
+    207 Multi-Status on partial failure. This is the most dangerous case for an automated client:
+    the status code is a success code, but some items in the batch did not apply. Per-item results
+    must be read.
+gaps:
+- >-
+  There is no published error-code registry. Slugs such as invalid_json, wrong_type and wrong_email
+  are only visible as examples inside the response-conventions page; the full vocabulary is not
+  enumerated anywhere, so a client cannot exhaustively switch on `error`.
+- >-
+  429 and 405 are documented in prose but declared on zero operations across all six specs, and 502
+  and 503 likewise. A generated client will not know they can occur.
