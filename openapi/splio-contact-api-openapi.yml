@@ -1,0 +1,1611 @@
+openapi: 3.2.0
+info:
+  title: Splio Contact API
+  version: 1.0.0
+  description: 'Operations tagged Contact across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Contact
+paths:
+  /data/contacts:
+    get:
+      summary: List & search contacts
+      description: Get the list of contacts and search for contacts
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 20
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of the field, the operator and the searched value. It will return contacts matched to your search. fields available on search in contacts are 'unique key', 'firstname', 'lastname', 'creation date', 'language', 'email', 'cellphone', 'custom fields' (using cXX with XX being the custom field ID) and 'card code' (with loyalty option).
+        style: form
+        explode: true
+        schema:
+          type: array
+          format: application/json
+          items:
+            example:
+            - key: lastname
+              operator: equal
+              value: Doe
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - key
+                - firstname
+                - lastname
+                - creation_date
+                - language
+                - email
+                - cellphone
+                - card code
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: the retrieval of contacts search and their subscriptions and loyalty informations.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 50
+                sort: []
+                elements:
+                - id: 1
+                  lastname: Doe
+                  firstname: John
+                  email: jdoe@personal.com
+                  cellphone: ''
+                  date_added: '2019-01-03'
+                  language: fr
+                  custom_fields:
+                  - id: 0
+                    name: civility
+                    value: mr
+                    data_type: ''
+                  lists:
+                  - id: 50
+                    name: List1
+                  loyalty: []
+                - id: 2
+                  lastname: Doe
+                  firstname: Jane
+                  email: janedoe@personal.com
+                  cellphone: ''
+                  creation_date: '2015-03-01'
+                  language: fr
+                  custom_fields:
+                  - id: 0
+                    name: civility
+                    value: mme
+                    data_type: ''
+                  lists:
+                  - id: 51
+                    name: List2
+                  loyalty:
+                  - card_code: '33010000001'
+                    id_program: '1'
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    post:
+      summary: Create a contact
+      description: Create a contact.
+      responses:
+        '201':
+          description: contact creation is successful.
+          content:
+            application/json:
+              example:
+                id: 1
+                lastname: Doe
+                firstname: John
+                email: jdoe@personal.com
+                cellphone: ''
+                creation_date: '2018-01-24 15:00:00'
+                language: fr
+                custom_fields:
+                - id: 0
+                  name: civility
+                  value: mr
+                  data_type: ''
+                lists:
+                - id: 50
+                  name: List1
+                - id: 51
+                  name: List2
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Following the configuration set on the universe, the mandatory field should email OR cellphone OR unique_key
+              properties:
+                lastname:
+                  example: Doe
+                  type: string
+                firstname:
+                  example: John
+                  type: string
+                creation_date:
+                  description: 'This date of creation of this contact, will be used for trigger campaigns, Ex: Welcome email. Warning the timezone set for this date is the user api timezone and not the system timezone.'
+                  example: '2018-01-24 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                language:
+                  description: en, fr, it, es, ...
+                  example: en
+                  type: string
+                email:
+                  example: jdoe@mysite.com
+                  type: string
+                cellphone:
+                  example: '+331122334455'
+                  type: string
+                lists:
+                  example:
+                  - id: 25
+                    name: newsletter shoes
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                    type: object
+                  type: array
+                double_optin:
+                  description: "[Optional] **Require subscribers to confirm their subscription by sending a confirmation request.**<br />\n     <br />\n     **Legacy Version**<br />\n     - `message`: id of the message that must be sent. This message must contain a link to $confirmUrl$<br />\n     - `reminder`: id of the reminder message. This message must contain $confirmUrl$ as well.<br />\n     - `reminder_delay`: if you want a reminder to be sent, specify the number of days between the first message and the reminder.<br />\n     ```\n     {\n          \"message\": \"aw94xefgh\",\n          \"reminder\": \"94was76ef\",\n          \"reminder_delay\": 34\n     }\n     ```\n     <br />\n     <br />\n     **Splio Edition 2025**<br />\n     - `enabled`: Enable double optin<br />\n     ```\n     {\n          \"enabled\": true\n     }```"
+                  type: object
+                custom_fields:
+                  description: Custom fields settings
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        description: The custom field value, can be an integer, a float, a string or a date at format YYYY-MM-DD HH:MM:SS, depending on the configuration of the custom field
+                        type: string
+                    type: object
+                  type: array
+                tracking_consent:
+                  description: '[Optional] Track consent events for this contact. Each entry records a consent state change. The date is interpreted in the universe timezone.'
+                  example:
+                  - channel: email
+                    scope: open
+                    enabled: true
+                    date: '2026-07-01 10:00:00'
+                  items:
+                    properties:
+                      channel:
+                        description: Consent channel. Currently only 'email' is supported.
+                        example: email
+                        type: string
+                      scope:
+                        description: Consent scope. Currently only 'open' is supported.
+                        example: open
+                        type: string
+                      enabled:
+                        description: 'Consent state: true = opted in, false = opted out.'
+                        example: true
+                        type: boolean
+                      source:
+                        description: '[Optional] Source of the consent action.'
+                        example: shopify
+                        type: string
+                      date:
+                        description: '[Optional] Date of the consent action in format YYYY-MM-DD HH:mm:ss (universe timezone). Defaults to current date if not provided.'
+                        example: '2026-07-01 10:00:00'
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Individual data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/bulk:
+    post:
+      summary: Create bulk of contacts
+      description: Create bulk of contacts (max 1000).
+      responses:
+        '207':
+          description: contacts creation is successful.
+          content:
+            application/json:
+              example:
+                time: 59
+                errors: 1
+                items:
+                - contact_id: hhogan@gmail.com
+                  code: 400
+                  description: Contact with unique key hhogan@gmail.com already exists
+                - contact_id: jdoe@msn.com
+                  code: 201
+                  description: ''
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                contacts:
+                  items:
+                    description: Following the configuration set on the universe, the mandatory field should email OR cellphone OR unique_key
+                    properties:
+                      lastname:
+                        example: Doe
+                        type: string
+                      firstname:
+                        example: John
+                        type: string
+                      creation_date:
+                        description: 'This date of creation of this contact, will be used for trigger campaigns. Ex: Welcome email. Warning the timezone set for this date is the user api timezone and not the system timezone.'
+                        example: '2018-01-24 15:00:00'
+                        type: string
+                        pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                      language:
+                        description: en, fr, it, es, ...
+                        example: en
+                        type: string
+                      email:
+                        example: jdoe@mysite.com
+                        type: string
+                      cellphone:
+                        example: '+331122334455'
+                        type: string
+                      lists:
+                        example:
+                        - id: 25
+                          name: newsletter shoes
+                        items:
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                          type: object
+                        type: array
+                      double_optin:
+                        description: "[Optional] **Require subscribers to confirm their subscription by sending a confirmation request.**<br />\n     <br />\n     **Legacy Version**<br />\n     - `message`: id of the message that must be sent. This message must contain a link to $confirmUrl$<br />\n     - `reminder`: id of the reminder message. This message must contain $confirmUrl$ as well.<br />\n     - `reminder_delay`: if you want a reminder to be sent, specify the number of days between the first message and the reminder.<br />\n     ```\n     {\n          \"message\": \"aw94xefgh\",\n          \"reminder\": \"94was76ef\",\n          \"reminder_delay\": 34\n     }\n     ```\n     <br />\n     <br />\n     **Splio Edition 2025**<br />\n     - `enabled`: Enable double optin<br />\n     ```\n     {\n          \"enabled\": true\n     }```"
+                        type: object
+                      custom_fields:
+                        example:
+                        - name: foo
+                          value: bar
+                        - name: foo2
+                          value: bar2
+                        items:
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            value:
+                              description: The custom field value, can be an integer, a float, a string or a date at format YYYY-MM-DD HH:MM:SS, depending on the configuration of the custom field
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  type: array
+              type: object
+        description: Contacts data.
+        required: true
+    delete:
+      summary: Delete bulk of contacts
+      description: Asynchronous delete bulk of contacts (max 1000).
+      responses:
+        '207':
+          description: contacts deletion is successful.
+          content:
+            application/json:
+              example:
+                time: 59
+                errors: 1
+                items:
+                - contact_id: jdoe@yahoo.com
+                  code: 404
+                  description: Contact not found for id jdoe@gmail.com.
+                - contact_id: jdoe@msn.com
+                  code: 204
+                  description: ''
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                contacts:
+                  example:
+                  - jdoe@gmail.com
+                  - jane@gmail.com
+                  - martin@gmail.com
+                  - pierce@gmail.com
+                  items:
+                    description: an array of all contact unique keys to remove, the number of elements accepted is between 1 and 1000
+                    type: string
+                  type: array
+              type: object
+        description: contacts unique keys that will be deleted.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}/activities:
+    get:
+      summary: Get a contact's activities
+      description: Get a contact activities based on its unique_key.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Contact's unique key.
+        schema:
+          type: string
+      - name: channel
+        in: query
+        required: false
+        description: Activity channel. By default all channels are returned
+        schema:
+          type: string
+          enum:
+          - email
+          - sms
+          - x_channel
+          - fwd_email
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 20
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Contact's activity retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                elements:
+                - channel: email
+                  contact: null
+                  channel_details_id: 6CsVXxX4D
+                  channel_details_name: Winter's VIP Campaign
+                  event_type: system
+                  event: opened
+                  value_date: '2019-08-29 00:00:00'
+                  source_id: 6CsVatjvl
+                  source_name: '[Template] 20% CGX'
+                  source_type: standard
+                  source_date: '2020-12-23 11:58:16'
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Individual not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/optout:
+    post:
+      summary: Optout contacts
+      description: Optout contacts from all the lists (max 1000).
+      responses:
+        '207':
+          description: contacts optout is successful.
+          content:
+            application/json:
+              example:
+                time: 59
+                errors: 1
+                items:
+                - contact_id: jdoe@yahoo.com
+                  code: 404
+                  description: Contact not found for id jdoe@gmail.com.
+                - contact_id: jdoe@msn.com
+                  code: 200
+                  description: ''
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                contacts:
+                  example:
+                  - jdoe@gmail.com
+                  - jane@gmail.com
+                  - martin@gmail.com
+                  - pierce@gmail.com
+                  items:
+                    description: an array of all contact unique keys to optout, the number of elements accepted is between 1 and 1000
+                    type: string
+                  type: array
+              type: object
+        description: contacts unique keys that will be opted out.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v1/lists:
+    get:
+      summary: List membership lists
+      description: Get the list of lists.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Lists retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                sort:
+                  id: desc
+                elements:
+                - id: 1
+                  name: news shoes
+                  members: 4000
+                  nb_emails: 3700
+                  nb_sms: 700
+                  is_displayed_by_default: true
+                  is_selected_by_default: false
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}/lists/subscribe:
+    post:
+      summary: Subscribe a contact to list(s)
+      description: Subscribe a contact to one or more lists.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Contact unique key.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Contact has been sucessfully subscribed to the list(s).
+          content:
+            application/json:
+              example:
+                lastname: Doe
+                firstname: John
+                email: jdoe@splio.com
+                cellphone: 0612345678
+                creation_date: '2019-01-03 09:00:00'
+                language: fr
+                custom_fields:
+                - id: 0
+                  name: My custom field 1
+                  value: value1
+                  data_type: string
+                lists:
+                - id: 50
+                  name: Liste1
+                - id: 51
+                  name: Liste2
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Contact not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - list_ids
+              properties:
+                list_ids:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        description: Sucessful subscription to list(s).
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}/lists/unsubscribe:
+    post:
+      summary: Unsubscribe a contact to list(s)
+      description: Unsubscribe a contact from one or more lists.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Contact unique key.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Contact has been sucessfully unsubscribed from the list(s).
+          content:
+            application/json:
+              example:
+                lastname: Doe
+                firstname: John
+                email: jdoe@splio.com
+                cellphone: 0612345678
+                creation_date: '2019-01-03 09:00:00'
+                language: fr
+                custom_fields:
+                - id: 0
+                  name: My custom field 1
+                  value: value1
+                  data_type: string
+                lists:
+                - id: 51
+                  name: Liste2
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Contact not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - list_ids
+              properties:
+                list_ids:
+                  items:
+                    type: integer
+                  type: array
+              type: object
+        description: Sucessful unsubscription from list(s).
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}/orders/abandoned:
+    get:
+      summary: Get a contact's abandoned carts
+      description: Get a contact's abandoned carts formatted as a list.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Individual external identifier.
+        schema:
+          type: string
+          pattern: .+
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return carts that matched your search. Fields available on search in carts are 'external_id', 'shipping_amount', 'discount_amount', 'total_price', 'tax_amount', 'currency', 'sales_person', 'created_at', 'ordered_at' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: external_id
+              operator: equal
+              value: CGX00000945842
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - shipping_amount
+                - discount_amount
+                - total_price
+                - tax_amount
+                - currency
+                - sales_person
+                - created_at
+                - ordered_at
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Abandoned carts retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                sort:
+                  id: ASC
+                elements:
+                - external_id: 3
+                  created_at: '2017-12-26 10:09:12'
+                  ordered_at: null
+                  shipping_amount: 15.24
+                  discount_amount: 0
+                  total_price: 1337.42
+                  tax_amount: 0.42
+                  currency: EUR
+                  sales_person: John Doe
+                  store: null
+                  custom_fields:
+                  - id: 0
+                    name: id_mail
+                    value: S2G1190284746300227
+                  - id: 1
+                    name: id_lien
+                    value: N1190284R746383111
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Contact not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}/orders:
+    get:
+      summary: Get a contact's orders
+      description: Get a contact's orders formatted as a list.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Individual external identifier.
+        schema:
+          type: string
+          pattern: .+
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return orders that matched your search. Fields available on search in orders are 'external_id', 'shipping_amount', 'discount_amount', 'total_price', 'tax_amount', 'currency', 'sales_person', 'created_at', 'ordered_at' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: external_id
+              operator: equal
+              value: CGX00000945842
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - shipping_amount
+                - discount_amount
+                - total_price
+                - tax_amount
+                - currency
+                - sales_person
+                - created_at
+                - ordered_at
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Orders retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                sort:
+                  id: desc
+                elements:
+                - external_id: 3
+                  created_at: '2017-12-26 10:09:12'
+                  ordered_at: '2017-12-26 10:09:12'
+                  shipping_amount: 15.24
+                  discount_amount: 0
+                  total_price: 1337.42
+                  tax_amount: 0.42
+                  currency: EUR
+                  sales_person: John Doe
+                  store:
+                    external_id: '5'
+                    name: champs élysée
+                  custom_fields:
+                  - id: 0
+                    name: id_mail
+                    value: S2G1190284746300227
+                  - id: 1
+                    name: id_lien
+                    value: N1190284R746383111
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Contact not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}/products:
+    get:
+      summary: Get a contact's products
+      description: Get a contact's products formatted as a list.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Individual external identifier.
+        schema:
+          type: string
+          pattern: .+
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return products that matched your search. Fields available on search in products are 'external_id', 'name', 'brand' and 'price'
+        schema:
+          type: array
+          items:
+            example:
+            - key: name
+              operator: equal
+              value: Gloss
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - name
+                - brand
+                - price
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Products retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                sort:
+                  id: desc
+                elements:
+                - external_id: '1'
+                  name: Product Name
+                  description: Description
+                  brand: Brand
+                  category: Product category
+                  price: 20
+                  created_at: '2019-02-15 12:55:00'
+                  updated_at: '2019-02-22 17:12:15'
+                  custom_fields:
+                  - id: 0
+                    name: custom field 0
+                    value: Valeur 0
+                    data_type: text
+                  - id: 1
+                    name: custom field 1
+                    value: ''
+                    data_type: double
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Contact not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}/stores:
+    get:
+      summary: Get a contact's stores
+      description: Get a contact's stores formatted as a list.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Individual external identifier.
+        schema:
+          type: string
+          pattern: .+
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return stores that matched your search. Fields available on search in stores are 'external_id', 'name', 'online', 'store_type', 'manager' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: name
+              operator: equal
+              value: Retail Opera
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - name
+                - online
+                - store_type
+                - manager
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Get Stores List.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                sort:
+                  id: desc
+                elements:
+                - external_id: '9'
+                  name: Mystore 9
+                  online: false
+                  store_type: ''
+                  manager: ''
+                  created_at: '2019-02-15 12:55:00'
+                  updated_at: '2019-02-22 17:12:15'
+                  custom_fields:
+                  - id: 0
+                    name: custom field 0
+                    value: Valeur 0
+                    data_type: text
+                  - id: 1
+                    name: custom field 1
+                    value: ''
+                    data_type: double
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Contact not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{individual_id}:
+    get:
+      summary: Get a contact
+      description: Get a contact.
+      parameters:
+      - name: individual_id
+        in: path
+        required: true
+        description: contact unique key.
+        schema:
+          type: string
+          pattern: .+
+      - name: key
+        in: query
+        required: false
+        description: Key used to fetch contact (default unique_key)
+        schema:
+          type: string
+          enum:
+          - unique_key
+          - internal_id
+      responses:
+        '200':
+          description: contact retrieval is successful.
+          content:
+            application/json:
+              example:
+                id: 1
+                lastname: Doe
+                firstname: John
+                email: jdoe@personal.com
+                cellphone: ''
+                creation_date: '2019-01-03'
+                language: fr
+                custom_fields:
+                - id: 0
+                  name: civility
+                  value: mr
+                  data_type: ''
+                loyalty:
+                - card_code: jdoe_cardcode
+                  id_program: '1'
+                lists:
+                - id: 50
+                  name: List1
+                - id: 51
+                  name: List2
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    patch:
+      summary: Edit a contact
+      description: Edit a contact.
+      parameters:
+      - name: individual_id
+        in: path
+        required: true
+        description: contact unique key.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: contact edition is successful.
+          content:
+            application/json:
+              example:
+                id: 1
+                lastname: Doe
+                firstname: John
+                email: jdoe@personal.com
+                cellphone: ''
+                creation_date: '2018-01-24 15:00:00'
+                language: fr
+                custom_fields:
+                - id: 0
+                  name: civility
+                  value: mr
+                  data_type: ''
+                lists:
+                - id: 50
+                  name: List1
+                - id: 51
+                  name: List2
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Following the configuration set on the universe, the email OR cellphone OR unique_key can't be modified
+              properties:
+                key:
+                  description: Key used to resolve the contact (default unique_key). Use internal_id to lookup by database ID.
+                  example: unique_key
+                  type: string
+                  enum:
+                  - unique_key
+                  - internal_id
+                lastname:
+                  example: Doe
+                  type: string
+                firstname:
+                  example: John
+                  type: string
+                creation_date:
+                  description: 'This date of creation of this contact, will be used for trigger campaigns, Ex: Welcome email. Warning the timezone set for this date is the user api timezone and not the system timezone.'
+                  example: '2018-01-24 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                language:
+                  description: en, fr, it, es, ...
+                  example: en
+                  type: string
+                email:
+                  example: jdoe@mysite.com
+                  type: string
+                cellphone:
+                  example: '+331122334455'
+                  type: string
+                lists:
+                  description: All current memberships of the contact will be removed and replaced by the ones given there. If you want to add or remove only specific list, please use end points /subscribe or /unsubscribe
+                  example:
+                  - id: 25
+                    name: newsletter shoes
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                    type: object
+                  type: array
+                double_optin:
+                  description: "[Optional] **Require subscribers to confirm their subscription by sending a confirmation request.**<br />\n     <br />\n     **Legacy Version**<br />\n     - `message`: id of the message that must be sent. This message must contain a link to $confirmUrl$<br />\n     - `reminder`: id of the reminder message. This message must contain $confirmUrl$ as well.<br />\n     - `reminder_delay`: if you want a reminder to be sent, specify the number of days between the first message and the reminder.<br />\n     ```\n     {\n          \"message\": \"aw94xefgh\",\n          \"reminder\": \"94was76ef\",\n          \"reminder_delay\": 34\n     }\n     ```\n     <br />\n     **Splio Edition 2025**<br />\n     - `enabled`: Enable double optin<br />\n     ```\n     {\n          \"enabled\": true\n     }```"
+                  type: object
+                custom_fields:
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        description: The custom field value, can be an integer, a float, a string or a date at format YYYY-MM-DD HH:MM:SS, depending on the configuration of the custom field
+                        type: string
+                    type: object
+                  type: array
+                tracking_consent:
+                  description: '[Optional] Track consent events for this contact. Each entry records a consent state change. The date is interpreted in the universe timezone.'
+                  example:
+                  - channel: email
+                    scope: open
+                    enabled: true
+                    date: '2026-07-01 10:00:00'
+                  items:
+                    properties:
+                      channel:
+                        description: Consent channel. Currently only 'email' is supported.
+                        example: email
+                        type: string
+                      scope:
+                        description: Consent scope. Currently only 'open' is supported.
+                        example: open
+                        type: string
+                      enabled:
+                        description: 'Consent state: true = opted in, false = opted out.'
+                        example: true
+                        type: boolean
+                      source:
+                        description: '[Optional] Source of the consent action.'
+                        example: shopify
+                        type: string
+                      date:
+                        description: '[Optional] Date of the consent action in format YYYY-MM-DD HH:mm:ss (universe timezone). Defaults to current date if not provided.'
+                        example: '2026-07-01 10:00:00'
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Individual data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/contacts/{id}:
+    delete:
+      summary: Delete a contact
+      description: Delete a contact.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: contact unique key.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '204':
+          description: deletion is successful.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Contact
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json

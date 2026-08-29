@@ -44,131 +44,11 @@ tags_raw:
 - customer-engagement
 - france
 apis:
-- name: Splio Customer Platform API
-  description: >-
-    The core JWT-authenticated REST API for the Splio Customer Platform: authenticate for a 24-hour
-    token, then manage contacts and their custom fields, membership lists, email/SMS blacklists,
-    orders, abandoned carts, products and stores, build targeting groups and filters, and drive the
-    loyalty engine — members, point balances, tiers, programs, and reward creation, grant and burn.
-  humanURL: https://dev-scp.splio.com/reference/authentication-2
-  baseURL: https://api.splio.com
-  tags:
-  - Marketing Automation
-  - Customer Data Platform
-  - Loyalty
-  - CRM
-  - Retail
-  tags_raw:
-  - marketing-automation
-  - customer-data-platform
-  - loyalty
-  - crm
-  - retail
-  properties:
-  - type: OpenAPI
-    url: openapi/splio-customer-platform-openapi.json
-  - type: Documentation
-    url: https://dev-scp.splio.com/docs
-  - type: APIReference
-    url: https://dev-scp.splio.com/reference
-  - type: Overlay
-    url: overlays/splio-customer-platform-overlay.yaml
-  - type: Authentication
-    url: authentication/splio-authentication.yml
-  - type: ErrorCatalog
-    url: errors/splio-problem-types.yml
-  - type: DataModel
-    url: data-model/splio-data-model.yml
-  - type: Conventions
-    url: conventions/splio-conventions.yml
-- name: Splio Messaging API
-  description: >-
-    Transactional and triggered messaging endpoint introduced with Splio Edition 2025. A single
-    POST /messages call sends email to one or more recipients from a universe-scoped base URL,
-    accepting an existing design or inline content plus Liquid personalisation variables.
-  humanURL: https://dev-scp.splio.com/reference/post_messages
-  baseURL: https://api.splio.com/messaging/v1/{universe_id}
-  tags:
-  - Email Marketing
-  - Marketing Automation
-  tags_raw:
-  - email-marketing
-  - marketing-automation
-  properties:
-  - type: OpenAPI
-    url: openapi/splio-messaging-api-openapi.json
-  - type: Documentation
-    url: https://dev-scp.splio.com/reference/post_messages
-  - type: Overlay
-    url: overlays/splio-messaging-api-overlay.yaml
-- name: Splio Campaign API
-  description: >-
-    Campaign execution API for Splio Edition 2025. Creates, reads and stops one-shot campaigns that
-    deliver a design previously produced with the Content API — the half of the decoupled workflow
-    that replaced the legacy Launch API.
-  humanURL: https://dev-scp.splio.com/reference/post_campaign_api_create
-  baseURL: https://api.splio.com/campaign-api
-  tags:
-  - Email Marketing
-  - Marketing Automation
-  tags_raw:
-  - email-marketing
-  - marketing-automation
-  properties:
-  - type: OpenAPI
-    url: openapi/splio-campaign-api-v1-openapi.json
-  - type: OpenAPI
-    url: openapi/splio-campaign-api-openapi.json
-  - type: Documentation
-    url: https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
-  - type: Overlay
-    url: overlays/splio-campaign-api-v1-overlay.yaml
-  - type: Overlay
-    url: overlays/splio-campaign-api-overlay.yaml
-- name: Splio Content API
-  description: >-
-    Content creation API for Splio Edition 2025. POST /v1/create-email-design uploads an HTML file or
-    a structured ZIP (index.html plus an images/ folder) and returns the email_design UUID that the
-    Campaign and Messaging APIs then reference.
-  humanURL: https://dev-scp.splio.com/reference/post_v1-create-email-design
-  baseURL: https://api.splio.com/content
-  tags:
-  - Email Marketing
-  - Marketing Automation
-  tags_raw:
-  - email-marketing
-  - marketing-automation
-  properties:
-  - type: OpenAPI
-    url: openapi/splio-content-api-openapi.json
-  - type: Documentation
-    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
-  - type: Overlay
-    url: overlays/splio-content-api-overlay.yaml
-- name: Splio Interactions API
-  description: >-
-    Event ingestion API for behavioural interactions. POST /events/ and POST /events/bulk push custom
-    customer events into the Splio Customer Platform so they can trigger automations and feed the CDP.
-  humanURL: https://dev-scp.splio.com/docs/datahub-events
-  baseURL: https://api.splio.com
-  tags:
-  - Customer Data Platform
-  - Customer Engagement
-  tags_raw:
-  - customer-data-platform
-  - customer-engagement
-  properties:
-  - type: OpenAPI
-    url: openapi/splio-interactions-api-openapi.json
-  - type: Documentation
-    url: https://dev-scp.splio.com/docs/datahub-events
-  - type: Overlay
-    url: overlays/splio-interactions-api-overlay.yaml
 - name: Splio Referral API
   description: >-
-    Referral coupon API published as a public Postman collection. Checks and burns coupons for a
-    referrer or a newly referred prospect, authenticated by a SHA-256 hash of the coupon code
-    concatenated with a key issued by the Splio project manager.
+    Referral coupon API published as a public Postman collection. Checks and burns coupons for a referrer
+    or a newly referred prospect, authenticated by a SHA-256 hash of the coupon code concatenated with
+    a key issued by the Splio project manager.
   humanURL: https://documenter.getpostman.com/view/10206569/TzRX9kyT
   baseURL: https://api.splio.com
   tags:
@@ -182,7 +62,546 @@ apis:
     url: https://documenter.getpostman.com/view/10206569/TzRX9kyT
   - type: Documentation
     url: https://documenter.getpostman.com/view/10206569/TzRX9kyT
+- aid: splio:splio-blacklist-api
+  name: Splio Blacklist API
+  description: The Blacklist API from Splio — 4 operation(s) for blacklist.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Blacklist
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-blacklist-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-contact-api
+  name: Splio Contact API
+  description: The Contact API from Splio — 13 operation(s) for contact.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Contact
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-contact-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-coupon-api
+  name: Splio Coupon API
+  description: The Coupon API from Splio — 1 operation(s) for coupon.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Coupon
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-coupon-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-export-api
+  name: Splio Export API
+  description: The Export API from Splio — 1 operation(s) for export.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Export
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-export-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-fields-api
+  name: Splio Fields API
+  description: The Fields API from Splio — 9 operation(s) for fields.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Fields
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-fields-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-filter-api
+  name: Splio Filter API
+  description: The Filter API from Splio — 1 operation(s) for filter.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Filter
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-filter-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-general-api
+  name: Splio General API
+  description: The General API from Splio — 2 operation(s) for general.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - General
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-general-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-group-api
+  name: Splio Group API
+  description: The Group API from Splio — 5 operation(s) for group.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Group
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-group-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-loyalty-api
+  name: Splio Loyalty API
+  description: The Loyalty API from Splio — 1 operation(s) for loyalty.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Loyalty
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-loyalty-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-members-api
+  name: Splio Members API
+  description: The Members API from Splio — 6 operation(s) for members.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Members
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-members-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-one-shot-api
+  name: Splio One Shot API
+  description: The One Shot API from Splio — 3 operation(s) for one shot.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - One Shot
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-one-shot-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-points-api
+  name: Splio Points API
+  description: The Points API from Splio — 2 operation(s) for points.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Points
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-points-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-programs-api
+  name: Splio Programs API
+  description: The Programs API from Splio — 4 operation(s) for programs.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Programs
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-programs-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-reward-api
+  name: Splio Reward API
+  description: The Reward API from Splio — 11 operation(s) for reward.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Reward
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-reward-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-reward-stock-and-codes-api
+  name: Splio Reward stock and codes API
+  description: The Reward stock and codes API from Splio — 1 operation(s) for reward stock and codes.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Reward stock and codes
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-reward-stock-and-codes-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-sales-data-api
+  name: Splio Sales data API
+  description: The Sales data API from Splio — 14 operation(s) for sales data.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Sales data
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-sales-data-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
+- aid: splio:splio-universe-api
+  name: Splio Universe API
+  description: The Universe API from Splio — 2 operation(s) for universe.
+  humanURL: https://dev-scp.splio.com/reference/authentication-2
+  baseURL: https://api.splio.com
+  tags:
+  - Universe
+  properties:
+  - type: OpenAPI
+    url: openapi/splio-universe-api-openapi.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs
+  - type: APIReference
+    url: https://dev-scp.splio.com/reference
+  - type: Authentication
+    url: authentication/splio-authentication.yml
+  - type: ErrorCatalog
+    url: errors/splio-problem-types.yml
+  - type: DataModel
+    url: data-model/splio-data-model.yml
+  - type: Conventions
+    url: conventions/splio-conventions.yml
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_messages
+  - type: Documentation
+    url: >-
+      https://dev-scp.splio.com/docs/migrate-from-launch-api-to-content-campaign-apis-splio-edition-2025
+  - type: Documentation
+    url: https://dev-scp.splio.com/reference/post_v1-create-email-design
+  - type: Documentation
+    url: https://dev-scp.splio.com/docs/datahub-events
 common:
+- type: Overlay
+  url: overlays/splio-customer-platform-overlay.yaml
+- type: Overlay
+  url: overlays/splio-messaging-api-overlay.yaml
+- type: Overlay
+  url: overlays/splio-campaign-api-v1-overlay.yaml
+- type: Overlay
+  url: overlays/splio-campaign-api-overlay.yaml
+- type: Overlay
+  url: overlays/splio-content-api-overlay.yaml
+- type: Overlay
+  url: overlays/splio-interactions-api-overlay.yaml
 - type: DomainSecurity
   url: security/splio-domain-security.yml
 - type: Website

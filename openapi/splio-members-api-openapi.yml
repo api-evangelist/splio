@@ -1,0 +1,748 @@
+openapi: 3.2.0
+info:
+  title: Splio Members API
+  version: 1.0.0
+  description: 'Operations tagged Members across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Members
+paths:
+  /loyalty/members:
+    post:
+      summary: Create a member
+      description: Add a new member to a loyalty program.
+      responses:
+        '201':
+          description: Loyalty subscription creation is successful.
+          content:
+            application/json:
+              example:
+                id: 9
+                card_code: my_card_1235
+                tier_joined_at: null
+                program_join_at: null
+                card_expire_at: null
+                computed_at: null
+                q_point: 0
+                nq_point: 0
+                birthday: '1979-07-12'
+                individual: null
+                program:
+                  id: 1
+                  name: Flying Blue
+                  description: ''
+                  type: simple
+                  status: running
+                  start_at: '2018-01-05 00:00:00'
+                  end_at: null
+                  created_at: '2018-01-01 00:00:00'
+                  updated_at: '2018-01-01 00:00:00'
+                  cascading: false
+                  downgrade_nb_rank: null
+                  max_q_points: null
+                  max_nq_points: null
+                  default_q_points_validity_id_period: 1
+                  default_q_points_validity_days: null
+                  default_q_points_holding_days: 0
+                  default_nq_points_validity_id_period: null
+                  default_nq_points_validity_days: 60
+                  default_nq_points_holding_days: 60
+                  rounding_type: round
+                  default_points_to_amount_ratio: 10
+                  auto_generated_card_code: false
+                  use_all_orders: false
+                  user: null
+                tier:
+                  id: 1
+                  name: Silver
+                  created_at: '2017-11-23 18:01:57'
+                  updated_at: '2018-02-19 11:15:26'
+                  entry_threshold: 100
+                  downgrade_threshold: 200
+                  multiplier_q_points: 1.5
+                  multiplier_nq_points: 1.75
+        '409':
+          description: Failed to generate a card code.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Members
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - program_id
+              properties:
+                program_id:
+                  example: 1
+                  type: integer
+                contact_id:
+                  description: 'The unique_key of your universe: email, cellphone or custom.'
+                  example: jdoe@yopmail.com
+                  type: string
+                card_code:
+                  example: my_card_1234
+                  type: string
+                card_expire_at:
+                  description: The expiration date of subscription.
+                  example: '2018-01-12 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                birthday:
+                  description: the birthday date for card code.
+                  example: '2018-01-12'
+                  type: string
+                  format: date
+                program_joined_at:
+                  description: the subscription external date.
+                  example: '2018-01-12 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                forced_tier_name:
+                  description: force the setting of member tier from given tier name (you can also use vip tier name)
+                  example: 'Tier #1'
+                  type: string
+                custom_fields:
+                  items:
+                    $ref: '#/components/schemas/CustomField'
+                  type: array
+              type: object
+        description: Add a member on a loyalty program.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/members/{card_code}/rules:
+    get:
+      summary: List a member's rules completion
+      description: Get a contact rule completion status informations based on its card code.
+      parameters:
+      - name: card_code
+        in: path
+        required: true
+        description: Individual fidelity card code.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Membership retrieval is successful.
+          content:
+            application/json:
+              example:
+                individual_id: 3028591
+                reference_date: '2020-05-12 14:52:22'
+                loyalty_statuses:
+                - card_code: '54919726726146466400004'
+                  program_id: 1
+                  rules:
+                  - id: 7
+                    name: Completion At least
+                    start_date: '2020-03-19 10:00:00'
+                    end_date: null
+                    completion_rate: 0
+                    completion_details:
+                      already_matched: 0
+                      amount:
+                        current_value: 0
+                        is_threshold_reached: false
+                      applicable: true
+                      trigger_type: order
+        '404':
+          description: Membership not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Membership not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Members
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/members/{id}/balance:
+    get:
+      summary: Get a member's point balance
+      description: Get a contact membership balance informations based on its card code.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Individual fidelity card code.
+        schema:
+          type: string
+      - name: with_redeemed
+        in: query
+        required: false
+        description: Define if response should include 'redeemed' part
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Membership balance retrieval is successful.
+          content:
+            application/json:
+              example:
+                pending:
+                  nq_points:
+                    next_movement:
+                      date: '2021-01-01 00:00:00'
+                      value: 10
+                    total: 20
+                  q_points:
+                    next_movement: null
+                    total: 0
+                remaining:
+                  nq_points:
+                    next_movement: null
+                    total: 0
+                  q_points:
+                    next_movement:
+                      date: '2022-01-01 00:00:00'
+                      value: 10
+                    total: 300
+        '404':
+          description: Membership not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Membership not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Members
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/members/{card_code}/optout:
+    post:
+      summary: Expire a member
+      description: Expire a member from a program based on its card code.
+      parameters:
+      - name: card_code
+        in: path
+        required: true
+        description: Individual fidelity card code.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Membership expiration is successful.
+          content:
+            application/json:
+              example:
+                id: 1
+                card_code: '33010000001'
+                tier_joined_at: null
+                program_joined_at: '2018-01-18 16:03:42'
+                card_expire_at: null
+                computed_at: null
+                q_point: 1650
+                nq_point: 495
+                birthday: '1975-11-28'
+                individual: null
+                program:
+                  id: 1
+                  name: Flying Blue
+                  description: ''
+                  type: simple
+                  status: running
+                  start_at: '2018-01-05 00:00:00'
+                  end_at: null
+                  created_at: '2018-01-01 00:00:00'
+                  updated_at: '2018-01-01 00:00:00'
+                  cascading: false
+                  downgrade_nb_rank: null
+                  max_q_points: null
+                  max_nq_points: null
+                  default_q_points_validity_id_period: 1
+                  default_q_points_validity_days: null
+                  default_q_points_holding_days: 0
+                  default_nq_points_validity_id_period: null
+                  default_nq_points_validity_days: 60
+                  default_nq_points_holding_days: 60
+                  rounding_type: round
+                  default_points_to_amount_ratio: 10
+                  auto_generated_card_code: false
+                  use_all_orders: false
+                  user: null
+                tier: null
+                fields:
+                - id: 0
+                  name: code_1
+                  value: GV0104297100090001
+        '404':
+          description: Membership not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: card_code
+                  error: wrong_value
+                  error_description: Membership not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Members
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/members/{id}:
+    get:
+      summary: Get a member
+      description: Get a contact membership informations based on its card code.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Individual fidelity card code.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Membership retrieval is successful.
+          content:
+            application/json:
+              example:
+                id: 1
+                card_code: '33010000001'
+                tier_joined_at: null
+                program_joined_at: '2018-01-18 16:03:42'
+                card_expire_at: null
+                computed_at: null
+                q_point: 1650
+                nq_point: 495
+                birthday: '1975-11-28'
+                individual:
+                  id: 1
+                  name: Doe
+                  firstname: John
+                  email: splio@test.com
+                  fields:
+                  - id: 0
+                    name: civilite
+                    value: ''
+                program:
+                  id: 1
+                  name: Flying Blue
+                  description: ''
+                  type: simple
+                  status: running
+                  start_at: '2018-01-05 00:00:00'
+                  end_at: null
+                  created_at: '2018-01-01 00:00:00'
+                  updated_at: '2018-01-01 00:00:00'
+                  cascading: false
+                  downgrade_nb_rank: null
+                  max_q_points: null
+                  max_nq_points: null
+                  default_q_points_validity_id_period: 1
+                  default_q_points_validity_days: null
+                  default_q_points_holding_days: 0
+                  default_nq_points_validity_id_period: null
+                  default_nq_points_validity_days: 60
+                  default_nq_points_holding_days: 60
+                  rounding_type: round
+                  default_points_to_amount_ratio: 10
+                  auto_generated_card_code: false
+                  use_all_orders: false
+                  user: null
+                tier: null
+                fields:
+                - id: 0
+                  name: code_1
+                  value: GV0104297100090001
+        '404':
+          description: Membership not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Membership not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Members
+      security:
+      - Bearer: []
+    patch:
+      summary: Update a member
+      description: Update a membership.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Individual fidelity card code.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Membership update is successful.
+          content:
+            application/json:
+              example:
+                id: 1
+                card_code: '33010000001'
+                tier_joined_at: null
+                program_joined_at: '2018-01-18 16:03:42'
+                card_expire_at: null
+                computed_at: null
+                q_point: 1650
+                nq_point: 495
+                birthday: '1975-11-28'
+                individual:
+                  id: 1
+                  name: Doe
+                  firstname: John
+                  email: splio@test.com
+                  fields:
+                  - id: 0
+                    name: civilite
+                    value: ''
+                program:
+                  id: 1
+                  name: Flying Blue
+                  description: ''
+                  type: simple
+                  status: running
+                  start_at: '2018-01-05 00:00:00'
+                  end_at: null
+                  created_at: '2018-01-01 00:00:00'
+                  updated_at: '2018-01-01 00:00:00'
+                  cascading: false
+                  downgrade_nb_rank: null
+                  max_q_points: null
+                  max_nq_points: null
+                  default_q_points_validity_id_period: 1
+                  default_q_points_validity_days: null
+                  default_q_points_holding_days: 0
+                  default_nq_points_validity_id_period: null
+                  default_nq_points_validity_days: 60
+                  default_nq_points_holding_days: 60
+                  rounding_type: round
+                  default_points_to_amount_ratio: 10
+                  auto_generated_card_code: false
+                  use_all_orders: false
+                  user: null
+                tier: null
+                fields:
+                - id: 0
+                  name: code_1
+                  value: GV0104297100090001
+        '404':
+          description: Membership not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Loyalty membership not found with value my_card_code.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Members
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                card_expire_at:
+                  description: The expiration date of subscription.
+                  example: '2018-01-12 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                birthday:
+                  description: the birthday date for card code.
+                  example: '2018-01-12'
+                  type: string
+                  format: date
+                contact_id:
+                  description: 'The unique_key of your universe: email, cellphone or custom. You can update the membership''s contact id only if the membership has no contact assigned yet.'
+                  example: jdoe@yopmail.com
+                  type: string
+                custom_fields:
+                  items:
+                    $ref: '#/components/schemas/CustomField'
+                  type: array
+                program_joined_at:
+                  description: By filling out this parameter, you will change the subscription date of the loyalty card. This could process new events. You might change balance of points and rewards of the loyalty card.
+                  example: '2018-01-12 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+              type: object
+        description: 'Updatable fields of a membership : birthday, card_expire_at and custom_fields.'
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/members/{card_code}/tier_change:
+    post:
+      summary: Update a member’s tier
+      description: Change the a loyalty member's tier based on its card code.
+      parameters:
+      - name: card_code
+        in: path
+        required: true
+        description: Individual fidelity card code.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Change tier event creation is successful.
+          content:
+            application/json:
+              example:
+                id: 8
+                event_type: null
+                system_event_type:
+                  id: 12
+                  name: tier_change
+                  created_at: '2018-03-22 14:57:19'
+                  updated_at: '2018-03-22 14:57:19'
+                is_system_event_type: true
+                loyalty_status:
+                  id: 4
+                  card_code: '44010000002'
+                  individual:
+                    id: 1
+                    name: ''
+                    firstname: ''
+                    email: ghervet@splio.com
+                    fields: []
+                  tier_joined_at: '2018-03-15 10:46:56'
+                  program_joined_at: '2018-03-15 10:46:56'
+                  card_expire_at: null
+                  computed_at: null
+                  program:
+                    id: 2
+                    name: Programme de Fid 2000
+                    description: ''
+                    type: tiered
+                    status: draft
+                    start_at: '2018-03-15 10:42:05'
+                    end_at: null
+                    created_at: '2018-03-15 10:42:05'
+                    updated_at: '2018-03-15 09:42:05'
+                    cascading: false
+                    downgrade_nb_rank: null
+                    max_q_points: null
+                    max_nq_points: null
+                    default_q_points_validity_id_period: 1
+                    default_q_points_validity_days: null
+                    default_q_points_holding_days: 0
+                    default_nq_points_validity_id_period: null
+                    default_nq_points_validity_days: 60
+                    default_nq_points_holding_days: 60
+                    rounding_type: round
+                    default_points_to_amount_ratio: 10
+                  tier:
+                    id: 2
+                    name: White
+                    created_at: '2018-03-15 10:49:03'
+                    updated_at: '2018-03-15 09:49:03'
+                    entry_threshold: 0
+                    downgrade_threshold: 0
+                    multiplier_q_points: 1
+                    multiplier_nq_points: 1
+                  fields: []
+                  q_point: 0
+                  nq_point: 10
+                processed: 0
+                rule: null
+                event_date: '2018-04-03 15:34:00'
+                created_at: '2018-04-05 15:13:48'
+                json_payload:
+                  type: tier
+                  name: 'Tier #3'
+                  force_points: 0
+                  context:
+                    msg: Catching up summer's offer
+                    source: scp-api
+        '404':
+          description: Membership not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: card_code
+                  error: wrong_value
+                  error_description: Membership not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Members
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - tier_name
+              - force_points
+              - context
+              properties:
+                event_date:
+                  example: '2018-01-12 15:30:22'
+                  type: string
+                tier_name:
+                  example: 'Tier #3'
+                  type: string
+                force_points:
+                  example: true
+                  type: boolean
+                context:
+                  example: Catching up summer's offer
+                  type: string
+              type: object
+        description: Tier to affect to the loyalty member.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  schemas:
+    CustomField:
+      properties:
+        name:
+          required: true
+          type: string
+        value:
+          required: true
+          type: string
+      type: object
+    CustomField_2:
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+      type: object
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json

@@ -1,0 +1,654 @@
+openapi: 3.2.0
+info:
+  title: Splio Fields API
+  version: 1.0.0
+  description: 'Operations tagged Fields across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Fields
+paths:
+  /data/fields:
+    post:
+      summary: Create a custom field
+      description: Create a custom field.
+      responses:
+        '201':
+          description: Custom field creation is successful.
+          content:
+            application/json:
+              example:
+                id: 9
+                name: store_code
+                data_type: text
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - scope
+              - name
+              - type
+              properties:
+                scope:
+                  example: contacts
+                  type: string
+                  enum:
+                  - contacts
+                  - stores
+                  - products
+                  - order_products
+                  - orders
+                  - rewards
+                  - loyalty
+                name:
+                  example: my_field_name
+                  type: string
+                type:
+                  example: text
+                  type: string
+                  enum:
+                  - date
+                  - text
+                  - int
+                  - double
+              type: object
+        description: Custom fields data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/{scope}/{id}:
+    delete:
+      summary: Delete a custom field
+      description: Delete a custom field.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Custom field identifier. This is NOT the custom field's name. For custom field c5, identifier is 5.
+        schema:
+          type: string
+      - name: scope
+        in: path
+        required: true
+        description: Custom field scope.
+        schema:
+          type: string
+          enum:
+          - contacts
+          - stores
+          - products
+          - order_products
+          - orders
+          - rewards
+          - loyalty
+      responses:
+        '204':
+          description: Deletion is successful.
+          content:
+            application/json:
+              example: []
+        '404':
+          description: Custom field not found.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/contacts:
+    get:
+      summary: Get contact's fields
+      description: Get contact's fields.
+      responses:
+        '200':
+          description: Contacts fields retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 100
+                sort:
+                  id: DESC
+                elements:
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: 80
+                  unique_values: 1700
+                  name: ext_id
+                  translation_key: external_id
+                  label: External ID
+                  field_key: ext_id
+                - intid: 1
+                  id: 1
+                  is_system: false
+                  filling: 80
+                  unique_values: 1700
+                  name: civility
+                  translation_key: civility
+                  label: civility
+                  field_key: civility
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/orders:
+    get:
+      summary: List order's fields
+      description: Get the list of order's fields.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Orders fields retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 100
+                sort:
+                  id: DESC
+                elements:
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: 80
+                  unique_values: 1700
+                  name: ext_id
+                  translation_key: external_id
+                  label: External ID
+                  field_key: ext_id
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: null
+                  unique_values: null
+                  name: id_mec
+                  translation_key: id_mec
+                  label: Contact ID
+                  field_key: contact_id
+                - intid: 1
+                  id: 1
+                  is_system: false
+                  filling: 80
+                  unique_values: 1700
+                  name: civility
+                  translation_key: civility
+                  label: civility
+                  field_key: civility
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/order-lines:
+    get:
+      summary: List ordered product's fields
+      description: Get the list of ordered product's fields.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Ordered products fields retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 100
+                sort:
+                  id: DESC
+                elements:
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: 80
+                  unique_values: 1700
+                  name: ext_id
+                  translation_key: external_id
+                  label: External ID
+                  field_key: ext_id
+                - intid: 1
+                  id: 1
+                  is_system: false
+                  filling: 80
+                  unique_values: 1700
+                  name: civility
+                  translation_key: civility
+                  label: civility
+                  field_key: civility
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/products:
+    get:
+      summary: List product's fields
+      description: Get the list of product's fields.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Products fields retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 100
+                sort:
+                  id: DESC
+                elements:
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: 80
+                  unique_values: 1700
+                  name: ext_id
+                  translation_key: external_id
+                  label: External ID
+                  field_key: ext_id
+                - intid: 1
+                  id: 1
+                  is_system: false
+                  filling: 80
+                  unique_values: 1700
+                  name: civility
+                  translation_key: civility
+                  label: civility
+                  field_key: civility
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/rewards:
+    get:
+      summary: List reward's fields
+      description: Get the list of reward's fields.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Rewards fields retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 100
+                sort:
+                  id: DESC
+                elements:
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: 80
+                  unique_values: 1700
+                  name: ext_id
+                  translation_key: external_id
+                  label: External ID
+                  field_key: ext_id
+                - intid: 1
+                  id: 1
+                  is_system: false
+                  filling: 80
+                  unique_values: 1700
+                  name: civility
+                  translation_key: civility
+                  label: civility
+                  field_key: civility
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/members:
+    get:
+      summary: List loyalty member's fields
+      description: Get the list of loyalty member's fields.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Loyalty members fields retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 100
+                sort:
+                  id: DESC
+                elements:
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: 80
+                  unique_values: 1700
+                  name: ext_id
+                  translation_key: external_id
+                  label: External ID
+                  field_key: ext_id
+                - intid: 1
+                  id: 1
+                  is_system: false
+                  filling: 80
+                  unique_values: 1700
+                  name: civility
+                  translation_key: civility
+                  label: civility
+                  field_key: civility
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/fields/stores:
+    get:
+      summary: List store's fields
+      description: Get the list of store's fields.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Stores fields retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                per_page: 100
+                sort:
+                  id: DESC
+                elements:
+                - intid: null
+                  id: 0
+                  is_system: true
+                  filling: 80
+                  unique_values: 1700
+                  name: ext_id
+                  translation_key: external_id
+                  label: External ID
+                  field_key: ext_id
+                - intid: 1
+                  id: 1
+                  is_system: false
+                  filling: 80
+                  unique_values: 1700
+                  name: civility
+                  translation_key: civility
+                  label: civility
+                  field_key: civility
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Fields
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json

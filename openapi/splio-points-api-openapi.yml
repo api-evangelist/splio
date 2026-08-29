@@ -1,0 +1,304 @@
+openapi: 3.2.0
+info:
+  title: Splio Points API
+  version: 1.0.0
+  description: 'Operations tagged Points across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Points
+paths:
+  /loyalty/v1/members/{card_code}/credit:
+    post:
+      summary: Credit points
+      description: Credit points to a loyalty member based on its card code.
+      parameters:
+      - name: card_code
+        in: path
+        required: true
+        description: Individual fidelity card code.
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Credit event creation is successful.
+        '404':
+          description: Membership not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: card_code
+                  error: wrong_value
+                  error_description: Membership not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Points
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - nq_points_quantity
+              - q_points_quantity
+              - context
+              - is_final
+              properties:
+                event_date:
+                  example: '2018-01-12 15:30:22'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                nq_points_quantity:
+                  example: 250
+                  type: integer
+                q_points_quantity:
+                  example: 150
+                  type: integer
+                context:
+                  example: Catching up summer's offer
+                  type: string
+                is_final:
+                  example: true
+                  type: boolean
+                idempotency_key:
+                  example: 733d3ebf-36fe-41f4-8468-c463202225c1
+                  type: string
+              type: object
+        description: Points quantity to credit to the individual.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/points:
+    get:
+      summary: Point list by universe endpoint
+      description: Point list by universe endpoint
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        description: Number max of results returned.
+        schema:
+          type: string
+      - name: before
+        in: query
+        required: false
+        description: Cursor hash returned on your last call.
+        schema:
+          type: string
+      - name: after
+        in: query
+        required: false
+        description: Cursor hash returned on your last call.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order of return point list (asc or desc).
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: sort
+        in: query
+        required: false
+        description: Sort by ID and/or EventDate.
+        schema:
+          type: string
+          enum:
+          - ValueDate
+          - EventDate
+          - ID
+      - name: card_code
+        in: query
+        required: false
+        description: 'Search on card_code. Format: {"operator":"equals","value":"my_card_code"}. Operators: equals, not equals, contains, begins, ends'
+        schema:
+          type: string
+      - name: tier_name
+        in: query
+        required: false
+        description: 'Search on tier_name. Format: {"operator":"equals","value":"my_tier"}. Operators: equals, not equals, contains, begins, ends, is empty, is not empty'
+        schema:
+          type: string
+      - name: id_program
+        in: query
+        required: false
+        description: 'Search on id_program. Format: {"operator":"equals","value":"123"}. Operators: equals, not equals, gt, gte, lt, lte'
+        schema:
+          type: string
+      - name: id_individual
+        in: query
+        required: false
+        description: 'Search on id_individual. Format: {"operator":"equals","value":"my_id"}. Operators: equals, not equals, contains, begins, ends'
+        schema:
+          type: string
+      - name: rule_name
+        in: query
+        required: false
+        description: 'Search on rule_name. Format: {"operator":"equals","value":"my_rule"}. Operators: equals, not equals, contains, begins, ends, is empty, is not empty'
+        schema:
+          type: string
+      - name: program_name
+        in: query
+        required: false
+        description: 'Search on program_name. Format: {"operator":"equals","value":"my_program"}. Operators: equals, not equals, contains, begins, ends'
+        schema:
+          type: string
+      - name: points_credited
+        in: query
+        required: false
+        description: 'Search on points_credited. Format: {"operator":"gte","value":"100"}. Operators: equals, not equals, gt, gte, lt, lte'
+        schema:
+          type: string
+      - name: points_earned
+        in: query
+        required: false
+        description: 'Search on points_earned. Format: {"operator":"gte","value":"100"}. Operators: equals, not equals, gt, gte, lt, lte'
+        schema:
+          type: string
+      - name: points_remaining
+        in: query
+        required: false
+        description: 'Search on points_remaining. Format: {"operator":"gte","value":"50"}. Operators: equals, not equals, gt, gte, lt, lte'
+        schema:
+          type: string
+      - name: event_date
+        in: query
+        required: false
+        description: 'Search on event_date. Format: {"operator":"gte","value":"2024-01-01"}. Operators: equals, not equals, gt, gte, lt, lte, on date'
+        schema:
+          type: string
+      - name: value_date
+        in: query
+        required: false
+        description: 'Search on value_date. Format: {"operator":"gte","value":"2024-01-01"}. Operators: equals, not equals, gt, gte, lt, lte, on date'
+        schema:
+          type: string
+      - name: points_type
+        in: query
+        required: false
+        description: 'Search on points_type. Format: {"operator":"equals","value":"my_type"}. Operators: equals, not equals, contains, begins, ends'
+        schema:
+          type: string
+          default: '{"operator":"equals","value":"nq"}'
+      - name: validity_start
+        in: query
+        required: false
+        description: 'Search on validity_start. Format: {"operator":"gte","value":"2024-01-01"}. Operators: equals, not equals, gt, gte, lt, lte, on date'
+        schema:
+          type: string
+      - name: validity_end
+        in: query
+        required: false
+        description: 'Search on validity_end. Format: {"operator":"gte","value":"2024-12-31"}. Operators: equals, not equals, gt, gte, lt, lte, on date'
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        description: 'Search on status. Format: {"operator":"equals","value":"active"}. Operators: equals, not equals, contains, begins, ends'
+        schema:
+          type: string
+      - name: event_type
+        in: query
+        required: false
+        description: 'Search on event_type. Format: {"operator":"equals","value":"my_event"}. Operators: equals, not equals, contains, begins, ends'
+        schema:
+          type: string
+          enum:
+          - abandoned_cart
+          - birthday
+          - credit_points
+          - email_clicked
+          - email_opened
+          - order
+          - reward_attribution
+          - reward_burn
+          - subscribe_change
+          - subscription
+          - tier_change
+          - tier_downgrade
+          - tier_upgrade
+          - unsubscription
+          default: '{"operator":"equals","value":"event"}'
+      responses:
+        '200':
+          description: Point list returned.
+          content:
+            application/json:
+              example:
+                paging:
+                  cursors:
+                    after: null
+                    before: null
+                  previous: ''
+                  next: ''
+                count_element: 1
+                elements:
+                - validity_start: '2020-03-24 10:55:02'
+                  validity_end: '2021-03-24 10:55:02'
+                  tier_name: First Silver
+                  reason:
+                    interaction_type: manual
+                    message: this is a demo call
+                    interaction_id: ''
+                    rules_id: null
+                    rule_name: ''
+                  event_type: subscription
+                  points_type: non-qualifying
+                  program_name: PopHat
+                  status: expired
+                  event_date: '2020-09-22 16:06:18'
+                  value_date: '2020-09-22 16:06:18'
+                  card_code: my_card_code
+                  points_credited: 0
+                  points_remaining: 0
+                  points_earned: 10
+                  id: 10222
+                  cursor: WzM1ODg5LCIxMDAwMTk0NDMyMDM3Il0=
+        '400':
+          description: Wrong payload.
+        '500':
+          description: Something went wrong.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Points
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json

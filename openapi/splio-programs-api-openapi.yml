@@ -1,0 +1,414 @@
+openapi: 3.2.0
+info:
+  title: Splio Programs API
+  version: 1.0.0
+  description: 'Operations tagged Programs across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Programs
+paths:
+  /loyalty/programs:
+    get:
+      summary: List programs
+      description: Get programs formatted as a list.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: Get Programs List.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 20
+                sort:
+                  id: DESC
+                elements:
+                - id: 1
+                  name: Program name
+                  description: Program Description
+                  type: simple
+                  status: running
+                  start_at: '0000-00-00 00:00:00'
+                  end_at: '0000-00-00 00:00:00'
+                  created_at: '0000-00-00 00:00:00'
+                  updated_at: '0000-00-00 00:00:00'
+                  cascading: false
+                  downgrade_nb_rank: 0
+                  max_q_points: null
+                  max_nq_points: null
+                  default_q_points_validity_id_period: 1
+                  default_q_points_validity_days: null
+                  default_q_points_holding_days: 8
+                  default_nq_points_validity_id_period: null
+                  default_nq_points_validity_days: 180
+                  default_nq_points_holding_days: 0
+                  rounding_type: round
+                  default_points_to_amount_ratio: 1.75
+                  auto_generated_card_code: true
+                  automatic_subscription: true
+                  q_refund_mode: cancel
+                  nq_refund_mode: refund
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Programs
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/v1/programs/{id}/members:
+    get:
+      summary: List a program’s members
+      description: Get loyalty memberships of a program.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Program identifier.
+        schema:
+          type: integer
+          pattern: \d+
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return contact statuses that matched your search. Fields available on search in orders are 'card_code', 'program_joined_at', 'card_expire_at', 'q_point', 'nq_point', 'tier', 'name', 'firstname'.
+        schema:
+          type: array
+          items:
+            example:
+            - key: card_code
+              operator: equal
+              value: '33010000001'
+            properties:
+              key:
+                description: search fields, in rewards
+                type: string
+                enum:
+                - card_code
+                - program_joined_at
+                - card_expire_at
+                - q_point
+                - nq_point
+                - tier
+                - name
+                - firstname
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: List program's contact statuses
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 10
+                sort: []
+                elements:
+                - card_code: '33010000001'
+                  tier_joined_at: '2018-01-18 16:03:42'
+                  program_joined_at: '2018-01-18 16:03:42'
+                  card_expire_at: '2018-05-18 19:00:00'
+                  computed_at: '2018-02-22 15:00:00'
+                  q_point: 120
+                  nq_point: 230
+                  birthday: '1960-12-22'
+                  tier: Gold
+                  contact:
+                    id: 1
+                    contact_id: jdoe@email.com
+                    lastname: Hervet
+                    firstname: Geoffrey
+                  custom_fields:
+                  - id: 0
+                    name: custom_field
+                    value: This value is customized
+        '404':
+          description: Program not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Program not found.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Programs
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/programs/{id}:
+    get:
+      summary: Get a program
+      description: Get a loyalty program data.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Program identifier.
+        schema:
+          type: integer
+          pattern: \d+
+      - name: with_stats
+        in: query
+        required: false
+        description: Display statistics of the program.
+        schema:
+          type: boolean
+          default: false
+      - name: metric
+        in: query
+        required: false
+        description: Metric used as interval for statistics computation.
+        schema:
+          type: string
+          default: month
+      responses:
+        '200':
+          description: Get program data.
+          content:
+            application/json:
+              schema:
+                example:
+                  id: 1
+                  name: Flying Blue
+                  description: ''
+                  type: simple
+                  status: running
+                  start_at: '2018-01-01 00:00:00'
+                  end_at: null
+                  created_at: '2018-01-01 00:00:00'
+                  updated_at: '2018-01-04 12:55:13'
+                  cascading: false
+                  upgrade_compute_period:
+                    id: 1
+                    compute_type: upgrade
+                    first_compute: '2018-01-15 15:00:00'
+                    interval_type: days
+                    interval_count: 3
+                    last_run_date: null
+                    next_run_date: null
+                  downgrade_compute_period:
+                    id: 1
+                    compute_type: downgrade
+                    first_compute: '2018-01-15 15:00:00'
+                    interval_type: quarters
+                    interval_count: 5
+                    last_run_date: null
+                    next_run_date: null
+                  downgrade_nb_rank: 0
+                  max_q_points: 0
+                  max_nq_points: 0
+                  default_q_points_validity_id_period: 14
+                  default_q_points_validity_days: 160
+                  default_q_points_holding_days: 8
+                  default_nq_points_validity_id_period: 11
+                  default_nq_points_validity_days: 190
+                  default_nq_points_holding_days: 0
+                  rounding_type: round
+                  default_points_to_amount_ratio: 1.75
+                  auto_generated_card_code: true
+                  automatic_subscription: true
+                  q_refund_mode: cancel
+                  nq_refund_mode: refund
+        '404':
+          description: Program not found.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Programs
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /loyalty/programs/{id}/tiers:
+    get:
+      summary: List program's tiers
+      description: Get program's tiers formatted as a list.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Program identifier.
+        schema:
+          type: integer
+          pattern: \d+
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      responses:
+        '200':
+          description: List program's tiers
+          content:
+            application/json:
+              schema:
+                example:
+                  count_element: 2
+                  current_page: 1
+                  per_page: 10
+                  sort:
+                    id: DESC
+                  elements:
+                  - id: 2
+                    name: Gold
+                    created_at: '2017-12-26 10:00:00'
+                    updated_at: '2017-12-26 10:00:00'
+                    entry_threshold: 120
+                    downgrade_threshold: 50
+                    multiplier_q_points: 1
+                    multiplier_nq_points: 1.2
+                  - id: 1
+                    name: Silver
+                    created_at: '2017-12-26 10:00:00'
+                    updated_at: '2017-12-26 15:00:00'
+                    entry_threshold: 120
+                    downgrade_threshold: 50
+                    multiplier_q_points: 1
+                    multiplier_nq_points: 1.2
+        '404':
+          description: Program not found.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Programs
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json

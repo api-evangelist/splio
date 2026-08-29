@@ -1,0 +1,157 @@
+openapi: 3.2.0
+info:
+  title: Splio Loyalty API
+  version: 1.0.0
+  description: 'Operations tagged Loyalty across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Loyalty
+paths:
+  /loyalty/v2/contacts/{id}/points:
+    get:
+      summary: List a contact's points history
+      description: 'Get the list of a contact''s points history. This endpoint will be deprecated end of 2022. Please use this new one instead: https://developer.splio.com/#get_loyalty_points'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Contact unique key.
+        schema:
+          type: string
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return points that matched your search. Fields available on search in orders are 'card_code', 'operation_date', 'points_type', 'points_credited', 'points_earned', 'validity_end', 'id_program', 'program_name', 'id_tier', 'tier_name', 'status'.
+        schema:
+          type: array
+          items:
+            example:
+            - key: card_code
+              operator: equal
+              value: '33010000001'
+            properties:
+              key:
+                description: search fields, in rewards
+                type: string
+                enum:
+                - card_code
+                - operation_date
+                - points_type
+                - points_credited
+                - points_earned
+                - validity_end
+                - id_program
+                - program_name
+                - id_tier
+                - tier_name
+                - status
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Points retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                sort: []
+                elements:
+                  count_card: 1
+                  count_element: 1
+                  current_page: 1
+                  per_page: 50
+                  elements:
+                  - card_code: XXX00000
+                    event_date: '2019-03-26 06:02:58'
+                    event_type: credit_points
+                    id: 11384
+                    interaction_type: ''
+                    points_credited: 100
+                    points_earned: 100
+                    points_remaining: 100
+                    points_type: non-qualifying
+                    program: Program
+                    reason: The given reason
+                    status: Valid
+                    tier: Bronze
+                    validity_end: '2020-03-25 06:02:57'
+                    validity_start: '2019-03-26 06:02:57'
+        '404':
+          description: Contact not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Contact not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Loyalty
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json

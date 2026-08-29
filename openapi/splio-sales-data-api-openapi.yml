@@ -1,0 +1,1803 @@
+openapi: 3.2.0
+info:
+  title: Splio Sales data API
+  version: 1.0.0
+  description: 'Operations tagged Sales data across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Sales data
+paths:
+  /data/v1/orders:
+    get:
+      summary: List orders
+      description: Get the list of orders.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return orders that matched your search. Fields available on search in orders are 'external_id', 'shipping_amount', 'discount_amount', 'total_price', 'tax_amount', 'currency', 'sales_person', 'created_at', 'ordered_at' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: external_id
+              operator: equal
+              value: CGX00000945842
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - shipping_amount
+                - discount_amount
+                - total_price
+                - tax_amount
+                - currency
+                - sales_person
+                - created_at
+                - ordered_at
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Orders retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                sort:
+                  id: desc
+                elements:
+                - external_id: 3
+                  created_at: '2017-12-26 10:09:12'
+                  ordered_at: '2017-12-26 10:09:12'
+                  shipping_amount: 15.24
+                  discount_amount: 0
+                  total_price: 1337.42
+                  tax_amount: 0.5
+                  currency: EUR
+                  sales_person: John Doe
+                  contact:
+                    id: 5
+                    contact_id: jdoe@email.com
+                    name: Doe
+                    firstname: John
+                  store:
+                    external_id: '5'
+                    name: champs élysée
+                  custom_fields:
+                  - id: 0
+                    name: id_mail
+                    value: S2G1190284746300227
+                  - id: 1
+                    name: id_lien
+                    value: N1190284R746383111
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    post:
+      summary: Create an order/cart
+      description: Create an order or an abandoned cart.
+      responses:
+        '201':
+          description: Order creation is successful.
+          content:
+            application/json:
+              example:
+                external_id: my_order12348
+                contact_id: jdoe@email.com
+                contact:
+                  lastname: Hervet
+                  firstname: Geoffrey
+                  id: 1
+                  contact_id: jdoe@email.com
+                created_at: '2018-07-15 18:45:00'
+                ordered_at: '2018-07-15 18:45:00'
+                shipping_amount: 0
+                discount_amount: 0
+                total_price: 1.55
+                tax_amount: 0.55
+                sales_person: Mark Watney
+                currency: EUR
+                products:
+                - external_id: '10'
+                  name: Color Riche  - Vernis
+                  description: 140 Martinez Cobal
+                  brand: L'Oréal Paris
+                  unit_price: 10.25
+                  quantity: 2
+                  discount_amount: 0
+                  tax_amount: 0
+                  currency: EUR
+                  total_line_amount: 20.5
+                loyalty:
+                  card_code: C0111191
+                  id_program: 2
+                store:
+                  external_id: '2'
+                  name: Champs élysées
+                  online: false
+                  store_type: retail
+                  manager: Eric Sloane
+                custom_fields:
+                - id: 0
+                  name: id_mail
+                  value: ''
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - external_id
+              - store_external_id
+              - contact_id
+              properties:
+                external_id:
+                  example: my_order_123
+                  type: string
+                contact_id:
+                  example: jdoe@email.com
+                  type: string
+                card_code:
+                  example: my_card_code
+                  type: string
+                store_external_id:
+                  example: ext_madeleine
+                  type: string
+                ordered_at:
+                  description: When the order was purchased (local timezone).
+                  example: '2018-01-12 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                discount_amount:
+                  example: 0.25
+                  type: number
+                shipping_amount:
+                  example: 0.75
+                  type: number
+                total_price:
+                  example: 1.55
+                  type: number
+                tax_amount:
+                  example: 0.55
+                  type: number
+                completed:
+                  description: Order is purchased or not
+                  example: 'false'
+                  type: boolean
+                  default: true
+                sales_person:
+                  example: John Doe
+                  type: string
+                currency:
+                  example: EUR
+                  type: string
+                products:
+                  example:
+                  - product_id: '10'
+                    unit_price: '25'
+                    quantity: 2
+                    discount_amount: 0
+                    tax_amount: 0
+                    currency: EUR
+                    total_line_amount: '50'
+                  items:
+                    properties:
+                      product_id:
+                        type: string
+                      unit_price:
+                        type: number
+                      quantity:
+                        type: integer
+                      discount_amount:
+                        type: number
+                      tax_amount:
+                        type: number
+                      currency:
+                        type: string
+                      total_line_amount:
+                        type: number
+                    type: object
+                  type: array
+                custom_fields:
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Order data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/orders/{id}:
+    delete:
+      summary: Delete an order/cart
+      description: Delete an order or an abandoned cart.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Order's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '204':
+          description: Order is successfully deleted.
+          content:
+            application/json:
+              example: []
+        '404':
+          description: Order not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Order not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v1/orders/{id}:
+    get:
+      summary: Get an order/cart
+      description: Get a order or an abandoned cart data based on its external_id.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Order's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Order retrieval is successful.
+          content:
+            application/json:
+              example:
+                external_id: my_order12348
+                contact_id: jdoe@email.com
+                contact:
+                  lastname: Hervet
+                  firstname: Geoffrey
+                  id: 1
+                  contact_id: jdoe@email.com
+                created_at: '2018-07-15 18:45:00'
+                ordered_at: '2018-07-15 18:45:00'
+                shipping_amount: 0
+                discount_amount: 0
+                total_price: 0.5
+                tax_amount: 0.2
+                sales_person: Mark Watney
+                currency: EUR
+                products:
+                - external_id: '10'
+                  name: Color Riche  - Vernis
+                  description: 140 Martinez Cobal
+                  brand: L'Oréal Paris
+                  unit_price: 10.25
+                  quantity: 2
+                  discount_amount: 0
+                  tax_amount: 0
+                  currency: EUR
+                  total_line_amount: 20.5
+                loyalty:
+                  card_code: C0111191
+                  id_program: 2
+                store:
+                  external_id: '2'
+                  name: Champs élysées
+                  online: false
+                  store_type: retail
+                  manager: Eric Sloane
+                custom_fields:
+                - id: 0
+                  name: id_mail
+                  value: ''
+        '404':
+          description: Order not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Order not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v2/orders/{id}:
+    get:
+      summary: Get an order/cart with its status
+      description: Get a order or an abandoned cart based on its external_id, and get the status associated to the order as well.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Order's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Order retrieval is successful.
+          content:
+            application/json:
+              example:
+                external_id: my_order12348
+                contact_id: jdoe@email.com
+                contact:
+                  lastname: Hervet
+                  firstname: Geoffrey
+                  id: 1
+                  contact_id: jdoe@email.com
+                created_at: '2018-07-15 18:45:00'
+                ordered_at: '2018-07-15 18:45:00'
+                shipping_amount: 0
+                discount_amount: 0
+                total_price: 0.5
+                tax_amount: 0.2
+                sales_person: Mark Watney
+                currency: EUR
+                products:
+                - external_id: '10'
+                  name: Color Riche  - Vernis
+                  description: 140 Martinez Cobal
+                  brand: L'Oréal Paris
+                  unit_price: 10.25
+                  quantity: 2
+                  discount_amount: 0
+                  tax_amount: 0
+                  currency: EUR
+                  status: paid
+                  total_line_amount: 20.5
+                loyalty:
+                  card_code: C0111191
+                  id_program: 2
+                store:
+                  external_id: '2'
+                  name: Champs élysées
+                  online: false
+                  store_type: retail
+                  manager: Eric Sloane
+                custom_fields:
+                - id: 0
+                  name: id_mail
+                  value: ''
+                status: paid
+                status_lastupdate: '2018-07-15 18:45:00'
+        '404':
+          description: Order not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Order not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v3/orders/{id}:
+    patch:
+      summary: Edit an order/cart
+      description: Edit an entire order or an abandoned cart with its custom fields.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Order's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Order data.
+          content:
+            application/json:
+              example:
+                external_id: my_order12348
+                contact_id: jdoe@email.com
+                contact:
+                  lastname: Hervet
+                  firstname: Geoffrey
+                  id: 1
+                  contact_id: jdoe@email.com
+                created_at: '2018-07-15 18:45:00'
+                ordered_at: '2018-07-15 18:45:00'
+                shipping_amount: 0
+                discount_amount: 0
+                total_price: 1.55
+                tax_amount: 0.55
+                sales_person: Mark Watney
+                currency: EUR
+                products:
+                - external_id: '10'
+                  name: Color Riche  - Vernis
+                  description: 140 Martinez Cobal
+                  brand: L'Oréal Paris
+                  unit_price: 10.25
+                  quantity: 2
+                  discount_amount: 0
+                  tax_amount: 0
+                  currency: EUR
+                  total_line_amount: 20.5
+                loyalty:
+                  card_code: C0111191
+                  id_program: 2
+                store:
+                  external_id: '2'
+                  name: Champs élysées
+                  online: false
+                  store_type: retail
+                  manager: Eric Sloane
+                custom_fields:
+                - id: 0
+                  name: id_mail
+                  value: ''
+        '404':
+          description: Order not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Order not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                contact_id:
+                  example: jdoe@email.com
+                  type: string
+                store_external_id:
+                  example: ext_madeleine
+                  type: string
+                ordered_at:
+                  description: When the order was purchased (local timezone).
+                  example: '2018-01-12 15:00:00'
+                  type: string
+                  pattern: ^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$
+                discount_amount:
+                  example: 0.25
+                  type: number
+                shipping_amount:
+                  example: 0.75
+                  type: number
+                total_price:
+                  example: 1.55
+                  type: number
+                tax_amount:
+                  example: 0.55
+                  type: number
+                sales_person:
+                  example: John Doe
+                  type: string
+                completed:
+                  description: Order is purchased or not
+                  example: 'false'
+                  type: boolean
+                currency:
+                  example: EUR
+                  type: string
+                products:
+                  description: empty array will erase existing order lines. In order to avoid deleting data, either don't specify 'products' or set it to null
+                  example:
+                  - product_id: '10'
+                    unit_price: '25'
+                    quantity: 2
+                    discount_amount: 0
+                    tax_amount: 0
+                    currency: EUR
+                    total_line_amount: '50'
+                  items:
+                    properties:
+                      product_id:
+                        type: string
+                      unit_price:
+                        type: number
+                      quantity:
+                        type: integer
+                      discount_amount:
+                        type: number
+                      tax_amount:
+                        type: number
+                      currency:
+                        type: string
+                      total_line_amount:
+                        type: number
+                    type: object
+                  type: array
+                custom_fields:
+                  description: custom fields is patched too so you can only set some of them, other custom fields will not be changed
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Order data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v1/orders/abandoned:
+    get:
+      summary: List abandoned carts
+      description: Get the list of abandoned carts.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return abandoned carts that matched your search. Fields available on search in abandoned carts are 'external_id', 'shipping_amount', 'discount_amount', 'total_price', 'tax_amount', 'currency', 'sales_person', 'created_at', 'ordered_at' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: external_id
+              operator: equal
+              value: CGX00000945842
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - shipping_amount
+                - discount_amount
+                - total_price
+                - tax_amount
+                - currency
+                - sales_person
+                - created_at
+                - ordered_at
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Abandoned carts retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                sort:
+                  id: ASC
+                elements:
+                - external_id: 3
+                  created_at: '2017-12-26 10:09:12'
+                  ordered_at: null
+                  shipping_amount: 15.24
+                  discount_amount: 0
+                  total_price: 1337.42
+                  tax_amount: 0.42
+                  currency: EUR
+                  sales_person: John Doe
+                  contact:
+                    id: 5
+                    contact_id: jdoe@email.com
+                    name: Doe
+                    firstname: John
+                  store: null
+                  custom_fields:
+                  - id: 0
+                    name: id_mail
+                    value: S2G1190284746300227
+                  - id: 1
+                    name: id_lien
+                    value: N1190284R746383111
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v2/orders:
+    get:
+      summary: List orders with their status
+      description: Get the list of orders with their status.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return orders that matched your search. Fields available on search in orders are 'external_id', 'shipping_amount', 'discount_amount', 'total_price', 'tax_amount', 'currency', 'sales_person', 'created_at', 'ordered_at' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: external_id
+              operator: equal
+              value: CGX00000945842
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - shipping_amount
+                - discount_amount
+                - total_price
+                - tax_amount
+                - currency
+                - sales_person
+                - created_at
+                - ordered_at
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Orders retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 2
+                current_page: 1
+                sort:
+                  id: desc
+                elements:
+                - external_id: 3
+                  created_at: '2017-12-26 10:09:12'
+                  ordered_at: '2017-12-26 10:09:12'
+                  shipping_amount: 15.24
+                  discount_amount: 0
+                  total_price: 1337.42
+                  tax_amount: 0.5
+                  currency: EUR
+                  sales_person: John Doe
+                  contact:
+                    id: 5
+                    contact_id: jdoe@email.com
+                    name: Doe
+                    firstname: John
+                  store:
+                    external_id: '5'
+                    name: champs élysée
+                  custom_fields:
+                  - id: 0
+                    name: id_mail
+                    value: S2G1190284746300227
+                  - id: 1
+                    name: id_lien
+                    value: N1190284R746383111
+                  status: paid
+                  status_lastupdate: '2018-07-15 18:45:00'
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v1/products:
+    get:
+      summary: List products
+      description: Get the list of products.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return products that matched your search. Fields available on search in products are 'external_id', 'name', 'brand', 'price' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: name
+              operator: equal
+              value: Gloss
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - name
+                - brand
+                - price
+                - c0
+                - c1
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Products retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                sort:
+                  id: desc
+                elements:
+                - external_id: '1'
+                  name: Product Name
+                  description: Description
+                  brand: Brand
+                  category: Product category
+                  price: 20
+                  created_at: '2019-02-15 12:55:00'
+                  updated_at: '2019-02-22 17:12:15'
+                  custom_fields:
+                  - id: 0
+                    name: custom field 0
+                    value: Valeur 0
+                    data_type: text
+                  - id: 1
+                    name: custom field 1
+                    value: ''
+                    data_type: double
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    post:
+      summary: Create a product
+      description: Create a product.
+      responses:
+        '201':
+          description: Product data.
+          content:
+            application/json:
+              example:
+                external_id: '1'
+                name: Product Name
+                description: Description
+                brand: Brand
+                sku: '8120725247'
+                category: Category
+                img_url: https://test.com/image.png
+                price: 1
+                created_at: '2019-02-15 12:55:00'
+                updated_at: '2019-02-22 17:12:15'
+                custom_fields:
+                - id: 0
+                  name: custom field 0
+                  value: Valeur 0
+                  data_type: text
+                - id: 1
+                  name: custom field 1
+                  value: ''
+                  data_type: double
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - external_id
+              properties:
+                external_id:
+                  example: my_product_123
+                  type: string
+                name:
+                  example: Saint Germain Product
+                  type: string
+                description:
+                  example: Description
+                  type: string
+                brand:
+                  example: Louis Vutton
+                  type: string
+                price:
+                  example: 1
+                  type: number
+                sku:
+                  example: '8120725247'
+                  type: string
+                img_url:
+                  example: https://test.com/image.png
+                  type: string
+                category:
+                  example: Category
+                  type: string
+                custom_fields:
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Product data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/products/{id}:
+    delete:
+      summary: Delete a product
+      description: Delete product.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Product's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '204':
+          description: Product is successfully deleted.
+          content:
+            application/json:
+              example: []
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Product not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v1/products/{id}:
+    get:
+      summary: Get a product
+      description: Get a product data.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Product's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Product data.
+          content:
+            application/json:
+              example:
+                external_id: '111'
+                name: Product Name
+                description: Description
+                brand: Brand
+                price: 1
+                created_at: '2019-02-15 12:55:00'
+                updated_at: '2019-02-22 17:12:15'
+                custom_fields:
+                - id: 0
+                  name: custom field 0
+                  value: Valeur 0
+                - id: 1
+                  name: custom field 1
+                  value: Valeur 1
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Product not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    patch:
+      summary: Edit a product
+      description: Edit a product.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Product's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Product data.
+          content:
+            application/json:
+              example:
+                external_id: '1'
+                name: Product Name
+                description: Description
+                brand: Brand
+                sku: '8120725247'
+                category: Category
+                img_url: https://test.com/image.png
+                price: 1
+                created_at: '2019-02-15 12:55:00'
+                updated_at: '2019-02-22 17:12:15'
+                custom_fields:
+                - id: 0
+                  name: custom field 0
+                  value: Valeur 0
+                - id: 1
+                  name: custom field 1
+                  value: Valeur 1
+        '404':
+          description: Product not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Product not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  example: Saint Germain Product
+                  type: string
+                description:
+                  example: Description
+                  type: string
+                brand:
+                  example: Louis Vutton
+                  type: string
+                price:
+                  example: 1
+                  type: number
+                sku:
+                  example: '8120725247'
+                  type: string
+                img_url:
+                  example: https://test.com/image.png
+                  type: string
+                category:
+                  example: Category
+                  type: string
+                custom_fields:
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Product data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v1/stores:
+    get:
+      summary: List stores
+      description: Get the list of stores.
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 50
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of field, operator and searched value. It will return stores that matched your search. Fields available on search in stores are 'external_id', 'name', 'online', 'store_type', 'manager' and custom fields numbers (0, 1, 2, ...)
+        schema:
+          type: array
+          items:
+            example:
+            - key: name
+              operator: equal
+              value: Retail Opera
+            properties:
+              key:
+                description: search fields, in contacts
+                type: string
+                enum:
+                - external_id
+                - name
+                - online
+                - store_type
+                - manager
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Get Stores List.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                sort:
+                  id: desc
+                elements:
+                - external_id: '9'
+                  name: Mystore 9
+                  online: false
+                  store_type: ''
+                  manager: ''
+                  created_at: '2019-02-15 12:55:00'
+                  updated_at: '2019-02-22 17:12:15'
+                  custom_fields:
+                  - id: 0
+                    name: custom field 0
+                    value: Valeur 0
+                    data_type: text
+                  - id: 1
+                    name: custom field 1
+                    value: ''
+                    data_type: double
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    post:
+      summary: Create a store
+      description: Create a store.
+      responses:
+        '201':
+          description: Store creation is successful.
+          content:
+            application/json:
+              example:
+                external_id: '1'
+                name: Store Name
+                online: false
+                store_type: Magento
+                manager: John Doe
+                created_at: '2019-02-15 12:55:00'
+                updated_at: '2019-02-22 17:12:15'
+                custom_fields:
+                - id: 0
+                  name: custom field 0
+                  value: Valeur 0
+                  data_type: text
+                - id: 1
+                  name: custom field 1
+                  value: ''
+                  data_type: double
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - external_id
+              - name
+              properties:
+                external_id:
+                  example: my_store_123
+                  type: string
+                name:
+                  example: Saint Germain Store
+                  type: string
+                online:
+                  example: 'false'
+                  type: boolean
+                store_type:
+                  example: Magento
+                  type: string
+                manager:
+                  example: John Doe
+                  type: string
+                custom_fields:
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Store data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/stores/{id}:
+    delete:
+      summary: Delete a store
+      description: Delete store data.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Store's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '204':
+          description: Store is successfully deleted.
+          content:
+            application/json:
+              example: []
+        '404':
+          description: Store not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Store not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v1/stores/{id}:
+    get:
+      summary: Get a store
+      description: Get a store data based on its ext_id.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Store's identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Store retrieval is successful.
+          content:
+            application/json:
+              example:
+                external_id: '1'
+                name: Store Name
+                online: false
+                store_type: Magento
+                manager: John Doe
+                created_at: '2019-02-15 12:55:00'
+                updated_at: '2019-02-22 17:12:15'
+                custom_fields:
+                - id: 0
+                  name: custom field 0
+                  value: Valeur 0
+                  data_type: text
+                - id: 1
+                  name: custom field 1
+                  value: ''
+                  data_type: double
+        '404':
+          description: Store not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: ext_id
+                  error: wrong_value
+                  error_description: Store not found for given identifier.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /data/v2/stores/{id}:
+    patch:
+      summary: Edit a store
+      description: Edit a store.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Store's external identifier.
+        schema:
+          type: string
+          pattern: .+
+      responses:
+        '200':
+          description: Store data.
+          content:
+            application/json:
+              example:
+                external_id: External ID
+                name: Store Name
+                online: false
+                store_type: retail
+                manager: John Doe
+                created_at: '2019-02-15 12:55:00'
+                updated_at: '2019-02-22 17:12:15'
+                custom_fields:
+                - id: 0
+                  name: custom field 0
+                  value: Valeur 0
+                  data_type: text
+                - id: 1
+                  name: custom field 1
+                  value: Valeur 1
+                  data_type: text
+        '404':
+          description: Store not found.
+          content:
+            application/json:
+              example:
+                status: 404
+                errors:
+                - error_key: id
+                  error: wrong_value
+                  error_description: Store not found for id XXXXX.
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Sales data
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  example: Saint Germain Store
+                  type: string
+                online:
+                  example: false
+                  type: boolean
+                store_type:
+                  example: retail
+                  type: string
+                manager:
+                  example: John Doe
+                  type: string
+                custom_fields:
+                  description: custom fields is patched too so you can only set some of them, other custom fields will not be changed
+                  example:
+                  - name: foo
+                    value: bar
+                  - name: foo2
+                    value: bar2
+                  items:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      value:
+                        type: string
+                    type: object
+                  type: array
+              type: object
+        description: Store data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json

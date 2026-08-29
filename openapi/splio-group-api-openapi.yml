@@ -1,0 +1,378 @@
+openapi: 3.2.0
+info:
+  title: Splio Group API
+  version: 1.0.0
+  description: 'Operations tagged Group across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.splio.com
+- url: http://api.splio.com
+tags:
+- name: Group
+paths:
+  /target/groups:
+    post:
+      summary: Create a group
+      description: Create a group with first 10 000 contacts, the payload can't get more than 10000 keys. To add more contacts, you should use endpoint group/{id}/add as many times as necessary.
+      responses:
+        '201':
+          description: group creation is successful.
+          content:
+            application/json:
+              example:
+                group:
+                  id: 1
+                  name: basket > 100
+                  description: individual having a basket > 100
+                  members: 1567
+                  user_creator: jdoe
+                  source: integrator_vip
+                keys_not_found:
+                - janedoe@gmail.com
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Group
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - name
+              properties:
+                name:
+                  example: basket > 100
+                  type: string
+                description:
+                  example: individual having a basket > 100
+                  type: string
+                source:
+                  example: integrator_vip
+                  type: string
+                keys:
+                  items:
+                    example:
+                    - johndoe@splio.com
+                    - janedoe@splio.com
+                    type: string
+                  type: array
+              type: object
+              maxItems: 10000
+        description: Group data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /target/groups/{id}/add:
+    post:
+      summary: Add contacts to a group
+      description: Add contacts to an existant group.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: group id.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: contacts was successfully inserted in the group.
+          content:
+            application/json:
+              example:
+                group_id: 1
+                nb_total_contacts: 3048
+                nb_inserted_contacts: 1
+                keys_not_found:
+                - janedoe@gmail.com
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Group
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                keys:
+                  items:
+                    example:
+                    - johndoe@splio.com
+                    - janedoe@splio.com
+                    type: string
+                  type: array
+                  maxItems: 10000
+                  minItems: 1
+              type: object
+        description: Group data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /target/groups/{id}/clear:
+    post:
+      summary: Remove all contacts from a group
+      description: Remove all contacts from an existant group.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: group id.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: all contacts were successfully deleted in the group.
+          content:
+            application/json:
+              example: []
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Group
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /target/groups/list:
+    get:
+      summary: Get groups
+      description: Get groups
+      parameters:
+      - name: per_page
+        in: query
+        required: false
+        description: Number of items displayed per page.
+        schema:
+          type: integer
+          default: 20
+          maximum: 1000
+          minimum: 1
+      - name: page_number
+        in: query
+        required: false
+        description: Page number.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: term
+        in: query
+        required: false
+        description: search for elements
+        schema:
+          type: string
+      - name: fields
+        in: query
+        required: false
+        description: Use a combination of the field, the operator and the searched value. It will return groups matched to your search. fields available on search are  'id', 'name', 'tags'
+        schema:
+          type: array
+          items:
+            example:
+            - key: name
+              operator: equal
+              value: group#17
+            properties:
+              key:
+                description: search fields, in groups
+                type: string
+                enum:
+                - id
+                - name
+                - tags
+              operator:
+                description: operator for search operators are limited by the type of value expected
+                type: string
+                enum:
+                - is
+                - after
+                - before
+                - contains
+                - ends
+                - equal
+                - greater
+                - isnot
+                - lower
+                - notequal
+                - starts
+              value:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: Group retrieval is successful.
+          content:
+            application/json:
+              example:
+                count_element: 1
+                current_page: 1
+                per_page: 50
+                sort: []
+                elements:
+                - intid: 10
+                  id: 1
+                  name: My group
+                  nb_binded_members: null
+                  tags:
+                  - optin
+                  updated_at: '0000-00-00 00:00:00'
+                  status: active
+                  is_favorite: false
+                  is_protected: false
+                  nb_emails: 41741
+                  nb_sms: 78
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Group
+      security:
+      - Bearer: []
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+  /target/groups/{id}/remove:
+    post:
+      summary: Remove contacts from a group
+      description: Remove contacts from an existant group.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: group id.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: contacts was successfully deleted in the group.
+          content:
+            application/json:
+              example:
+                group_id: 1
+                nb_total_contacts: 3048
+                nb_removed_contacts: 1
+                keys_not_found:
+                - janedoe@gmail.com
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                - error_key: field_1
+                  error: wrong_value
+                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Group
+      security:
+      - Bearer: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                keys:
+                  items:
+                    example:
+                    - johndoe@splio.com
+                    - janedoe@splio.com
+                    type: string
+                  type: array
+                  maxItems: 10000
+                  minItems: 1
+              type: object
+        description: Group data.
+        required: true
+    servers:
+    - url: https://api.splio.com
+    - url: http://api.splio.com
+components:
+  requestBodies:
+    Payload:
+      content:
+        application/json:
+          schema:
+            properties:
+              keys:
+                items:
+                  example:
+                  - johndoe@splio.com
+                  - janedoe@splio.com
+                  type: string
+                type: array
+                maxItems: 10000
+                minItems: 1
+            type: object
+      description: Group data.
+      required: true
+  securitySchemes:
+    Bearer:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
+x-refined-from:
+- splio-doc-swagger2.json
+- splio-customer-platform-openapi.json
