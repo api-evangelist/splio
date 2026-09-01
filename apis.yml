@@ -18,18 +18,18 @@ specificationVersion: '0.20'
 created: '2026-08-29'
 modified: '2026-08-29'
 tags:
-- marketing-automation
-- customer-data-platform
-- loyalty
+- Marketing Automation
+- Customer Data Platform
+- Loyalty
 - CRM
-- email-marketing
+- Email Marketing
 - SMS
-- mobile-wallet
+- Mobile Wallet
 - Retail
 - E-Commerce
-- predictive-ai
+- Predictive AI
 - Customer Engagement
-- france
+- France
 tags_raw:
 - marketing-automation
 - customer-data-platform
@@ -52,7 +52,7 @@ apis:
   humanURL: https://documenter.getpostman.com/view/10206569/TzRX9kyT
   baseURL: https://api.splio.com
   tags:
-  - loyalty
+  - Loyalty
   - Customer Engagement
   tags_raw:
   - loyalty
