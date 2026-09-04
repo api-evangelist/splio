@@ -1,17 +1,17 @@
 ---
 kin_checks:
   slug: splio
-  schema_version: 0.17.2
-  scored_at: '2026-09-01'
-  run_ts: 2026-09-01T063623
+  schema_version: 0.18.2
+  scored_at: '2026-09-04'
+  run_ts: 2026-09-04T062714
   note: Actionable checks only (missed + partial). earned/na are every other check
-    in rubric/scoring-0.17.2.yml; counts below let you verify that.
+    in rubric/scoring-0.18.2.yml; counts below let you verify that.
   counts:
-    total: 130
-    earned: 47
-    partial: 12
-    missed: 51
-    na: 20
+    total: 132
+    earned: 46
+    partial: 14
+    missed: 50
+    na: 22
   checks:
   - id: well_known_published
     status: missed
@@ -26,8 +26,6 @@ kin_checks:
   - id: info_complete
     status: missed
     detail: 0 of 17 openapi documents pass
-  - id: servers_resolvable
-    status: missed
   - id: components_reuse
     status: missed
     detail: 0 of 17 openapi documents pass
@@ -45,8 +43,6 @@ kin_checks:
   - id: json_ld_class_depth
     status: missed
   - id: json_ld_property_depth
-    status: missed
-  - id: lifecycle_documented
     status: missed
   - id: domain_standard_conformance
     status: missed
@@ -108,6 +104,8 @@ kin_checks:
     status: missed
   - id: reversibility_documented
     status: missed
+  - id: mcp_server
+    status: missed
   - id: event_surface_described
     status: missed
   - id: consent_identity
@@ -139,6 +137,9 @@ kin_checks:
   - id: examples_present
     status: partial
     earned: 3.92
+  - id: lifecycle_documented
+    status: partial
+    earned: 1.08
   - id: github_org_present
     status: partial
     earned: 1.0
@@ -155,10 +156,9 @@ kin_checks:
     status: partial
     earned: 2.5
     detail: pointer liveness 0.5
-  - id: mcp_server
+  - id: agent_skill_present
     status: partial
-    earned: 4.8
-    detail: 'grade: documented'
+    earned: 0.75
   - id: auth_clarity
     status: partial
     earned: 3.5
@@ -171,3 +171,7 @@ kin_checks:
     status: partial
     earned: 3.5
     detail: 'grade: documented'
+  - id: agent_skills
+    status: partial
+    earned: 1.25
+    detail: 'authorship: derived'
