@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Splio Blacklist API
+  title: Splio Customer Platform Blacklist API
+  description: API Documentation for Splio Customer Platform
   version: 1.0.0
-  description: 'Operations tagged Blacklist across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.splio.com
 - url: http://api.splio.com
@@ -31,17 +31,17 @@ paths:
         description: Number of items displayed per page.
         schema:
           type: integer
-          default: 50
-          maximum: 1000
           minimum: 1
+          maximum: 1000
+          default: 50
       - name: page_number
         in: query
         required: false
         description: Page number.
         schema:
           type: integer
-          default: 1
           minimum: 1
+          default: 1
       - name: term
         in: query
         required: false
@@ -53,26 +53,30 @@ paths:
           description: Blacklists retrieval is successful.
           content:
             application/json:
-              example:
-                count_element: 1
-                current_page: 1
-                per_page: 50
-                sort: []
-                elements:
-                - number: '33614021388'
-                  creation_date: '2017-05-09'
-                  source: custom
+              examples:
+                response:
+                  value:
+                    count_element: 1
+                    current_page: 1
+                    per_page: 50
+                    sort: []
+                    elements:
+                    - number: '33614021388'
+                      creation_date: '2017-05-09'
+                      source: custom
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -81,9 +85,8 @@ paths:
       - Blacklist
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getDataBlacklistsCellphones
+      x-operation-id-source: derived
   /data/blacklists/{channel}:
     post:
       summary: Add touchpoint(s) in a custom blacklist
@@ -98,46 +101,6 @@ paths:
           enum:
           - cellphone
           - email
-      responses:
-        '200':
-          description: Blacklisting touchpoint(s) is successful.
-          content:
-            application/json:
-              example:
-                successes:
-                - 1234@test.com
-                - 456@test.com
-                failures: []
-        '207':
-          description: Blacklisting touchpoint(s) is partially successful.
-          content:
-            application/json:
-              example:
-                successes:
-                - 1234@test.com
-                - 456@test.com
-                failures:
-                - touchpoint: john@doe.com
-                  error: Touchpoint john@doe.com is already blacklisted.
-                  error_key: touchpoint_already_exist
-        '400':
-          description: Blacklisting touchpoint(s) failed.
-          content:
-            application/json:
-              example:
-                successes: []
-                failures:
-                - touchpoint: john@doe.com
-                  error: Touchpoint john@doe.com is already blacklisted.
-                  error_key: touchpoint_already_exist
-        '401':
-          description: Authentication failed.
-        '403':
-          description: Forbidden.
-      tags:
-      - Blacklist
-      security:
-      - Bearer: []
       requestBody:
         content:
           application/json:
@@ -152,9 +115,54 @@ paths:
               type: object
         description: Touchpoints to add to blacklist.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      responses:
+        '200':
+          description: Blacklisting touchpoint(s) is successful.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    successes:
+                    - 1234@test.com
+                    - 456@test.com
+                    failures: []
+        '207':
+          description: Blacklisting touchpoint(s) is partially successful.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    successes:
+                    - 1234@test.com
+                    - 456@test.com
+                    failures:
+                    - touchpoint: john@doe.com
+                      error: Touchpoint john@doe.com is already blacklisted.
+                      error_key: touchpoint_already_exist
+        '400':
+          description: Blacklisting touchpoint(s) failed.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    successes: []
+                    failures:
+                    - touchpoint: john@doe.com
+                      error: Touchpoint john@doe.com is already blacklisted.
+                      error_key: touchpoint_already_exist
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Blacklist
+      security:
+      - Bearer: []
+      operationId: postDataBlacklistsByChannel
+      x-operation-id-source: derived
   /data/blacklists/{channel}/{source}:
     delete:
       summary: Delete touchpoint(s) from blacklist
@@ -179,46 +187,6 @@ paths:
           - custom
           - unsub
           - all
-      responses:
-        '200':
-          description: Deleting touchpoint(s) from blacklist is successful.
-          content:
-            application/json:
-              example:
-                successes:
-                - 1234@test.com
-                - 456@test.com
-                failures: []
-        '207':
-          description: Deleting touchpoint(s) from blacklist is partially successful.
-          content:
-            application/json:
-              example:
-                successes:
-                - 1234@test.com
-                - 456@test.com
-                failures:
-                - touchpoint: john@doe.com
-                  error: Touchpoint john@doe.com not found in custom blacklist.
-                  error_key: touchpoint_not_blacklisted
-        '400':
-          description: Blacklisting touchpoint(s) failed.
-          content:
-            application/json:
-              example:
-                successes: []
-                failures:
-                - touchpoint: john@doe.com
-                  error: Touchpoint john@doe.com not found in custom blacklist.
-                  error_key: touchpoint_not_blacklisted
-        '401':
-          description: Authentication failed.
-        '403':
-          description: Forbidden.
-      tags:
-      - Blacklist
-      security:
-      - Bearer: []
       requestBody:
         content:
           application/json:
@@ -233,9 +201,54 @@ paths:
               type: object
         description: data.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      responses:
+        '200':
+          description: Deleting touchpoint(s) from blacklist is successful.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    successes:
+                    - 1234@test.com
+                    - 456@test.com
+                    failures: []
+        '207':
+          description: Deleting touchpoint(s) from blacklist is partially successful.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    successes:
+                    - 1234@test.com
+                    - 456@test.com
+                    failures:
+                    - touchpoint: john@doe.com
+                      error: Touchpoint john@doe.com not found in custom blacklist.
+                      error_key: touchpoint_not_blacklisted
+        '400':
+          description: Blacklisting touchpoint(s) failed.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    successes: []
+                    failures:
+                    - touchpoint: john@doe.com
+                      error: Touchpoint john@doe.com not found in custom blacklist.
+                      error_key: touchpoint_not_blacklisted
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Blacklist
+      security:
+      - Bearer: []
+      operationId: deleteDataBlacklistsByChannelBySource
+      x-operation-id-source: derived
   /data/blacklists/emails:
     get:
       summary: Get blacklisted emails
@@ -259,17 +272,17 @@ paths:
         description: Number of items displayed per page.
         schema:
           type: integer
-          default: 50
-          maximum: 1000
           minimum: 1
+          maximum: 1000
+          default: 50
       - name: page_number
         in: query
         required: false
         description: Page number.
         schema:
           type: integer
-          default: 1
           minimum: 1
+          default: 1
       - name: term
         in: query
         required: false
@@ -281,26 +294,30 @@ paths:
           description: Blacklists retrieval is successful.
           content:
             application/json:
-              example:
-                count_element: 1
-                current_page: 1
-                per_page: 50
-                sort: []
-                elements:
-                - number: john@doe.com
-                  creation_date: '2017-05-09'
-                  source: custom
+              examples:
+                response:
+                  value:
+                    count_element: 1
+                    current_page: 1
+                    per_page: 50
+                    sort: []
+                    elements:
+                    - number: john@doe.com
+                      creation_date: '2017-05-09'
+                      source: custom
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -309,16 +326,19 @@ paths:
       - Blacklist
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getDataBlacklistsEmails
+      x-operation-id-source: derived
 components:
   securitySchemes:
     Bearer:
-      name: Authorization
-      type: apiKey
-      in: header
       description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
-x-refined-from:
-- splio-doc-swagger2.json
-- splio-customer-platform-openapi.json
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-origin:
+- url: https://api.splio.com/doc.json
+  format: swagger
+  version: '2.0'
+  converter:
+    url: https://github.com/mermade/oas-kit
+    version: 7.0.8

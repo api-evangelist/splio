@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Splio Group API
+  title: Splio Customer Platform Group API
+  description: API Documentation for Splio Customer Platform
   version: 1.0.0
-  description: 'Operations tagged Group across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.splio.com
 - url: http://api.splio.com
@@ -13,40 +13,6 @@ paths:
     post:
       summary: Create a group
       description: Create a group with first 10 000 contacts, the payload can't get more than 10000 keys. To add more contacts, you should use endpoint group/{id}/add as many times as necessary.
-      responses:
-        '201':
-          description: group creation is successful.
-          content:
-            application/json:
-              example:
-                group:
-                  id: 1
-                  name: basket > 100
-                  description: individual having a basket > 100
-                  members: 1567
-                  user_creator: jdoe
-                  source: integrator_vip
-                keys_not_found:
-                - janedoe@gmail.com
-        '400':
-          description: The request validation failed.
-          x-readme: BODYBODY
-          content:
-            application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
-        '401':
-          description: Authentication failed.
-        '403':
-          description: Forbidden.
-      tags:
-      - Group
-      security:
-      - Bearer: []
       requestBody:
         content:
           application/json:
@@ -74,9 +40,46 @@ paths:
               maxItems: 10000
         description: Group data.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      responses:
+        '201':
+          description: group creation is successful.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    group:
+                      id: 1
+                      name: basket > 100
+                      description: individual having a basket > 100
+                      members: 1567
+                      user_creator: jdoe
+                      source: integrator_vip
+                    keys_not_found:
+                    - janedoe@gmail.com
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Group
+      security:
+      - Bearer: []
+      operationId: postTargetGroups
+      x-operation-id-source: derived
   /target/groups/{id}/add:
     post:
       summary: Add contacts to a group
@@ -88,28 +91,34 @@ paths:
         description: group id.
         schema:
           type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/Payload'
       responses:
         '200':
           description: contacts was successfully inserted in the group.
           content:
             application/json:
-              example:
-                group_id: 1
-                nb_total_contacts: 3048
-                nb_inserted_contacts: 1
-                keys_not_found:
-                - janedoe@gmail.com
+              examples:
+                response:
+                  value:
+                    group_id: 1
+                    nb_total_contacts: 3048
+                    nb_inserted_contacts: 1
+                    keys_not_found:
+                    - janedoe@gmail.com
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -118,26 +127,8 @@ paths:
       - Group
       security:
       - Bearer: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                keys:
-                  items:
-                    example:
-                    - johndoe@splio.com
-                    - janedoe@splio.com
-                    type: string
-                  type: array
-                  maxItems: 10000
-                  minItems: 1
-              type: object
-        description: Group data.
-        required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: postTargetGroupsByIdAdd
+      x-operation-id-source: derived
   /target/groups/{id}/clear:
     post:
       summary: Remove all contacts from a group
@@ -154,18 +145,22 @@ paths:
           description: all contacts were successfully deleted in the group.
           content:
             application/json:
-              example: []
+              examples:
+                response:
+                  value: []
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -174,13 +169,11 @@ paths:
       - Group
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: postTargetGroupsByIdClear
+      x-operation-id-source: derived
   /target/groups/list:
     get:
       summary: Get groups
-      description: Get groups
       parameters:
       - name: per_page
         in: query
@@ -188,17 +181,17 @@ paths:
         description: Number of items displayed per page.
         schema:
           type: integer
-          default: 20
-          maximum: 1000
           minimum: 1
+          maximum: 1000
+          default: 20
       - name: page_number
         in: query
         required: false
         description: Page number.
         schema:
           type: integer
-          default: 1
           minimum: 1
+          default: 1
       - name: term
         in: query
         required: false
@@ -209,6 +202,8 @@ paths:
         in: query
         required: false
         description: Use a combination of the field, the operator and the searched value. It will return groups matched to your search. fields available on search are  'id', 'name', 'tags'
+        style: form
+        explode: false
         schema:
           type: array
           items:
@@ -247,35 +242,39 @@ paths:
           description: Group retrieval is successful.
           content:
             application/json:
-              example:
-                count_element: 1
-                current_page: 1
-                per_page: 50
-                sort: []
-                elements:
-                - intid: 10
-                  id: 1
-                  name: My group
-                  nb_binded_members: null
-                  tags:
-                  - optin
-                  updated_at: '0000-00-00 00:00:00'
-                  status: active
-                  is_favorite: false
-                  is_protected: false
-                  nb_emails: 41741
-                  nb_sms: 78
+              examples:
+                response:
+                  value:
+                    count_element: 1
+                    current_page: 1
+                    per_page: 50
+                    sort: []
+                    elements:
+                    - intid: 10
+                      id: 1
+                      name: My group
+                      nb_binded_members: null
+                      tags:
+                      - optin
+                      updated_at: '0000-00-00 00:00:00'
+                      status: active
+                      is_favorite: false
+                      is_protected: false
+                      nb_emails: 41741
+                      nb_sms: 78
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -284,9 +283,8 @@ paths:
       - Group
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getTargetGroupsList
+      x-operation-id-source: derived
   /target/groups/{id}/remove:
     post:
       summary: Remove contacts from a group
@@ -298,28 +296,34 @@ paths:
         description: group id.
         schema:
           type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/Payload'
       responses:
         '200':
           description: contacts was successfully deleted in the group.
           content:
             application/json:
-              example:
-                group_id: 1
-                nb_total_contacts: 3048
-                nb_removed_contacts: 1
-                keys_not_found:
-                - janedoe@gmail.com
+              examples:
+                response:
+                  value:
+                    group_id: 1
+                    nb_total_contacts: 3048
+                    nb_removed_contacts: 1
+                    keys_not_found:
+                    - janedoe@gmail.com
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -328,26 +332,8 @@ paths:
       - Group
       security:
       - Bearer: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                keys:
-                  items:
-                    example:
-                    - johndoe@splio.com
-                    - janedoe@splio.com
-                    type: string
-                  type: array
-                  maxItems: 10000
-                  minItems: 1
-              type: object
-        description: Group data.
-        required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: postTargetGroupsByIdRemove
+      x-operation-id-source: derived
 components:
   requestBodies:
     Payload:
@@ -369,10 +355,14 @@ components:
       required: true
   securitySchemes:
     Bearer:
-      name: Authorization
-      type: apiKey
-      in: header
       description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
-x-refined-from:
-- splio-doc-swagger2.json
-- splio-customer-platform-openapi.json
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-origin:
+- url: https://api.splio.com/doc.json
+  format: swagger
+  version: '2.0'
+  converter:
+    url: https://github.com/mermade/oas-kit
+    version: 7.0.8

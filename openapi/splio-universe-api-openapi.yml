@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Splio Universe API
+  title: Splio Customer Platform Universe API
+  description: API Documentation for Splio Customer Platform
   version: 1.0.0
-  description: 'Operations tagged Universe across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.splio.com
 - url: http://api.splio.com
@@ -18,63 +18,67 @@ paths:
           description: Universe's consumption stats retrieval is successful.
           content:
             application/json:
-              example:
-                sms_credit: 5000
-                usage30d: null
-                max_sms_volume_30d: null
-                sms_postpaid: false
-                stats:
-                - individuals: 60
-                  emails_sent: 0
-                  emails_tried: 0
-                  sms_tried: 0
-                  sms_sent: 128
-                  fwd_sms: 5128
-                  fwd_email: 1400526
-                  date: 2017-07-04T18:02:34+0200
-                - individuals: 50
-                  emails_sent: 0
-                  emails_tried: 0
-                  sms_tried: 0
-                  sms_sent: 42
-                  fwd_sms: 542
-                  fwd_email: 798397
-                  date: 2017-08-04T18:02:34+0200
-                - individuals: 42
-                  emails_sent: 0
-                  emails_tried: 0
-                  sms_tried: 0
-                  sms_sent: 30
-                  fwd_sms: 530
-                  fwd_email: 902221
-                  date: 2017-09-04T18:02:34+0200
-                - individuals: 3
-                  emails_sent: 0
-                  emails_tried: 0
-                  sms_tried: 0
-                  sms_sent: 4
-                  fwd_sms: 54
-                  fwd_email: 908242
-                  date: 2017-10-04T18:02:34+0200
-                - individuals: 2
-                  emails_sent: 0
-                  emails_tried: 0
-                  sms_tried: 0
-                  sms_sent: 2
-                  fwd_sms: 52
-                  fwd_email: 890781
-                  date: 2017-11-04T18:02:34+0100
+              examples:
+                response:
+                  value:
+                    sms_credit: 5000
+                    usage30d: null
+                    max_sms_volume_30d: null
+                    sms_postpaid: false
+                    stats:
+                    - individuals: 60
+                      emails_sent: 0
+                      emails_tried: 0
+                      sms_tried: 0
+                      sms_sent: 128
+                      fwd_sms: 5128
+                      fwd_email: 1400526
+                      date: 2017-07-04T18:02:34+0200
+                    - individuals: 50
+                      emails_sent: 0
+                      emails_tried: 0
+                      sms_tried: 0
+                      sms_sent: 42
+                      fwd_sms: 542
+                      fwd_email: 798397
+                      date: 2017-08-04T18:02:34+0200
+                    - individuals: 42
+                      emails_sent: 0
+                      emails_tried: 0
+                      sms_tried: 0
+                      sms_sent: 30
+                      fwd_sms: 530
+                      fwd_email: 902221
+                      date: 2017-09-04T18:02:34+0200
+                    - individuals: 3
+                      emails_sent: 0
+                      emails_tried: 0
+                      sms_tried: 0
+                      sms_sent: 4
+                      fwd_sms: 54
+                      fwd_email: 908242
+                      date: 2017-10-04T18:02:34+0200
+                    - individuals: 2
+                      emails_sent: 0
+                      emails_tried: 0
+                      sms_tried: 0
+                      sms_sent: 2
+                      fwd_sms: 52
+                      fwd_email: 890781
+                      date: 2017-11-04T18:02:34+0100
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -83,9 +87,8 @@ paths:
       - Universe
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getUniversesConsumption
+      x-operation-id-source: derived
   /universes/unique-key:
     get:
       summary: Get the universe's unique key
@@ -95,19 +98,23 @@ paths:
           description: Universe unique_key retrieval is successful.
           content:
             application/json:
-              example:
-                unique_key: c0
+              examples:
+                response:
+                  value:
+                    unique_key: c0
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -116,16 +123,19 @@ paths:
       - Universe
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getUniversesUniqueKey
+      x-operation-id-source: derived
 components:
   securitySchemes:
     Bearer:
-      name: Authorization
-      type: apiKey
-      in: header
       description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
-x-refined-from:
-- splio-doc-swagger2.json
-- splio-customer-platform-openapi.json
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-origin:
+- url: https://api.splio.com/doc.json
+  format: swagger
+  version: '2.0'
+  converter:
+    url: https://github.com/mermade/oas-kit
+    version: 7.0.8

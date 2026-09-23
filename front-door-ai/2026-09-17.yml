@@ -1,0 +1,29 @@
+# Front Door AI Index — splio — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: splio
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: splio.com
+  final_host: splio.com
+  ownership: own
+  owner: splio
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 22
+  host_score: 22
+  density: 9.49
+  words: 2319
+  tiers:
+    agentic: 0
+    core: 22
+    model: 0
+  ambiguous: 26
+  top_terms:
+    AI: 22
+    agent: 8
+    automation: 8
+    intelligence: 5
+    predictive: 5

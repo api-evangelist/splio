@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Splio Reward API
+  title: Splio Customer Platform Reward API
+  description: API Documentation for Splio Customer Platform
   version: 1.0.0
-  description: 'Operations tagged Reward across 2 of this provider''s published API definitions: splio-doc-swagger2.json, splio-customer-platform-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.splio.com
 - url: http://api.splio.com
@@ -26,9 +26,9 @@ paths:
         description: Number of items displayed.
         schema:
           type: integer
-          default: 50
-          maximum: 1000
           minimum: 1
+          maximum: 1000
+          default: 50
       - name: before
         in: query
         required: false
@@ -64,119 +64,77 @@ paths:
           description: List of a contact’s rewards
           content:
             application/json:
-              example:
-                paging:
-                  cursors:
-                    after: null
-                    before: null
-                  previous: ''
-                  next: ''
-                count_element: 1
-                elements:
-                - external_id: EG28
-                  loyalty_status_id: 47
-                  card_code: '1674075318835'
-                  program_name: Flying blue
-                  individual_id: 3028687
-                  earned_date: '2020-09-03 17:24:02'
-                  status: valid
-                  burned_date: null
-                  expiration_date: null
-                  interaction_details: Attribution of the reward
-                  interaction_type: reward_attribution
-                  reason_msg: Store visit while event
-                  reason_rule_id: id of the rule that trigger the reward
-                  reward_definition:
-                    name: the 4th given
-                    external_id: E2
-                    monetary: true
-                    monetary_type: value
-                    monetary_value: 0
-                    nqp_value: 0
-                    image_url: ''
+              examples:
+                response:
+                  value:
+                    paging:
+                      cursors:
+                        after: null
+                        before: null
+                      previous: ''
+                      next: ''
+                    count_element: 1
+                    elements:
+                    - external_id: EG28
+                      loyalty_status_id: 47
+                      card_code: '1674075318835'
+                      program_name: Flying blue
+                      individual_id: 3028687
+                      earned_date: '2020-09-03 17:24:02'
+                      status: valid
+                      burned_date: null
+                      expiration_date: null
+                      interaction_details: Attribution of the reward
+                      interaction_type: reward_attribution
+                      reason_msg: Store visit while event
+                      reason_rule_id: id of the rule that trigger the reward
+                      reward_definition:
+                        name: the 4th given
+                        external_id: E2
+                        monetary: true
+                        monetary_type: value
+                        monetary_value: 0
+                        nqp_value: 0
+                        image_url: ''
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
         '404':
           description: Contact not found.
           content:
             application/json:
-              example:
-                status: 404
-                errors:
-                - error_key: id
-                  error: wrong_value
-                  error_description: Record not found for id unique_key.
-        '400':
-          description: The request validation failed.
-          x-readme: BODYBODY
-          content:
-            application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
-        '401':
-          description: Authentication failed.
-        '403':
-          description: Forbidden.
+              examples:
+                response:
+                  value:
+                    status: 404
+                    errors:
+                    - error_key: id
+                      error: wrong_value
+                      error_description: Record not found for id unique_key.
       tags:
       - Reward
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getLoyaltyV2ContactsByIdRewards
+      x-operation-id-source: derived
   /loyalty/v1/rewards:
     post:
       summary: Create a reward
       description: Create a new reward that can be given to members.
-      responses:
-        '201':
-          description: Reward creation is successful.
-          content:
-            application/json:
-              example:
-                name: the 4th given
-                external_id: E2
-                monetary: false
-                monetary_type: ''
-                monetary_value: 0
-                nqp_value: 4
-                description: An incredible cake
-                rich_description: ''
-                image_url: ''
-                holding_days: 10
-                validity_interval_type: months
-                validity_interval_count: 1
-                forced_validity: true
-                forced_validity_start: '2020-06-01 00:00:00'
-                forced_validity_end: '2020-09-01 00:00:00'
-                limited: true
-                auto_generated: true
-                max_attribution_count: 87
-                custom_fields:
-                - name: code_1
-                  id: 0
-                  value: test 2
-        '400':
-          description: The request validation failed.
-          x-readme: BODYBODY
-          content:
-            application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
-        '401':
-          description: Authentication failed.
-        '403':
-          description: Forbidden.
-      tags:
-      - Reward
-      security:
-      - Bearer: []
       requestBody:
         content:
           application/json:
@@ -267,9 +225,59 @@ paths:
               type: object
         description: Create a reward.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      responses:
+        '201':
+          description: Reward creation is successful.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    name: the 4th given
+                    external_id: E2
+                    monetary: false
+                    monetary_type: ''
+                    monetary_value: 0
+                    nqp_value: 4
+                    description: An incredible cake
+                    rich_description: ''
+                    image_url: ''
+                    holding_days: 10
+                    validity_interval_type: months
+                    validity_interval_count: 1
+                    forced_validity: true
+                    forced_validity_start: '2020-06-01 00:00:00'
+                    forced_validity_end: '2020-09-01 00:00:00'
+                    limited: true
+                    auto_generated: true
+                    max_attribution_count: 87
+                    custom_fields:
+                    - name: code_1
+                      id: 0
+                      value: test 2
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Reward
+      security:
+      - Bearer: []
+      operationId: postLoyaltyV1Rewards
+      x-operation-id-source: derived
   /loyalty/v1/rewards/{id}:
     get:
       summary: Get a reward
@@ -286,59 +294,67 @@ paths:
           description: Reward retrieval is successful.
           content:
             application/json:
-              example:
-                name: the 4th given
-                external_id: E2
-                monetary: false
-                monetary_type: ''
-                monetary_value: 0
-                nqp_value: 4
-                description: An incredible cake
-                rich_description: ''
-                image_url: ''
-                holding_days: 10
-                validity_interval_type: months
-                validity_interval_count: 1
-                forced_validity: true
-                forced_validity_start: '2020-06-01 00:00:00'
-                forced_validity_end: '2020-09-01 00:00:00'
-                limited: true
-                auto_generated: true
-                max_attribution_count: 87
-                stock: 1087
-                custom_fields:
-                - name: code_1
-                  id: 0
-                  value: test 2
-        '404':
-          description: Reward not found.
-          content:
-            application/json:
-              example:
-                status: 404
-                errors:
-                - error_key: ''
-                  error: ''
-                  error_description: E24444 not found
+              examples:
+                response:
+                  value:
+                    name: the 4th given
+                    external_id: E2
+                    monetary: false
+                    monetary_type: ''
+                    monetary_value: 0
+                    nqp_value: 4
+                    description: An incredible cake
+                    rich_description: ''
+                    image_url: ''
+                    holding_days: 10
+                    validity_interval_type: months
+                    validity_interval_count: 1
+                    forced_validity: true
+                    forced_validity_start: '2020-06-01 00:00:00'
+                    forced_validity_end: '2020-09-01 00:00:00'
+                    limited: true
+                    auto_generated: true
+                    max_attribution_count: 87
+                    stock: 1087
+                    custom_fields:
+                    - name: code_1
+                      id: 0
+                      value: test 2
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
           description: Forbidden.
+        '404':
+          description: Reward not found.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 404
+                    errors:
+                    - error_key: ''
+                      error: ''
+                      error_description: E24444 not found
       tags:
       - Reward
       security:
       - Bearer: []
+      operationId: getLoyaltyV1RewardsById
+      x-operation-id-source: derived
     patch:
       summary: Update a reward
       description: Edit the data of an existing reward. All new granted rewards will inherit of the updated data.
@@ -349,63 +365,6 @@ paths:
         description: Reward external identifier.
         schema:
           type: string
-      responses:
-        '200':
-          description: Reward has successfully been updated.
-          content:
-            application/json:
-              example:
-                name: the 4th given
-                external_id: E2
-                monetary: false
-                monetary_type: ''
-                monetary_value: 0
-                nqp_value: 4
-                description: An incredible cake
-                rich_description: ''
-                image_url: ''
-                holding_days: 10
-                validity_interval_type: months
-                validity_interval_count: 1
-                forced_validity: true
-                forced_validity_start: '2020-06-01 00:00:00'
-                forced_validity_end: '2020-09-01 00:00:00'
-                limited: true
-                auto_generated: true
-                max_attribution_count: 1087
-                custom_fields:
-                - name: code_1
-                  id: 0
-                  value: test 2
-        '404':
-          description: Reward not found.
-          content:
-            application/json:
-              example:
-                status: 404
-                errors:
-                - error_key: reward_id
-                  error: wrong_value
-                  error_description: Reward not found for given identifier.
-        '400':
-          description: The request validation failed.
-          x-readme: BODYBODY
-          content:
-            application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
-        '401':
-          description: Authentication failed.
-        '403':
-          description: Forbidden.
-      tags:
-      - Reward
-      security:
-      - Bearer: []
       requestBody:
         content:
           application/json:
@@ -467,9 +426,71 @@ paths:
               type: object
         description: Edit a reward.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      responses:
+        '200':
+          description: Reward has successfully been updated.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    name: the 4th given
+                    external_id: E2
+                    monetary: false
+                    monetary_type: ''
+                    monetary_value: 0
+                    nqp_value: 4
+                    description: An incredible cake
+                    rich_description: ''
+                    image_url: ''
+                    holding_days: 10
+                    validity_interval_type: months
+                    validity_interval_count: 1
+                    forced_validity: true
+                    forced_validity_start: '2020-06-01 00:00:00'
+                    forced_validity_end: '2020-09-01 00:00:00'
+                    limited: true
+                    auto_generated: true
+                    max_attribution_count: 1087
+                    custom_fields:
+                    - name: code_1
+                      id: 0
+                      value: test 2
+        '400':
+          description: The request validation failed.
+          x-readme: BODYBODY
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+        '404':
+          description: Reward not found.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 404
+                    errors:
+                    - error_key: reward_id
+                      error: wrong_value
+                      error_description: Reward not found for given identifier.
+      tags:
+      - Reward
+      security:
+      - Bearer: []
+      operationId: patchLoyaltyV1RewardsById
+      x-operation-id-source: derived
   /loyalty/v1/rewards/{id}/attributions:
     get:
       summary: List granted rewards by reward ID
@@ -486,62 +507,67 @@ paths:
           description: Get granted reward list
           content:
             application/json:
-              example:
-                paging:
-                  cursors:
-                    after: null
-                    before: null
-                  previous: ''
-                  next: ''
-                count_element: 1
-                elements:
-                - external_id: EG28
-                  loyalty_status_id: 0
-                  earned_date: '2018-03-19 16:51:25'
-                  status: valid
-                  burned_date: null
-                  store_id: null
-                  expiration_date: '2099-04-19 16:51:25'
-                  reward_definition:
-                    name: the 4th given
-                    external_id: E2
-                    monetary: false
-                    monetary_type: ''
-                    monetary_value: 0
-                    nqp_value: 4
-                    image_url: ''
-        '404':
-          description: Reward not found.
-          content:
-            application/json:
-              example:
-                status: 404
-                errors:
-                - error_key: reward_id
-                  error: wrong_value
-                  error_description: Reward not found for given identifier.
+              examples:
+                response:
+                  value:
+                    paging:
+                      cursors:
+                        after: null
+                        before: null
+                      previous: ''
+                      next: ''
+                    count_element: 1
+                    elements:
+                    - external_id: EG28
+                      loyalty_status_id: 0
+                      earned_date: '2018-03-19 16:51:25'
+                      status: valid
+                      burned_date: null
+                      store_id: null
+                      expiration_date: '2099-04-19 16:51:25'
+                      reward_definition:
+                        name: the 4th given
+                        external_id: E2
+                        monetary: false
+                        monetary_type: ''
+                        monetary_value: 0
+                        nqp_value: 4
+                        image_url: ''
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
           description: Forbidden.
+        '404':
+          description: Reward not found.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 404
+                    errors:
+                    - error_key: reward_id
+                      error: wrong_value
+                      error_description: Reward not found for given identifier.
       tags:
       - Reward
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getLoyaltyV1RewardsByIdAttributions
+      x-operation-id-source: derived
   /loyalty/v2/rewards:
     get:
       summary: List rewards
@@ -553,9 +579,9 @@ paths:
         description: Number of items displayed.
         schema:
           type: integer
-          default: 50
-          maximum: 1000
           minimum: 1
+          maximum: 1000
+          default: 50
       - name: order
         in: query
         required: false
@@ -700,50 +726,54 @@ paths:
           description: Rewards retrieval is successful.
           content:
             application/json:
-              example:
-                paging:
-                  cursors:
-                    after: null
-                    before: null
-                  previous: ''
-                  next: ''
-                count_element: 1
-                elements:
-                - auto_generated: true
-                  custom_fields:
-                  - id: 0
-                    name: string
-                    value: string
-                  description: string
-                  external_id: string
-                  forced_validity: true
-                  forced_validity_end: '1970-01-01 00:00:00'
-                  forced_validity_start: '1970-01-01 00:00:00'
-                  holding_days: 0
-                  image_url: string
-                  limited: true
-                  max_attribution_count: 0
-                  stock: 50
-                  monetary: true
-                  monetary_type: percentage,value
-                  monetary_value: 0
-                  name: string
-                  nqp_value: 0
-                  rich_description: string
-                  use_internal_id: true
-                  validity_interval_count: 0
-                  validity_interval_type: days,weeks,months,years
+              examples:
+                response:
+                  value:
+                    paging:
+                      cursors:
+                        after: null
+                        before: null
+                      previous: ''
+                      next: ''
+                    count_element: 1
+                    elements:
+                    - auto_generated: true
+                      custom_fields:
+                      - id: 0
+                        name: string
+                        value: string
+                      description: string
+                      external_id: string
+                      forced_validity: true
+                      forced_validity_end: '1970-01-01 00:00:00'
+                      forced_validity_start: '1970-01-01 00:00:00'
+                      holding_days: 0
+                      image_url: string
+                      limited: true
+                      max_attribution_count: 0
+                      stock: 50
+                      monetary: true
+                      monetary_type: percentage,value
+                      monetary_value: 0
+                      name: string
+                      nqp_value: 0
+                      rich_description: string
+                      use_internal_id: true
+                      validity_interval_count: 0
+                      validity_interval_type: days,weeks,months,years
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -752,9 +782,8 @@ paths:
       - Reward
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getLoyaltyV2Rewards
+      x-operation-id-source: derived
   /loyalty/rewards/eligibility/{card_code}:
     post:
       summary: Get a member’s eligible rewards
@@ -777,50 +806,54 @@ paths:
           description: Rewards retrieval is successful.
           content:
             application/json:
-              example:
-                paging:
-                  cursors:
-                    after: null
-                    before: null
-                  previous: ''
-                  next: ''
-                count_element: 1
-                elements:
-                - auto_generated: true
-                  custom_fields:
-                  - id: 0
-                    name: string
-                    value: string
-                  description: string
-                  external_id: string
-                  forced_validity: true
-                  forced_validity_end: '1970-01-01 00:00:00'
-                  forced_validity_start: '1970-01-01 00:00:00'
-                  holding_days: 0
-                  image_url: string
-                  limited: true
-                  max_attribution_count: 0
-                  stock: 0
-                  monetary: true
-                  monetary_type: percentage,value
-                  monetary_value: 0
-                  name: string
-                  nqp_value: 0
-                  rich_description: string
-                  use_internal_id: true
-                  validity_interval_count: 0
-                  validity_interval_type: days,weeks,months,years
+              examples:
+                response:
+                  value:
+                    paging:
+                      cursors:
+                        after: null
+                        before: null
+                      previous: ''
+                      next: ''
+                    count_element: 1
+                    elements:
+                    - auto_generated: true
+                      custom_fields:
+                      - id: 0
+                        name: string
+                        value: string
+                      description: string
+                      external_id: string
+                      forced_validity: true
+                      forced_validity_end: '1970-01-01 00:00:00'
+                      forced_validity_start: '1970-01-01 00:00:00'
+                      holding_days: 0
+                      image_url: string
+                      limited: true
+                      max_attribution_count: 0
+                      stock: 0
+                      monetary: true
+                      monetary_type: percentage,value
+                      monetary_value: 0
+                      name: string
+                      nqp_value: 0
+                      rich_description: string
+                      use_internal_id: true
+                      validity_interval_count: 0
+                      validity_interval_type: days,weeks,months,years
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
@@ -829,9 +862,8 @@ paths:
       - Reward
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: postLoyaltyRewardsEligibilityByCardCode
+      x-operation-id-source: derived
   /loyalty/v1/rewards/{id}/grant:
     post:
       summary: Grant a reward
@@ -843,45 +875,6 @@ paths:
         description: Reward external identifier.
         schema:
           type: string
-      responses:
-        '200':
-          description: Reward grant is successful.
-          content:
-            application/json:
-              example:
-              - uuid: 7061f345-d70f-4e7f-a803-8aa226b2d914
-                external_ids:
-                - '978020137962'
-                - '123456789012'
-        '404':
-          description: Reward not found.
-          content:
-            application/json:
-              example:
-                status: 404
-                errors:
-                - error_key: reward_id
-                  error: wrong_value
-                  error_description: Reward not found for given identifier.
-        '400':
-          description: The request validation failed.
-          x-readme: BODYBODY
-          content:
-            application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
-        '401':
-          description: Authentication failed.
-        '403':
-          description: Forbidden.
-      tags:
-      - Reward
-      security:
-      - Bearer: []
       requestBody:
         content:
           application/json:
@@ -931,94 +924,56 @@ paths:
               type: object
         description: Grant a reward to a loyalty member based on its card code.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
-  /loyalty/v1/rewards/grant:
-    post:
-      summary: Grant a list of reward
-      description: Grant a list of reward
       responses:
         '200':
           description: Reward grant is successful.
           content:
             application/json:
-              example:
-              - external_id: '978020137962'
-                card_code: '44010000002'
-                program_name: My program
-                earned_date: '2019-12-31 23:59:59'
-                status: burned
-                burned_date: '2020-12-24 23:59:59'
-                expiration_date: '2020-12-31 23:59:59'
-                interaction_details: Attribution of the reward
-                interaction_type: reward_attribution
-                reason_msg: Social message
-                reward_definition:
-                  name: 'Reward #1'
-                  external_id: REWARD01
-                  monetary: true
-                  monetary_type: value
-                  monetary_value: 0
-                  nqp_value: 0
-                  image_url: https://www.splio.com/wp-content/uploads/2018/01/3250_Splio_Logo_RGB.png
+              examples:
+                response:
+                  value:
+                  - uuid: 7061f345-d70f-4e7f-a803-8aa226b2d914
+                    external_ids:
+                    - '978020137962'
+                    - '123456789012'
         '400':
-          description: All grants failed.
+          description: The request validation failed.
+          x-readme: BODYBODY
           content:
             application/json:
-              example:
-                success_count: 0
-                errors_count: 1
-                elements_success: []
-                elements_error:
-                - attribution_ids:
-                  - '19028198201'
-                  reward_id: Unlimitedauto
-                  card_code: '3503381382743'
-                  code: 400
-                  description: external id test5002 is already attributed
-        '207':
-          description: Partial successes.
-          content:
-            application/json:
-              example:
-                success_count: 1
-                errors_count: 1
-                elements_success:
-                - external_id: test5008
-                  card_code: '3503381382743'
-                  program_name: Corgi Club
-                  earned_date: '2020-11-19 16:00:00'
-                  status: valid
-                  burned_date: null
-                  expiration_date: '2021-11-19 16:00:00'
-                  store_id: extid
-                  interaction_details: Attribution of the reward
-                  interaction_type: reward_attribution
-                  reason_msg: ''
-                  reward_definition:
-                    name: Unlimited - Autogenerated
-                    external_id: Unlimitedauto
-                    monetary: true
-                    monetary_type: value
-                    monetary_value: 0
-                    nqp_value: 0
-                    image_url: ''
-                elements_error:
-                - attribution_ids:
-                  - '19028198201'
-                  reward_id: Unlimitedauto
-                  card_code: '3503381382743'
-                  code: 400
-                  description: external id test5002 is already attributed
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
           description: Forbidden.
+        '404':
+          description: Reward not found.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 404
+                    errors:
+                    - error_key: reward_id
+                      error: wrong_value
+                      error_description: Reward not found for given identifier.
       tags:
       - Reward
       security:
       - Bearer: []
+      operationId: postLoyaltyV1RewardsByIdGrant
+      x-operation-id-source: derived
+  /loyalty/v1/rewards/grant:
+    post:
+      summary: Grant a list of reward
       requestBody:
         content:
           application/json:
@@ -1073,66 +1028,85 @@ paths:
               type: object
         description: Grant a list of reward based on card code and granted reward external identifier.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
-  /loyalty/v1/reward-attributions/{id}/burn:
-    post:
-      summary: Use a reward granted to a loyalty member.
-      description: Use a reward granted to a loyalty member.
-      parameters:
-      - name: id
-        in: path
-        required: true
-        description: Reward grant unique external identifier.
-        schema:
-          type: string
       responses:
         '200':
-          description: Reward use is successful.
+          description: Reward grant is successful.
           content:
             application/json:
-              example:
-                external_id: '1006087183901'
-                card_code: '8393566595977'
-                program_name: Corgi club
-                earned_date: '2021-02-19 18:00:54'
-                status: burned
-                burned_date: '2021-03-10 17:43:38'
-                expiration_date: '2022-02-19 18:00:54'
-                store_id: null
-                interaction_details: Attribution of the reward
-                interaction_type: reward_attribution
-                reason_msg: ''
-                reward_definition:
-                  name: RewardStock1
-                  external_id: RewardStock1
-                  monetary: false
-                  monetary_type: value
-                  monetary_value: 0
-                  nqp_value: 0
-                  image_url: ''
-        '404':
-          description: Granted reward with this identifier not found.
+              examples:
+                response:
+                  value:
+                  - external_id: '978020137962'
+                    card_code: '44010000002'
+                    program_name: My program
+                    earned_date: '2019-12-31 23:59:59'
+                    status: burned
+                    burned_date: '2020-12-24 23:59:59'
+                    expiration_date: '2020-12-31 23:59:59'
+                    interaction_details: Attribution of the reward
+                    interaction_type: reward_attribution
+                    reason_msg: Social message
+                    reward_definition:
+                      name: 'Reward #1'
+                      external_id: REWARD01
+                      monetary: true
+                      monetary_type: value
+                      monetary_value: 0
+                      nqp_value: 0
+                      image_url: https://www.splio.com/wp-content/uploads/2018/01/3250_Splio_Logo_RGB.png
+        '207':
+          description: Partial successes.
           content:
             application/json:
-              example:
-                status: 404
-                errors:
-                - error_key: id
-                  error: wrong_value
-                  error_description: Reward attribution not found for given identifier.
+              examples:
+                response:
+                  value:
+                    success_count: 1
+                    errors_count: 1
+                    elements_success:
+                    - external_id: test5008
+                      card_code: '3503381382743'
+                      program_name: Corgi Club
+                      earned_date: '2020-11-19 16:00:00'
+                      status: valid
+                      burned_date: null
+                      expiration_date: '2021-11-19 16:00:00'
+                      store_id: extid
+                      interaction_details: Attribution of the reward
+                      interaction_type: reward_attribution
+                      reason_msg: ''
+                      reward_definition:
+                        name: Unlimited - Autogenerated
+                        external_id: Unlimitedauto
+                        monetary: true
+                        monetary_type: value
+                        monetary_value: 0
+                        nqp_value: 0
+                        image_url: ''
+                    elements_error:
+                    - attribution_ids:
+                      - '19028198201'
+                      reward_id: Unlimitedauto
+                      card_code: '3503381382743'
+                      code: 400
+                      description: external id test5002 is already attributed
         '400':
-          description: The request validation failed.
-          x-readme: BODYBODY
+          description: All grants failed.
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    success_count: 0
+                    errors_count: 1
+                    elements_success: []
+                    elements_error:
+                    - attribution_ids:
+                      - '19028198201'
+                      reward_id: Unlimitedauto
+                      card_code: '3503381382743'
+                      code: 400
+                      description: external id test5002 is already attributed
         '401':
           description: Authentication failed.
         '403':
@@ -1141,6 +1115,19 @@ paths:
       - Reward
       security:
       - Bearer: []
+      operationId: postLoyaltyV1RewardsGrant
+      x-operation-id-source: derived
+  /loyalty/v1/reward-attributions/{id}/burn:
+    post:
+      summary: Use a reward granted to a loyalty member
+      description: Use a reward granted to a loyalty member.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Reward grant unique external identifier.
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1167,90 +1154,71 @@ paths:
               type: object
         description: Use a reward granted to a loyalty member.
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
-  /loyalty/v1/rewards/burn:
-    post:
-      summary: Use a list of granted rewards
-      description: Use a list of granted rewards
       responses:
         '200':
-          description: All granted rewards are successfully used.
+          description: Reward use is successful.
           content:
             application/json:
-              example:
-              - external_id: '978020137962'
-                card_code: '44010000002'
-                program_name: My program
-                earned_date: '2019-12-31 23:59:59'
-                status: burned
-                burned_date: '2020-12-24 23:59:59'
-                expiration_date: '2020-12-31 23:59:59'
-                interaction_details: Attribution of the reward
-                interaction_type: reward_attribution
-                reason_msg: Social message
-                reward_definition:
-                  name: 'Reward #1'
-                  external_id: REWARD01
-                  monetary: true
-                  monetary_type: value
-                  monetary_value: 0
-                  nqp_value: 0
-                  image_url: https://www.splio.com/wp-content/uploads/2018/01/3250_Splio_Logo_RGB.png
+              examples:
+                response:
+                  value:
+                    external_id: '1006087183901'
+                    card_code: '8393566595977'
+                    program_name: Corgi club
+                    earned_date: '2021-02-19 18:00:54'
+                    status: burned
+                    burned_date: '2021-03-10 17:43:38'
+                    expiration_date: '2022-02-19 18:00:54'
+                    store_id: null
+                    interaction_details: Attribution of the reward
+                    interaction_type: reward_attribution
+                    reason_msg: ''
+                    reward_definition:
+                      name: RewardStock1
+                      external_id: RewardStock1
+                      monetary: false
+                      monetary_type: value
+                      monetary_value: 0
+                      nqp_value: 0
+                      image_url: ''
         '400':
-          description: Can't perform this request
+          description: The request validation failed.
+          x-readme: BODYBODY
           content:
             application/json:
-              example:
-                success_count: 0
-                errors_count: 1
-                elements_success: null
-                elements_error:
-                - attribution_id: xxxxxxx4
-                  card_code: '3503381382743'
-                  code: 400
-                  description: reward_attribution xxxxxxx4 not found
-        '207':
-          description: Partial successes.
-          content:
-            application/json:
-              example:
-                success_count: 1
-                errors_count: 1
-                elements_success:
-                - external_id: test5008
-                  card_code: '3503381382743'
-                  program_name: Corgi Club
-                  earned_date: '2020-11-19 16:00:00'
-                  status: valid
-                  burned_date: '2021-11-05 16:00:00'
-                  expiration_date: '2021-11-19 16:00:00'
-                  store_id: extid
-                  interaction_details: Attribution of the reward
-                  interaction_type: reward_attribution
-                  reason_msg: ''
-                  reward_definition:
-                    name: Unlimited - Autogenerated
-                    external_id: Unlimitedauto
-                    monetary: true
-                    monetary_type: value
-                    monetary_value: 0
-                    nqp_value: 0
-                    image_url: ''
-                elements_error:
-                - reward_id: Unlimitedauto
-                  card_code: '3503381382743'
-                  code: 400
-                  description: external id test5002 is already attributed
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
           description: Forbidden.
+        '404':
+          description: Granted reward with this identifier not found.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 404
+                    errors:
+                    - error_key: id
+                      error: wrong_value
+                      error_description: Reward attribution not found for given identifier.
       tags:
       - Reward
       security:
       - Bearer: []
+      operationId: postLoyaltyV1RewardAttributionsByIdBurn
+      x-operation-id-source: derived
+  /loyalty/v1/rewards/burn:
+    post:
+      summary: Use a list of granted rewards
       requestBody:
         content:
           application/json:
@@ -1286,9 +1254,91 @@ paths:
               type: object
         description: Use a list of granted rewards
         required: true
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      responses:
+        '200':
+          description: All granted rewards are successfully used.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                  - external_id: '978020137962'
+                    card_code: '44010000002'
+                    program_name: My program
+                    earned_date: '2019-12-31 23:59:59'
+                    status: burned
+                    burned_date: '2020-12-24 23:59:59'
+                    expiration_date: '2020-12-31 23:59:59'
+                    interaction_details: Attribution of the reward
+                    interaction_type: reward_attribution
+                    reason_msg: Social message
+                    reward_definition:
+                      name: 'Reward #1'
+                      external_id: REWARD01
+                      monetary: true
+                      monetary_type: value
+                      monetary_value: 0
+                      nqp_value: 0
+                      image_url: https://www.splio.com/wp-content/uploads/2018/01/3250_Splio_Logo_RGB.png
+        '207':
+          description: Partial successes.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success_count: 1
+                    errors_count: 1
+                    elements_success:
+                    - external_id: test5008
+                      card_code: '3503381382743'
+                      program_name: Corgi Club
+                      earned_date: '2020-11-19 16:00:00'
+                      status: valid
+                      burned_date: '2021-11-05 16:00:00'
+                      expiration_date: '2021-11-19 16:00:00'
+                      store_id: extid
+                      interaction_details: Attribution of the reward
+                      interaction_type: reward_attribution
+                      reason_msg: ''
+                      reward_definition:
+                        name: Unlimited - Autogenerated
+                        external_id: Unlimitedauto
+                        monetary: true
+                        monetary_type: value
+                        monetary_value: 0
+                        nqp_value: 0
+                        image_url: ''
+                    elements_error:
+                    - reward_id: Unlimitedauto
+                      card_code: '3503381382743'
+                      code: 400
+                      description: external id test5002 is already attributed
+        '400':
+          description: Can't perform this request
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    success_count: 0
+                    errors_count: 1
+                    elements_success: null
+                    elements_error:
+                    - attribution_id: xxxxxxx4
+                      card_code: '3503381382743'
+                      code: 400
+                      description: reward_attribution xxxxxxx4 not found
+        '401':
+          description: Authentication failed.
+        '403':
+          description: Forbidden.
+      tags:
+      - Reward
+      security:
+      - Bearer: []
+      operationId: postLoyaltyV1RewardsBurn
+      x-operation-id-source: derived
   /loyalty/reward-attributions/{id}:
     get:
       summary: Get a granted reward
@@ -1305,94 +1355,90 @@ paths:
           description: Reward attribution retrieval is successful.
           content:
             application/json:
-              example:
-                id: 6
-                external_id: EG28
-                earn_date: '2018-03-19 16:51:25'
-                claim_date: null
-                expiration_date: '2022-04-19 16:51:25'
-                status: available
-                reward:
-                  id: 1
-                  external_id: E2
-                  type: cake
-                  name: the 4th given
-                  price: 6
-                  nqp_value: 4
-                  description: An incredible cake
-                  holding_days: 0
-                  validity_interval_type: months
-                  validity_interval_count: 1
-                  max_attribution_count: 88
-                  coupons_category: ''
-                  forced_validity: true
-                  forced_validity_start: '2018-01-18 16:00:28'
-                  forced_validity_end: '2019-01-18 16:00:28'
-                  picture_path: /path/to/picture
-                  monetary_type: discount
-                  monetary_value: 10.5
-                  program: null
-                  custom_fields: []
-                contact_status:
-                  id: 1
-                  card_code: '33010000001'
-                  tier_joined_at: null
-                  program_joined_at: '2018-01-18 16:03:42'
-                  card_expire_at: null
-                  computed_at: null
-                  q_point: 0
-                  nq_point: 10
-                  birthday: null
-                  individual: null
-                  program: null
-                  tier: []
-                coupon: null
-                event: null
-                store: null
-        '404':
-          description: Reward attribution not found.
-          content:
-            application/json:
-              example:
-                status: 404
-                errors:
-                - error_key: ext_id
-                  error: wrong_value
-                  error_description: Reward attribution not found for given identifier.
+              examples:
+                response:
+                  value:
+                    id: 6
+                    external_id: EG28
+                    earn_date: '2018-03-19 16:51:25'
+                    claim_date: null
+                    expiration_date: '2022-04-19 16:51:25'
+                    status: available
+                    reward:
+                      id: 1
+                      external_id: E2
+                      type: cake
+                      name: the 4th given
+                      price: 6
+                      nqp_value: 4
+                      description: An incredible cake
+                      holding_days: 0
+                      validity_interval_type: months
+                      validity_interval_count: 1
+                      max_attribution_count: 88
+                      coupons_category: ''
+                      forced_validity: true
+                      forced_validity_start: '2018-01-18 16:00:28'
+                      forced_validity_end: '2019-01-18 16:00:28'
+                      picture_path: /path/to/picture
+                      monetary_type: discount
+                      monetary_value: 10.5
+                      program: null
+                      custom_fields: []
+                    contact_status:
+                      id: 1
+                      card_code: '33010000001'
+                      tier_joined_at: null
+                      program_joined_at: '2018-01-18 16:03:42'
+                      card_expire_at: null
+                      computed_at: null
+                      q_point: 0
+                      nq_point: 10
+                      birthday: null
+                      individual: null
+                      program: null
+                      tier: []
+                    coupon: null
+                    event: null
+                    store: null
         '400':
           description: The request validation failed.
           x-readme: BODYBODY
           content:
             application/json:
-              example:
-                status: 400
-                errors:
-                - error_key: field_1
-                  error: wrong_value
-                  error_description: The request was malformed and it is unable to be processed. Please review and try again.
+              examples:
+                response:
+                  value:
+                    status: 400
+                    errors:
+                    - error_key: field_1
+                      error: wrong_value
+                      error_description: The request was malformed and it is unable to be processed. Please review and try again.
         '401':
           description: Authentication failed.
         '403':
           description: Forbidden.
+        '404':
+          description: Reward attribution not found.
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    status: 404
+                    errors:
+                    - error_key: ext_id
+                      error: wrong_value
+                      error_description: Reward attribution not found for given identifier.
       tags:
       - Reward
       security:
       - Bearer: []
-    servers:
-    - url: https://api.splio.com
-    - url: http://api.splio.com
+      operationId: getLoyaltyRewardAttributionsById
+      x-operation-id-source: derived
 components:
   schemas:
     CustomField:
-      properties:
-        name:
-          required: true
-          type: string
-        value:
-          required: true
-          type: string
-      type: object
-    CustomField_2:
       properties:
         name:
           type: string
@@ -1401,10 +1447,14 @@ components:
       type: object
   securitySchemes:
     Bearer:
-      name: Authorization
-      type: apiKey
-      in: header
       description: "For accessing the API a valid JWT token must be passed in all requests in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the Authorization API and returned as answer of a call\nto the route /authenticate giving a valid user, password & universe.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n"
-x-refined-from:
-- splio-doc-swagger2.json
-- splio-customer-platform-openapi.json
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-origin:
+- url: https://api.splio.com/doc.json
+  format: swagger
+  version: '2.0'
+  converter:
+    url: https://github.com/mermade/oas-kit
+    version: 7.0.8

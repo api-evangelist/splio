@@ -1,11 +1,11 @@
 {
   "provider": "splio",
   "sources": [
-    "_original/splio-doc-swagger2.json",
-    "splio-campaign-api-v1-openapi.json",
-    "splio-customer-platform-openapi.json"
+    "_original/splio-campaign-api-v1-openapi.json",
+    "_original/splio-customer-platform-openapi.json"
   ],
   "outputs": [
+    "splio-one-shot-api-openapi.yml",
     "splio-blacklist-api-openapi.yml",
     "splio-contact-api-openapi.yml",
     "splio-coupon-api-openapi.yml",
@@ -21,34 +21,14 @@
     "splio-reward-api-openapi.yml",
     "splio-reward-stock-and-codes-api-openapi.yml",
     "splio-sales-data-api-openapi.yml",
-    "splio-universe-api-openapi.yml",
-    "splio-one-shot-api-openapi.yml"
+    "splio-universe-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/splio-campaign-api-v1-openapi.json",
-    "archived openapi/splio-customer-platform-openapi.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
-    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
-    "splio-doc-swagger2.json: upgraded swagger 2.0 -> OpenAPI 3.2.0",
-    "splio-doc-swagger2.json: declared missing tag: Blacklist",
-    "splio-doc-swagger2.json: declared missing tag: Contact",
-    "splio-doc-swagger2.json: declared missing tag: Coupon",
-    "splio-doc-swagger2.json: declared missing tag: Export",
-    "splio-doc-swagger2.json: declared missing tag: Fields",
-    "splio-doc-swagger2.json: declared missing tag: Filter",
-    "splio-doc-swagger2.json: declared missing tag: General",
-    "splio-doc-swagger2.json: declared missing tag: Group",
-    "splio-doc-swagger2.json: declared missing tag: Loyalty",
-    "splio-doc-swagger2.json: declared missing tag: Members",
-    "splio-doc-swagger2.json: declared missing tag: Points",
-    "splio-doc-swagger2.json: declared missing tag: Programs",
-    "splio-doc-swagger2.json: declared missing tag: Reward",
-    "splio-doc-swagger2.json: declared missing tag: Reward stock and codes",
-    "splio-doc-swagger2.json: declared missing tag: Sales data",
-    "splio-doc-swagger2.json: declared missing tag: Universe",
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "splio-campaign-api-v1-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
     "splio-campaign-api-v1-openapi.json: tagged paths GET /v1/one-shot/{id} -> One Shot",
     "splio-campaign-api-v1-openapi.json: tagged paths POST /v1/one-shot -> One Shot",
@@ -71,27 +51,26 @@
     "splio-customer-platform-openapi.json: declared missing tag: Reward stock and codes",
     "splio-customer-platform-openapi.json: declared missing tag: Sales data",
     "splio-customer-platform-openapi.json: declared missing tag: Universe",
-    "tag 'Blacklist' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Contact' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Coupon' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Export' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Fields' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Filter' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'General' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Group' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Loyalty' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Members' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Points' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Programs' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Reward' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Reward stock and codes' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Sales data' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied",
-    "tag 'Universe' spans 2 source specs (splio-doc-swagger2.json, splio-customer-platform-openapi.json): per-path servers applied"
+    "apis.yml register: already-registered"
   ],
   "skipped": [
-    "splio-campaign-api-openapi.json: previously refined output, superseded by openapi/_original/",
-    "splio-content-api-openapi.json: previously refined output, superseded by openapi/_original/",
-    "splio-interactions-api-openapi.json: previously refined output, superseded by openapi/_original/",
-    "splio-messaging-api-openapi.json: previously refined output, superseded by openapi/_original/"
+    "_original/splio-doc-swagger2.json: archived document superseded by a larger archived document",
+    "splio-blacklist-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-contact-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-coupon-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-export-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-fields-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-filter-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-general-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-group-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-loyalty-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-members-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-one-shot-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-points-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-programs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-reward-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-reward-stock-and-codes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-sales-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "splio-universe-api-openapi.yml: previously refined output, superseded by openapi/_original/"
   ]
 }

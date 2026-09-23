@@ -261,6 +261,8 @@ paths:
                     timezone: Europe/Paris
       tags:
       - One Shot
+      summary: Get v1one shot
+      x-summary-source: derived
   /v1/one-shot/stop/{id}:
     post:
       description: ''
@@ -281,6 +283,8 @@ paths:
         description: Campaign ID
       tags:
       - One Shot
+      summary: Post v1one shotstop{id}
+      x-summary-source: derived
 components:
   securitySchemes:
     Authorization:
